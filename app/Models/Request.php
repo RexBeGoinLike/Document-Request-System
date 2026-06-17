@@ -32,7 +32,6 @@ use Illuminate\Database\Eloquent\Model;
     'signature_image'
     ])]
 
-#[Hidden(['password', 'remember_token'])]
 class Request extends Model
 {
 }
