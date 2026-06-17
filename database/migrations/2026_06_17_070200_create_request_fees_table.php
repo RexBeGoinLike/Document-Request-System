@@ -29,8 +29,9 @@ return new class extends Migration
             $table->integer('cert_transfer_credentials_total_price')->nullable();
             $table->integer('cert_service_record_total_price')->nullable();
             $table->integer('photocopy_total_price')->nullable();
-            $table->boolean('mailing_price');
+            $table->integer('mailing_price');
             $table->text('others')->nullable();
+            $table->integer('total_price');
             $table->timestamps();
          });
     }
