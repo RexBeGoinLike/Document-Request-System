@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('delivery_details', function (Blueprint $table) {
+            $table->id('delivery_detail_id');
+            $table->foreignId('request_id')
+                ->constrained('requests', 'request_id');
+            $table->foreignId('user_id')
+                ->nullable()
+                ->constrained('users', 'user_id');
+            $table->text('recipient_name');
+            $table->text('recipient_address');
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('delivery_details');
+    }
+};

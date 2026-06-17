@@ -15,12 +15,11 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('request_id')
-                ->cascadeOnDelete();
+                ->constrained('requests', 'request_id');
 
             $table->foreignId('user_id')
                 ->nullable()
-                ->constrained('users')
-                ->nullOnDelete();
+                ->constrained('users', 'user_id');
 
             $table->string('action');
 
