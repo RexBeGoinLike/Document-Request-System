@@ -3,9 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Model;
-
 #[Fillable(['requester_name',
     'cadet_serial_number',
     'original_class',
@@ -30,8 +28,8 @@ use Illuminate\Database\Eloquent\Model;
     'representative_office',
     'representative_contact',
     'signature_image'
-    ])]
-
-class Request extends Model
+])]
+class DocumentRequest extends Model
 {
+    //
 }

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('RequestFees', function (Blueprint $table) {
             $table->foreignId('request_id')
-                ->constrained('requests', 'request_id');
+                ->constrained('document_requests', 'request_id');
 
             $table->integer('diploma_total_price')->nullable();
             $table->integer('transcript_total_price')->nullable();
@@ -33,7 +33,7 @@ return new class extends Migration
             $table->string('others')->nullable();
             $table->integer('total_price');
             $table->timestamps();
-         });
+        });
     }
 
     /**
@@ -41,6 +41,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('requestFees');
+        Schema::dropIfExists('request_fees');
     }
 };

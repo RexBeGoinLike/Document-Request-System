@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('request_id')
-                ->constrained('requests', 'request_id');
+                ->constrained('document_requests', 'request_id');
 
             $table->foreignId('user_id')
                 ->nullable()

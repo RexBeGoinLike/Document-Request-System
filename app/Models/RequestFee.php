@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
-
 #[Fillable([
     'diploma_total_price',
     'transcript_total_price',
@@ -24,7 +23,7 @@ use Illuminate\Database\Eloquent\Model;
     'others'
 ])]
 
-class requestFees extends Model
+class RequestFee extends Model
 {
     //
 }
