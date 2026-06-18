@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id('request_id');
             $table->string('status');
             $table->timestamps();
-            $table->text('requester_name');
-            $table->text('cadet_serial_number');
-            $table->text('original_class');
+            $table->string('requester_name');
+            $table->string('cadet_serial_number');
+            $table->string('original_class');
             $table->integer('contact_number');
-            $table->text('address');
+            $table->string('address');
             $table->integer('diploma_count')->nullable();
             $table->integer('transcript_count')->nullable();
             $table->integer('cert_cadet_count')->nullable();
@@ -36,10 +36,10 @@ return new class extends Migration
             $table->integer('photocopy_count')->nullable();
             $table->boolean('for_mailing');
             $table->text('others')->nullable();
-            $table->text('representative_name')->nullable();
-            $table->text('representative_office')->nullable();
+            $table->string('representative_name')->nullable();
+            $table->string('representative_office')->nullable();
             $table->integer('representative_contact')->nullable();
-            $table->text('signature_image');
+            $table->string('signature_image');
         });
     }
 

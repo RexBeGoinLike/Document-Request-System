@@ -24,7 +24,7 @@ use Illuminate\Database\Eloquent\Model;
     'others'
 ])]
 
-class request_fees extends Model
+class requestFees extends Model
 {
     //
 }

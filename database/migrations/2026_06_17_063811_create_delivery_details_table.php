@@ -18,8 +18,9 @@ return new class extends Migration
             $table->foreignId('user_id')
                 ->nullable()
                 ->constrained('users', 'user_id');
-            $table->text('recipient_name');
+            $table->string('recipient_name');
             $table->text('recipient_address');
+            $table->integer('recipient_contact_number');
             $table->timestamps();
         });
     }

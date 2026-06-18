@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('request_fees', function (Blueprint $table) {
+        Schema::create('RequestFees', function (Blueprint $table) {
             $table->foreignId('request_id')
                 ->constrained('requests', 'request_id');
 
@@ -30,7 +30,7 @@ return new class extends Migration
             $table->integer('cert_service_record_total_price')->nullable();
             $table->integer('photocopy_total_price')->nullable();
             $table->integer('mailing_price');
-            $table->text('others')->nullable();
+            $table->string('others')->nullable();
             $table->integer('total_price');
             $table->timestamps();
          });
@@ -41,6 +41,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('request_fees');
+        Schema::dropIfExists('requestFees');
     }
 };
