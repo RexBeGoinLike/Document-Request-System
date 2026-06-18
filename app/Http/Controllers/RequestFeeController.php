@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\RequestFee;
 use Illuminate\Http\Request;
-
 class RequestFeeController extends Controller
 {
     /**
@@ -12,7 +11,7 @@ class RequestFeeController extends Controller
      */
     public function index()
     {
-        //
+
     }
 
     /**
@@ -20,7 +19,7 @@ class RequestFeeController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
@@ -28,7 +27,7 @@ class RequestFeeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
     }
 
     /**

@@ -125,6 +125,7 @@ class DocumentReqRequest extends FormRequest
         $customAttributes['cert_service_record_count'] = 'Service Record/Statement of Service Certification';
         $customAttributes['photocopy_count'] = 'Photocopying and Authentication';
         $customAttributes['signature_image'] = 'Signature';
+
         return $customAttributes;
     }
 }

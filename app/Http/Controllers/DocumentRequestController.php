@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DocumentRequest;
+use App\Http\Requests\DocumentReqRequest;
 use Illuminate\Http\Request;
 
 class DocumentRequestController extends Controller
@@ -12,7 +13,8 @@ class DocumentRequestController extends Controller
      */
     public function index()
     {
-        //
+        $requestDoc = DocumentRequest::all();
+        return view('requestDoc.index', compact('requestDoc'));
     }
 
     /**
@@ -20,15 +22,19 @@ class DocumentRequestController extends Controller
      */
     public function create()
     {
-        //
+        return view('requestDoc.create_request');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(DocumentReqRequest $request)
     {
-        //
+        $validatedData = $request->validated();
+
+        DocumentRequest::create($validatedData);
+
+        return redirect()->route('requestDoc.index');
     }
 
     /**
@@ -36,15 +42,15 @@ class DocumentRequestController extends Controller
      */
     public function show(DocumentRequest $documentRequest)
     {
-        //
+        // The record is already fetched; just pass it to your blade template
+        return view('requestDoc.track_request', compact('documentRequest'));
     }
-
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(DocumentRequest $documentRequest)
     {
-        //
+        return view('requestDoc.edit_request', compact('documentRequest'));
     }
 
     /**
@@ -52,7 +58,11 @@ class DocumentRequestController extends Controller
      */
     public function update(Request $request, DocumentRequest $documentRequest)
     {
-        //
+        $validatedData = $request->validated();
+
+        DocumentRequest::create($validatedData);
+
+        return redirect()->route('requestDoc.index');
     }
 
     /**
@@ -60,6 +70,7 @@ class DocumentRequestController extends Controller
      */
     public function destroy(DocumentRequest $documentRequest)
     {
-        //
+        DocumentRequest::destroy($documentRequest->id);
+        return redirect()->route('requestDoc.index');
     }
 }
