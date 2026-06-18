@@ -25,7 +25,9 @@ return new class extends Migration
             $table->string('recipient_name');
             $table->text('recipient_address');
             $table->integer('recipient_contact_number');
-            $table->timestamps();
+
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
     }
 

@@ -17,25 +17,19 @@ return new class extends Migration
             ->onUpdate('cascade');
 
             $table->foreignId('item_id')
-            ->constrained('document_types', 'id')
+            ->constrained('document_types', 'document_type_id')
             ->onUpdate('cascade');
 
-            $table->integer('diploma_count')->nullable();
-            $table->integer('transcript_count')->nullable();
-            $table->integer('cert_cadet_count')->nullable();
-            $table->integer('cert_graduate_count')->nullable();
-            $table->integer('cert_authenticity_count')->nullable();
-            $table->integer('cert_course_desc_count')->nullable();
-            $table->integer('cert_latin_honors_count')->nullable();
-            $table->integer('cert_good_moral_count')->nullable();
-            $table->integer('cert_ranking_gpa_count')->nullable();
-            $table->integer('cert_honorable_dismissal_count')->nullable();
-            $table->integer('cert_instruction_medium_count')->nullable();
-            $table->integer('cert_transfer_credentials_count')->nullable();
-            $table->integer('cert_service_record_count')->nullable();
-            $table->integer('photocopy_count')->nullable();
+            $table->integer('quantity')->default(0);
 
-            $table->timestamps();
+            $table->decimal('fee', 10, 2)->default(0);
+
+            $table->decimal('total_fee', 10, 2)->default(0);
+
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
+
+            $table->primary(['request_id', 'item_id']);
         });
     }
 

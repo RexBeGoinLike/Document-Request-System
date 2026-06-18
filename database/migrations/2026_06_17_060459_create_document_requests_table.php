@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('document_requests', function (Blueprint $table) {
             $table->id('request_id');
             $table->string('status')->default('pending');
-            $table->timestamps();
             $table->string('requester_name');
             $table->string('cadet_serial_number');
             $table->string('original_class');
@@ -26,6 +25,8 @@ return new class extends Migration
             $table->string('representative_office')->nullable();
             $table->integer('representative_contact')->nullable();
             $table->string('signature_image');
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
     }
 

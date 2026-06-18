@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('document_types', function (Blueprint $table) {
-            $table->id();
+            $table->id('document_type_id');
             $table->string('document_type');
             $table->decimal('document_fee');
-            $table->timestamps();
+            $table->string('document_classification');
         });
     }
 
