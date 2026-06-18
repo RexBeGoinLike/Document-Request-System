@@ -14,10 +14,14 @@ return new class extends Migration
         Schema::create('delivery_details', function (Blueprint $table) {
             $table->id('delivery_detail_id');
             $table->foreignId('request_id')
-                ->constrained('document_requests', 'request_id');
+                ->constrained('document_requests', 'request_id')
+                ->onUpdate('cascade');
+
             $table->foreignId('user_id')
                 ->nullable()
-                ->constrained('users', 'user_id');
+                ->constrained('users', 'user_id')
+                ->onUpdate('cascade');
+
             $table->string('recipient_name');
             $table->text('recipient_address');
             $table->integer('recipient_contact_number');

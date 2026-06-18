@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 #[Fillable(['requester_name',
     'cadet_serial_number',
     'original_class',
@@ -31,5 +33,12 @@ use Illuminate\Database\Eloquent\Model;
 ])]
 class DocumentRequest extends Model
 {
-    //
+    use SoftDeletes;
+
+    use SoftDeletes;
+    protected $primaryKey = 'request_id';
+
+    protected $casts = [
+        'for_mailing' => 'boolean',
+    ];
 }

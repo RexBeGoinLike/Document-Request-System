@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('RequestFees', function (Blueprint $table) {
             $table->foreignId('request_id')
-                ->constrained('document_requests', 'request_id');
+                ->constrained('document_requests', 'request_id')
+                ->onUpdate('cascade');
 
             $table->integer('diploma_total_price')->nullable();
             $table->integer('transcript_total_price')->nullable();
