@@ -1,15 +1,18 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
+namespace Database\Seeders;
 
-return new class extends Migration
+use App\Models\DocumentType;
+use Illuminate\Database\Seeder;
+
+class DocumentTypeSeeder extends Seeder
 {
     /**
-     * Run the migrations.
+     * Run the database seeds.
      */
-    public function up(): void
+    public function run(): void
     {
-        DB::table('document_types')->insertOrIgnore([
+        $document_types = [
             ['document_type' => 'Diploma', 'document_fee' => 350, 'document_classification' => 'others'],
             ['document_type' => 'Transcript of Records', 'document_fee' => 50, 'document_classification' => 'others'],
             ['document_type' => 'As Cadet', 'document_fee' => 50, 'document_classification' => 'certification'],
@@ -24,15 +27,9 @@ return new class extends Migration
             ['document_type' => 'Transfer Credentials', 'document_fee' => 50, 'document_classification' => 'certification'],
             ['document_type' => 'Service Records/Statement of Service', 'document_fee' => 50, 'document_classification' => 'certification'],
             ['document_type' => 'Photocopying & Authentication', 'document_fee' => 50, 'document_classification' => 'others'],
-            ['document_type' => 'Mailing', 'document_fee' => 200, 'document_classification' => 'mailing'],
-        ]);
-    }
+            ['document_type' => 'Mailing', 'document_fee' => 200, 'document_classification' => 'mailing']
+        ];
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        //
+        DocumentType::upsert($document_types, ['document_type'], ['document_fee', 'document_classification']);
     }
-};
+}
