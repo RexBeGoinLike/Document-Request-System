@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('document_requests', function (Blueprint $table) {
             $table->id('request_id');
+            $table->foreignId('user_id')
+                ->nullable()
+                ->constrained('users', 'user_id')
+                ->onUpdate('cascade');
+
             $table->string('status')->default('pending');
             $table->string('requester_name');
             $table->string('cadet_serial_number');
@@ -27,6 +32,7 @@ return new class extends Migration
             $table->string('signature_image');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
+            $table->softDeletes();
         });
     }
 

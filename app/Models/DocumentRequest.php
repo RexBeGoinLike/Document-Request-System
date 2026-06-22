@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable(['requester_name',
@@ -41,4 +42,12 @@ class DocumentRequest extends Model
     protected $casts = [
         'for_mailing' => 'boolean',
     ];
+
+    public function requestQuantity(): HasMany {
+        return $this->hasMany(RequestQuantity::class, 'request_id', 'request_id');
+    }
+
+    public function systemLog(): HasMany {
+        return $this->hasMany(SystemLog::class, 'request_id', 'request_id');
+    }
 }

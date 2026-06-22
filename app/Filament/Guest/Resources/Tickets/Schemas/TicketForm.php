@@ -45,31 +45,7 @@ class TicketForm
                                 ->autocapitalize('characters')
                                 ->required(),
                         ])->columns(3)
-                    ]),
-                    Wizard\Step::make('Type of Document/s')
-                        ->icon('heroicon-o-document-text')
-                        ->schema([
-                            Repeater::make('items')
-                                ->relationship('items')
-                                ->schema([
-                                    Grid::make([])
-                                ])
-                                ->addable(false)
-                                ->deletable(false)
-                                ->reorderable(false)
-
-                                // --- ADD THIS VALIDATION BLOCK ---
-                                ->rules([
-                                    fn (): Closure => function (string $attribute, $value, Closure $fail) {
-                                        // Check if any row in the repeater has 'is_checked' set to true
-                                        $hasSelection = collect($value)->some(fn ($item) => !empty($item['is_checked']));
-
-                                        if (!$hasSelection) {
-                                            $fail('You must select at least one item to submit the request.');
-                                        }
-                                    },
-                                ])
-                        ]),
+                    ])
                 ])->columnSpanFull()
             ]);
     }

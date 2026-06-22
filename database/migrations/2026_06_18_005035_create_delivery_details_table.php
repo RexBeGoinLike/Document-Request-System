@@ -26,6 +26,8 @@ return new class extends Migration
             $table->text('recipient_address');
             $table->integer('recipient_contact_number');
 
+            $table->string('tracking_number')->nullable();
+
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });

@@ -16,7 +16,7 @@ return new class extends Migration
             ->constrained('document_requests', 'request_id')
             ->onUpdate('cascade');
 
-            $table->foreignId('item_id')
+            $table->foreignId('document_type_id')
             ->constrained('document_types', 'document_type_id')
             ->onUpdate('cascade');
 
@@ -29,7 +29,7 @@ return new class extends Migration
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
 
-            $table->primary(['request_id', 'item_id']);
+            $table->primary(['request_id', 'document_type_id']);
         });
     }
 
