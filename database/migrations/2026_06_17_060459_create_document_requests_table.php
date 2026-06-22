@@ -19,11 +19,18 @@ return new class extends Migration
                 ->onUpdate('cascade');
 
             $table->string('status')->default('pending');
-            $table->string('requester_name');
+            $table->string('requester_first_name');
+            $table->string('requester_last_name');
+            $table->string('requester_middle_name')->nullable();
+            $table->string('requester_suffix')->nullable();
             $table->string('cadet_serial_number');
             $table->string('original_class');
             $table->integer('contact_number');
-            $table->string('address');
+            $table->string('street_address');
+            $table->string('region');
+            $table->string('city');
+            $table->string('barangay');
+            $table->integer('zip_code');
             $table->boolean('for_mailing');
             $table->text('others')->nullable();
             $table->string('representative_name')->nullable();

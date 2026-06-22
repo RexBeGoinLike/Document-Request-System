@@ -45,7 +45,14 @@ class TicketForm
                                 ->autocapitalize('characters')
                                 ->required(),
                         ])->columns(3)
-                    ])
+                    ]),
+                    Wizard\Step::make('Type of Document/s')
+                        ->icon('heroicon-o-academic-cap')
+                        ->schema([
+                            Section::make()->schema([
+
+                            ])->columns(3)
+                        ])
                 ])->columnSpanFull()
             ]);
     }

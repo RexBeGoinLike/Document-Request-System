@@ -22,11 +22,19 @@ return new class extends Migration
                 ->constrained('users', 'user_id')
                 ->onUpdate('cascade');
 
-            $table->string('recipient_name');
-            $table->text('recipient_address');
+            $table->string('recipient_first_name');
+            $table->string('recipient_last_name');
+            $table->string('recipient_middle_name')->nullable();
+            $table->string('recipient_suffix')->nullable();
+            $table->text('street_address');
+            $table->string('region');
+            $table->string('city');
+            $table->string('barangay');
+            $table->integer('zip_code');
             $table->integer('recipient_contact_number');
 
             $table->string('tracking_number')->nullable();
+            $table->string('courier_name')->nullable();
 
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();

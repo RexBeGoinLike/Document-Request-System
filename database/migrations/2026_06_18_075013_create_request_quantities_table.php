@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('request_quantities', function (Blueprint $table) {
+            $table->id("request_quantity_id");
             $table->foreignId('request_id')
             ->constrained('document_requests', 'request_id')
             ->onUpdate('cascade');
@@ -25,11 +26,6 @@ return new class extends Migration
             $table->decimal('fee', 10, 2)->default(0);
 
             $table->decimal('total_fee', 10, 2)->default(0);
-
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
-
-            $table->primary(['request_id', 'document_type_id']);
         });
     }
 
