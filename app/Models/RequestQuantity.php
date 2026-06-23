@@ -15,7 +15,7 @@ class RequestQuantity extends Model
         return $this->belongsToMany(DocumentRequest::class, 'request_id', 'request_id');
     }
 
-    public Function documentType(): HasOne {
-        return $this->hasOne(DocumentType::class, 'document_type_id', 'document_type_id');
+    public Function documentType(): BelongsToMany {
+        return $this->BelongsToMany(DocumentType::class, 'document_type_id', 'document_type_id');
     }
 }

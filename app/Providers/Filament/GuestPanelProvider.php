@@ -51,6 +51,9 @@ class GuestPanelProvider extends PanelProvider
                 DispatchServingFilamentEvent::class,
             ])
             ->authMiddleware([
-            ])->globalSearch(false)->navigation(true);
+            ])
+            ->globalSearch(false)
+            ->navigation(false)
+            ->darkMode(false);
     }
 }

@@ -47,6 +47,7 @@ class DocumentRequest extends Model
         return $this->hasMany(RequestQuantity::class, 'request_id', 'request_id');
     }
 
+
     public function systemLog(): HasMany {
         return $this->hasMany(SystemLog::class, 'request_id', 'request_id');
     }

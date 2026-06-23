@@ -6,6 +6,7 @@ use App\Filament\Guest\Resources\Tickets\Pages\CreateTicket;
 use App\Filament\Guest\Resources\Tickets\Pages\EditTicket;
 use App\Filament\Guest\Resources\Tickets\Pages\ListTickets;
 use App\Filament\Guest\Resources\Tickets\Pages\ViewTicket;
+use App\Filament\Guest\Resources\Tickets\RelationManagers\RequestQuantityRelationManager;
 use App\Filament\Guest\Resources\Tickets\Schemas\TicketForm;
 use App\Filament\Guest\Resources\Tickets\Schemas\TicketInfolist;
 use App\Filament\Guest\Resources\Tickets\Tables\TicketsTable;
@@ -44,7 +45,6 @@ class TicketResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
         ];
     }
 
@@ -65,4 +65,5 @@ class TicketResource extends Resource
                 SoftDeletingScope::class,
             ]);
     }
+
 }
