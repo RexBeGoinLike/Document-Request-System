@@ -33,7 +33,10 @@ return new class extends Migration
             $table->integer('zip_code');
             $table->boolean('for_mailing');
             $table->text('others')->nullable();
-            $table->string('representative_name')->nullable();
+            $table->string('representative_first_name')->nullable();
+            $table->string('representative_last_name')->nullable();
+            $table->string('representative_middle_name')->nullable();
+            $table->string('representative_suffix')->nullable();
             $table->string('representative_office')->nullable();
             $table->integer('representative_contact')->nullable();
             $table->string('signature_image');

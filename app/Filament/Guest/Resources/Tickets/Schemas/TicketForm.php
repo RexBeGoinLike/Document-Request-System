@@ -34,117 +34,216 @@ class TicketForm
         return $schema
             ->components([
                 Wizard::make([
+                    //STEP 3
+
+                    Wizard\Step::make('Representative')
+                        ->icon('heroicon-o-user')
+                        ->schema([
+
+                            Section::make('Representative Information')
+                                ->schema([
+
+                                    Checkbox::make('self_collect')
+                                        ->dehydrated(false)
+                                        ->live()
+                                        ->label('I WILL PERSONALLY COLLECT THE DOCUMENT/S MYSELF')
+                                        ->columnSpan(12),
+
+                                    TextInput::make('representative_first_name')
+                                        ->label('First Name')
+                                        ->autocapitalize('words')
+                                        ->columnSpan([4])
+                                        ->required(fn (Get $get) : bool =>  $get('self_collect'))
+                                        ->disabled(fn (Get $get) : bool => ! $get('self_collect')),
+
+                                    TextInput::make('representative_last_name')
+                                        ->label('Last Name')
+                                        ->autocapitalize('words')
+                                        ->columnSpan([3])
+                                        ->required(fn (Get $get) : bool =>  $get('self_collect'))
+                                        ->disabled(fn (Get $get) : bool => ! $get('self_collect')),
+
+                                    TextInput::make('representative_middle_name')
+                                        ->label('Middle Name')
+                                        ->autocapitalize('words')
+                                        ->columnSpan([3])
+                                        ->required(fn (Get $get) : bool =>  $get('self_collect'))
+                                        ->disabled(fn (Get $get) : bool => ! $get('self_collect')),
+
+                                    TextInput::make('representative_suffix')
+                                        ->label('Suffix')
+                                        ->autocapitalize('words')
+                                        ->columnSpan([2])
+                                        ->disabled(fn (Get $get) : bool => ! $get('self_collect')),
+
+
+                                    TextInput::make('representative_office')
+                                        ->label('Office')
+                                        ->autocapitalize('words')
+                                        ->columnSpan([6])
+                                        ->required(fn (Get $get) : bool =>  $get('self_collect'))
+                                        ->disabled(fn (Get $get) : bool => ! $get('self_collect')),
+
+                                    TextInput::make('representative_contact')
+                                        ->label('Contact Number')
+                                        ->autocapitalize('words')
+                                        ->columnSpan([6])
+                                        ->required(fn (Get $get) : bool =>  $get('self_collect'))
+                                        ->disabled(fn (Get $get) : bool => ! $get('self_collect')),
+                                ])->columns(12)
+                        ]),
 
                     //STEP 2
                     Wizard\Step::make('Request for Document/s')
                         ->icon('heroicon-o-academic-cap')
                         ->schema([
-                            Grid::make(18)
+                            Grid::make(12)
                                 ->schema([
-                                    Repeater::make('Type of Document/s')
-                                    ->table([
-                                        TableColumn::make('Selected')->width('10%'),
-                                        TableColumn::make('Type')->width('60%'),
-                                        TableColumn::make('Fee')->width('30%'),
-                                        TableColumn::make('Quantity')->width('20%'),
-                                    ])
-                                        ->default(function () {
-                                            $documents = DocumentType::query()
+                                    Section::make('Type of Document/s')
+                                        ->schema(function () {
+                                            $documentsGroup = DocumentType::query()
                                                 ->whereNot('document_classification', 'mailing')
                                                 ->orderBy('document_classification',
                                                 'desc')
                                                 ->orderBy('document_type')
-                                                ->get();
+                                                ->get()
+                                                ->groupBy('document_classification');
 
-                                            $rows = [];
-                                            $currentCategory = null;
+                                            $sections = [];
 
-                                            foreach ($documents as $document) {
-                                                if ($currentCategory !== $document->document_classification) {
-                                                    $currentCategory = $document->document_classification;
+                                            foreach ($documentsGroup as $classification => $documents) {
+                                                   $sections[] = Repeater::make($classification)
+                                                        ->table([
+                                                            TableColumn::make('Selected')->width('10%')->hiddenHeaderLabel(),
+                                                            TableColumn::make('Type')->width('60%'),
+                                                            TableColumn::make('Fee')->width('30%'),
+                                                            TableColumn::make('Quantity')->width('20%'),
+                                                        ])
+                                                        ->default(
+                                                            $documents->map(fn ($document) => [
+                                                                'document_type_id' => $document->document_type_id,
+                                                                'document_type' => $document->document_type,
+                                                                'fee' => $document->document_fee,
+                                                                'selected' => false,
+                                                                'quantity' => 0,
+                                                            ])->toArray()
+                                                        )
+                                                        ->schema([
+                                                            Checkbox::make('selected')
+                                                                ->live()
+                                                                ->afterStateUpdated(function (string $state, Get $get, Set $set) {
+                                                                    $documentTypeId = $get('document_type_id');
 
-                                                    $rows[] = [
-                                                        'is_header' => true,
-                                                        'document_classifications' => strtoupper($currentCategory),
-                                                        'document_type_id' => null,
-                                                        'document_type' => '',
-                                                        'fee' => 0,
-                                                        'Selected' => false,
-                                                        'quantity' => 0,
-                                                    ];
-                                                }
+                                                                    $breakdown = collect($get('../../fee_breakdown') ?? [])
+                                                                        ->filter(fn ($item) => filled($item['document_type_id'] ?? null)) // drop empty placeholder rows
+                                                                        ->values();
 
-                                                $rows[] = [
-                                                    'is_header' => false,
-                                                    'document_type_id' => $document->id,
-                                                    'document_type' => $document->document_type,
-                                                    'fee' => $document->document_fee,
-                                                    'Selected' => false,
-                                                    'quantity' => 0,
-                                                ];
+                                                                    if ($state) {
+                                                                        $exists = $breakdown->contains('document_type_id', $documentTypeId);
+                                                                        $set('quantity', 1);
+                                                                        if (! $exists) {
+                                                                            $breakdown->push([
+                                                                                'document_type_id' => $documentTypeId,
+                                                                                'document_type' => $get('document_type'),
+                                                                                'total_fee' => $get('fee') * $get('quantity'),
+                                                                            ]);
+                                                                        }
+                                                                    } else {
+                                                                        $set('quantity', 0);
+                                                                        $breakdown = $breakdown->reject(
+                                                                            fn ($item) => $item['document_type_id'] === $documentTypeId
+                                                                        )->values();
+                                                                    }
+
+                                                                    $set('../../fee_breakdown', $breakdown->toArray());
+                                                                })
+                                                            ->dehydrated(false),
+
+                                                            TextEntry::make('document_type'),
+
+                                                            TextEntry::make('fee'),
+
+                                                            TextInput::make('quantity')
+                                                                ->numeric()
+                                                                ->disabled(fn (Get $get) => ! $get('selected'))
+                                                                ->live()
+                                                                ->afterStateUpdated(function (?string $state, Get $get, Set $set) {
+
+                                                                    logger('QTY DEBUG', [
+                                                                        'selected_raw' => $get('selected'),
+                                                                        'document_type_id' => $get('document_type_id'),
+                                                                        'state' => $state,
+                                                                    ]);
+
+                                                                    $documentTypeId = $get('document_type_id');
+
+                                                                    $breakdown = collect($get('../../fee_breakdown') ?? [])
+                                                                        ->filter(fn ($item) => filled($item['document_type_id'] ?? null))
+                                                                        ->values();
+
+
+                                                                    $breakdown = $breakdown->map(function ($item) use ($documentTypeId, $get, $state) {
+                                                                        if ($item['document_type_id'] === $documentTypeId) {
+                                                                            $item['total_fee'] = $get('fee') * (float) $state;
+                                                                        }
+
+                                                                        return $item;
+                                                                    })->values();
+
+                                                                    $set('../../fee_breakdown', $breakdown->toArray());
+                                                                }),
+
+                                                            Hidden::make('document_type_id')
+                                                        ])
+                                                        ->columns(4)
+                                                        ->addable(false)
+                                                        ->deletable(false)
+                                                        ->reorderable(false);
                                             }
 
-                                            return $rows;
+                                            return $sections;
                                         })
+                                    ->columns(1)
+                                    ->columnSpan([7]),
 
-                                    ->schema([
-
-                                        TextEntry::make('Category')
+                                    Group::make()
+                                        ->schema([
+                                            Section::make('Fee Breakdown')
+                                                ->schema([
+                                        Repeater::make('fee_breakdown')
+                                            ->relationship('requestQuantity')
                                             ->hiddenLabel()
-                                            ->label('Category')
-                                            ->default(fn (Get $get) => $get('document_classifications'))
-                                            ->columnSpanFull()
-                                            ->visible(fn (Get $get) => (bool) $get('is_header')),
+                                            ->table([
+                                                TableColumn::make('Type'),
+                                                TableColumn::make('Total Fee'),
+                                            ])
+                                            ->compact()
+                                            ->schema([
+                                                TextInput::make('document_type')->disabled(),
+                                                TextInput::make('total_fee')->disabled(),
+                                                Hidden::make('document_type_id'),
+                                                Hidden::make('fee'),
+                                                Hidden::make('quantity'),
+                                            ])
+                                            ->addable(false)
+                                            ->deletable(false)
+                                            ->reorderable(false),
 
-                                        Checkbox::make('Selected')
-                                            ->live()
-                                            ->columnSpan(2)
-                                            ->afterStateUpdated(function (bool $state, Set $set) {
-                                                if(!$state){
-                                                    $set('quantity', 0);
-                                                }else{
-                                                    $set('quantity', 1);
-                                                }
-                                            })->visible(fn (Get $get) => (bool) ! $get('is_header')),
+                                            TextEntry::make('total_fee')
+                                                ->label('Total Fee')
+                                                ->getStateUsing(function (Get $get) {
+                                                    $breakdown = collect($get('fee_breakdown') ?? [])
+                                                        ->filter(fn ($item) => filled($item['document_type_id'] ?? null))
+                                                        ->values();
 
-                                        TextInput::make('document_type')
-                                            ->disabled()
-                                            ->dehydrated()
-                                            ->visible(fn (Get $get) => ! (bool) $get('is_header')),
+                                                    return $breakdown->sum('total_fee');
+                                                })
+                                                ->suffix(' PHP')
+                                                ->disabled()
 
-                                        TextInput::make('fee')
-                                            ->label('fee')
-                                            ->disabled()
-                                            ->dehydrated()->visible(fn (Get $get) => ! (bool) $get('is_header')),
-
-                                        TextInput::make('quantity')
-                                            ->label('Quantity')
-                                            ->numeric()
-                                            ->disabled(fn (Get $get) : bool => !$get('Selected'))
-                                            ->required()->visible(fn (Get $get) => ! (bool) $get('is_header')),
-
-                                        TextInput::make('document_type_id')->hidden(),
-
-                                        TextEntry::make('Category')
-                                            ->hiddenLabel()
-                                            ->label('Category')
-                                            ->default(fn (Get $get) => $get('document_classifications'))
-                                            ->columnSpanFull()
-                                            ->visible(fn (Get $get) => (bool) $get('is_header')),
                                     ])
-                                    ->columns(10)
-                                    ->addable(false)
-                                    ->deletable(false)
-                                    ->reorderable(false)
-                                    ->columnSpan([11]),
-
-                                    Section::make('Fee Breakdown')
-                                    ->schema([
-
-
-                                    ])->columnSpan([7]),
-
-
+                                        ])
+                                        ->columnSpan([5]),
                                 ])
                         ]),
 
@@ -285,7 +384,6 @@ class TicketForm
 
                         ])->columnSpanFull(),
                     ]),
-
 
                     //END OF WIZARD
                 ])->columnSpanFull()

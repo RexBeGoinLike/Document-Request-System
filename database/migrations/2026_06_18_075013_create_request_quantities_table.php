@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('request_quantities', function (Blueprint $table) {
             $table->id("request_quantity_id");
+
             $table->foreignId('request_id')
             ->constrained('document_requests', 'request_id')
             ->onUpdate('cascade');
