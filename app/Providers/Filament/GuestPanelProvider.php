@@ -54,6 +54,7 @@ class GuestPanelProvider extends PanelProvider
             ])
             ->globalSearch(false)
             ->navigation(false)
-            ->darkMode(false);
+            ->darkMode(false)
+            ->topbar(false);
     }
 }

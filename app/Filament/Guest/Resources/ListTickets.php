@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Guest\Resources\Tickets\Pages;
+namespace App\Filament\Guest\Resources;
 
 use App\Filament\Guest\Resources\Tickets\TicketResource;
 use Filament\Actions\CreateAction;

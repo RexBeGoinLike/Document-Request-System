@@ -9,8 +9,6 @@ class CreateTicket extends CreateRecord
 {
     protected static string $resource = TicketResource::class;
 
-    public static bool $formActionsAreSticky = true;
-
     protected static bool $shouldRegisterNavigation = false;
 
     // 1. REMOVE BREADCRUMBS: Returns an empty list to kill the breadcrumb bar
@@ -23,6 +21,11 @@ class CreateTicket extends CreateRecord
     public function getHeading(): string
     {
         return '';
+    }
+
+    protected function getFormActions(): array
+    {
+        return [];
     }
 
     // 3. REMOVE SIDEBAR LINKS: Keeps this page from registering in the sidebar navigation

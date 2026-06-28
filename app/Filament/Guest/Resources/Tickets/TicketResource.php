@@ -2,9 +2,9 @@
 
 namespace App\Filament\Guest\Resources\Tickets;
 
+use App\Filament\Guest\Resources\ListTickets;
 use App\Filament\Guest\Resources\Tickets\Pages\CreateTicket;
 use App\Filament\Guest\Resources\Tickets\Pages\EditTicket;
-use App\Filament\Guest\Resources\Tickets\Pages\ListTickets;
 use App\Filament\Guest\Resources\Tickets\Pages\ViewTicket;
 use App\Filament\Guest\Resources\Tickets\RelationManagers\RequestQuantityRelationManager;
 use App\Filament\Guest\Resources\Tickets\Schemas\TicketForm;

@@ -1,0 +1,106 @@
+<?php
+
+namespace App\Filament\Guest\Resources\Tickets\Schemas\WizardSteps;
+
+use Filament\Forms\Components\Checkbox;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Wizard\Step;
+
+class CreateSummary
+{
+    public static function make(): Step{
+
+        return Step::make('summary_step')
+            ->label('Summary of Information')
+            ->schema([
+                Group::make()
+                    ->schema([
+                        Section::make('Requester\'s Information')
+                            ->description('Please review the information you entered')
+                            ->schema([
+                                TextEntry::make('s_requester_name')
+                                    ->label('Requester\'s Full Name')
+                                    ->columnSpanFull(),
+
+                                TextEntry::make('s_cadet_serial_number')
+                                    ->label('Serial Number')
+                                    ->columnSpan([4]),
+
+                                TextEntry::make('s_original_class')
+                                    ->label('Cadet Class')
+                                    ->columnSpan([4]),
+
+                                TextEntry::make('s_contact_number')
+                                    ->label('Contact Number')
+                                    ->columnSpan([4]),
+
+                                TextEntry::make('s_requester_address')
+                                    ->label('Requester\'s Full Address')
+                                    ->columnSpanFull(),
+                            ])
+                            ->columns(12)
+                            ->columnSpanFull(),
+
+                        Section::make('Representative Information')
+                            ->schema([
+                                Checkbox::make('s_rep_selected')
+                                    ->label('I WILL PERSONALLY COLLECT THE DOCUMENT/S MYSELF')
+                                    ->live()
+                                    ->dehydrated(false)
+                                    ->disabled()
+                                    ->visible(fn ($state) => $state)
+                                    ->columnSpanFull(),
+
+                                TextEntry::make('s_representative_full_name')
+                                    ->label('Representative\'s Full Name')
+                                    ->columnSpanFull()
+                                    ->visible(fn (Get $get) => ! $get('s_rep_selected')),
+
+
+                                TextEntry::make('s_representative_office')
+                                    ->label('Office')
+                                    ->columnSpan([7])
+                                    ->visible(fn (Get $get) => ! $get('s_rep_selected')),
+
+                                TextEntry::make('s_representative_contact')
+                                    ->label('Contact Number')
+                                    ->columnSpan([5])
+                                    ->visible(fn (Get $get) => ! $get('s_rep_selected')),
+                            ])
+                            ->columns(12)
+                            ->columnSpanFull(),
+
+                        Section::make('Mailing Information')
+                            ->schema([
+                                Checkbox::make('s_mailing_selected')
+                                    ->label('I WANT THE DOCUMENT/S TO BE MAILED TO ME')
+                                    ->disabled()
+                                    ->dehydrated(false)
+                                    ->columnSpanFull(),
+
+                                TextEntry::make('s_mailing_full_name')
+                                    ->label('Full Name')
+                                    ->columnSpan(6),
+
+                                TextEntry::make('s_mailing_contact')
+                                    ->label('Contact Number')
+                                    ->columnSpan(6),
+
+                                TextEntry::make('s_mailing_full_address')
+                                    ->label('Mailing Address')
+                                    ->columnSpanFull(),
+
+                            ])
+                            ->columns(12)
+                            ->columnSpanFull(),
+
+                    ])
+                    ->columns(12)
+                    ->columnSpan(5      )
+            ])
+            ->columns(12);
+    }
+}
