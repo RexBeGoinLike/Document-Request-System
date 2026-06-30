@@ -27,6 +27,10 @@ return new class extends Migration
             $table->decimal('fee', 10, 2)->default(0);
 
             $table->decimal('total_fee', 10, 2)->default(0);
+
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
+
         });
     }
 

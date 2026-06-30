@@ -20,33 +20,32 @@ class CreateRepresentativeInformation
                 Section::make('representative_information')
                     ->heading('Representative Information')
                     ->schema([
-
                         Checkbox::make('self_collect')
                             ->dehydrated(false)
                             ->live()
-                            ->label('I WILL PERSONALLY COLLECT THE DOCUMENT/S MYSELF')
+                            ->label('I WILL HAVE SOMEONE COLLECT THE DOCUMENT/S FOR ME')
                             ->columnSpan(12),
 
                         TextInput::make('representative_first_name')
                             ->label('First Name')
                             ->autocapitalize('words')
                             ->columnSpan([4])
-                            ->required(fn (Get $get) : bool => ! $get('self_collect'))
-                            ->disabled(fn (Get $get) : bool =>  $get('self_collect')),
+                            ->required(fn (Get $get) : bool => $get('self_collect'))
+                            ->disabled(fn (Get $get) : bool => !  $get('self_collect')),
 
                         TextInput::make('representative_last_name')
                             ->label('Last Name')
                             ->autocapitalize('words')
                             ->columnSpan([3])
-                            ->required(fn (Get $get) : bool => ! $get('self_collect'))
-                            ->disabled(fn (Get $get) : bool => $get('self_collect')),
+                            ->required(fn (Get $get) : bool => $get('self_collect'))
+                            ->disabled(fn (Get $get) : bool => ! $get('self_collect')),
 
                         TextInput::make('representative_middle_name')
                             ->label('Middle Name')
                             ->autocapitalize('words')
                             ->columnSpan([3])
-                            ->required(fn (Get $get) : bool => ! $get('self_collect'))
-                            ->disabled(fn (Get $get) : bool => $get('self_collect')),
+                            ->required(fn (Get $get) : bool => $get('self_collect'))
+                            ->disabled(fn (Get $get) : bool => ! $get('self_collect')),
 
                         TextInput::make('representative_suffix')
                             ->label('Suffix')
@@ -58,15 +57,15 @@ class CreateRepresentativeInformation
                             ->label('Office')
                             ->autocapitalize('words')
                             ->columnSpan([7])
-                            ->required(fn (Get $get) : bool => ! $get('self_collect'))
-                            ->disabled(fn (Get $get) : bool => $get('self_collect')),
+                            ->required(fn (Get $get) : bool => $get('self_collect'))
+                            ->disabled(fn (Get $get) : bool => ! $get('self_collect')),
 
                         TextInput::make('representative_contact')
                             ->label('Contact Number')
                             ->autocapitalize('words')
                             ->columnSpan([5])
-                            ->required(fn (Get $get) : bool => ! $get('self_collect'))
-                            ->disabled(fn (Get $get) : bool => $get('self_collect')),
+                            ->required(fn (Get $get) : bool => $get('self_collect'))
+                            ->disabled(fn (Get $get) : bool => ! $get('self_collect')),
                     ])->columns(12)
             ]);
     }

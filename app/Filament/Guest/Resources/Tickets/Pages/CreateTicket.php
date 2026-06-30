@@ -3,10 +3,13 @@
 namespace App\Filament\Guest\Resources\Tickets\Pages;
 
 use App\Filament\Guest\Resources\Tickets\TicketResource;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Support\HtmlString;
 
 class CreateTicket extends CreateRecord
 {
+
     protected static string $resource = TicketResource::class;
 
     protected static bool $shouldRegisterNavigation = false;
@@ -32,5 +35,35 @@ class CreateTicket extends CreateRecord
     public static function shouldRegisterNavigation(array $parameters = []): bool
     {
         return false;
+    }
+
+    protected function afterCreate(): void
+    {
+        $record = $this->getRecord();
+
+        $this->replaceMountedAction('ticketCreated');
+    }
+
+    public function ticketCreatedAction(): Action
+    {
+        return Action::make('ticketCreated')
+            ->label('Ticket Created')
+            ->modalHeading('Request Pending')
+            ->modalContent(fn () => new HtmlString(
+                '<p class="text-center text-lg">Your Reference No. is: <strong>' . $this->getRecord()->request_id . '</strong></p>'
+            ))
+            ->modalSubmitActionLabel('Go to Portal')
+            ->action(function () {
+                $this->redirect(filament()->getPanel('guest')->getUrl());
+            })
+            ->modalCancelAction(false)
+            ->closeModalByClickingAway(false)
+            ->modalCloseButton(false)
+            ->closeModalByEscaping(false);
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        return "";
     }
 }

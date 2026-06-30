@@ -23,12 +23,11 @@ class CreateMailingInformation
             ->label('Mailing Information')
             ->schema([
                 Group::make()
-                    ->statePath('mailing_information')
-                    ->relationship('deliveryDetail')
+                    ->relationship('deliveryDetail', fn (Get $get): bool => (bool) $get('for_mailing'))
                     ->schema([
                         Checkbox::make('for_mailing')
-                            ->dehydrated(false)
                             ->live()
+                            ->dehydrated(false)
                             ->label('I WANT THE DOCUMENT/S TO BE MAILED TO ME')
                             ->columnSpanFull(),
 

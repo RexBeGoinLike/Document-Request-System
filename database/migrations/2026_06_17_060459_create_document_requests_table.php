@@ -1,5 +1,6 @@
 <?php
 
+use App\DocumentRequestStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,28 +19,27 @@ return new class extends Migration
                 ->constrained('users', 'user_id')
                 ->onUpdate('cascade');
 
-            $table->string('status')->default('pending');
+            $table->string('status')->default(DocumentRequestStatus::FOR_REVIEW->value);
             $table->string('requester_first_name');
             $table->string('requester_last_name');
             $table->string('requester_middle_name')->nullable();
             $table->string('requester_suffix')->nullable();
             $table->string('cadet_serial_number');
             $table->string('original_class');
-            $table->integer('contact_number');
+            $table->string('contact_number');
             $table->string('street_address');
             $table->string('region');
             $table->string('city');
             $table->string('barangay');
             $table->integer('zip_code');
-            $table->boolean('for_mailing');
             $table->text('others')->nullable();
             $table->string('representative_first_name')->nullable();
             $table->string('representative_last_name')->nullable();
             $table->string('representative_middle_name')->nullable();
             $table->string('representative_suffix')->nullable();
             $table->string('representative_office')->nullable();
-            $table->integer('representative_contact')->nullable();
-            $table->string('signature_image');
+            $table->string('representative_contact')->nullable();
+            $table->string('signature_image')->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
             $table->softDeletes();

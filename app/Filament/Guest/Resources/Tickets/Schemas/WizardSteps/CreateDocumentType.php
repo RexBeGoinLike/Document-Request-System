@@ -74,6 +74,8 @@ class CreateDocumentType
                                                                 'document_type_id' => $documentTypeId,
                                                                 'document_type' => $get('document_type'),
                                                                 'total_fee' => $get('fee') * $get('quantity'),
+                                                                'fee' => $get('fee'),
+                                                                'quantity' => $get('quantity'),
                                                             ]);
                                                         }
                                                     } else {

@@ -26,7 +26,9 @@ return new class extends Migration
                 ->nullable()
                 ->constrained('users', 'user_id')
                 ->onUpdate('cascade');
+
             $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
     }
 
