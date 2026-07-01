@@ -25,7 +25,7 @@ class DocumentRequestsTable
         return $table
             ->columns([
                 TextColumn::make('status')
-                    ->formatStateUsing(fn (string $state) => strtoupper($state)),
+                    ->formatStateUsing(fn (string $state) => str_replace('_', ' ', strtoupper($state))),
                 TextColumn::make('request_id')
                     ->label('Reference No.')
                     ->searchable(),

@@ -2,12 +2,21 @@
 
 namespace App\Filament\Processor\Resources\DocumentRequests\Schemas;
 
-use Filament\Forms\Components\Checkbox;
+
+use App\DocumentRequestStatus;
+use App\Models\DocumentType;
+use App\Models\RequestQuantity;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Group;
+use Filament\Infolists\Components\RepeatableEntry\TableColumn;
+use Tiptap\Nodes\Text;
 use Yajra\Address\Entities\Barangay;
 use Yajra\Address\Entities\City;
 use Yajra\Address\Entities\Province;
@@ -22,6 +31,60 @@ class DocumentRequestInfolist
                     ->schema([
                         Group::make()
                             ->schema([
+
+                                TextEntry::make('status')
+                                    ->label('Status')
+                                    ->columnSpan(4)
+                                    ->disabled()
+                                    ->formatStateUsing(fn ($state) => str_replace('_', ' ', strtoupper($state))),
+
+                                TextEntry::make('courier_name')
+                                    ->label('Courier Name')
+                                    ->columnSpan(4)
+                                    ->formatStateUsing(fn ($state) => !empty($state) ? $state : 'N/A'),
+
+                                TextEntry::make('tracking_number')
+                                    ->label('Tracking Number')
+                                    ->columnSpan(4)
+                                    ->formatStateUsing(fn ($state) => !empty($state) ? $state : 'N/A'),
+
+                            ])->columnSpanFull()->columns(12),
+
+                        Section::make('Fee Breakdown')
+                            ->schema([
+                                RepeatableEntry::make('requestQuantity')
+                                    ->hiddenLabel()
+                                    ->table([
+                                        TableColumn::make('Document Type')
+                                            ->width(60),
+
+                                        TableColumn::make('Quantity')
+                                            ->width(10),
+
+                                        TableColumn::make('Fee')
+                                            ->width(10),
+
+                                        TableColumn::make('Total Fee')
+                                            ->width(20),
+                                    ])
+                                    ->schema([
+                                        TextEntry::make('documentType')
+                                            ->label('Document Type')
+                                            ->getStateUsing(function ($record) {
+                                                return
+                                                    DocumentType::where('document_type_id', $record->document_type_id)->first()->document_type;
+                                            })
+                                            ->columnSpanFull(),
+                                        TextEntry::make('quantity'),
+                                        TextEntry::make('fee'),
+                                        TextEntry::make('total_fee'),
+                                    ])
+                                    ->columnSpanFull(),
+                            ])
+                            ->columnSpanFull(),
+
+                        Group::make()
+                            ->schema([
                                 Section::make('Requester Information')
                                     ->schema([
                                         TextEntry::make('requester_name')
@@ -30,15 +93,15 @@ class DocumentRequestInfolist
                                                 return $record->requester_last_name
                                                     . ', ' . $record->requester_first_name
                                                     . ' ' . substr($record->requester_middle_name,0, 1) . '.';
-                                            })->columnSpanFull(),
+                                            })->columnSpan(4),
 
                                         TextEntry::make('cadet_serial_number')
                                             ->label('Serial Number')
-                                            ->columnSpan(6),
+                                            ->columnSpan(4),
 
                                         TextEntry::make('original_class')
                                             ->label('Original Class')
-                                            ->columnSpan(6),
+                                            ->columnSpan(4),
 
                                         TextEntry::make('address')
                                             ->label('Address')
@@ -52,7 +115,7 @@ class DocumentRequestInfolist
                                             })
                                     ])
                                     ->columns(12)
-                                    ->columnSpanFull(),
+                                    ->columnSpan(12),
 
                                 Section::make('Representative Information')
                                     ->schema([
@@ -81,7 +144,7 @@ class DocumentRequestInfolist
                                             ->visible(fn($record) => !empty($record->representative_last_name)),
                                     ])
                                     ->columns(12)
-                                    ->columnSpanFull(),
+                                    ->columnSpan(6),
 
                                 Section::make('Mailing Information')
                                     ->relationship('deliveryDetail')
@@ -97,12 +160,12 @@ class DocumentRequestInfolist
                                                 return $record->recipient_last_name
                                                     . ', ' . $record->recipient_first_name
                                                     . ' ' . substr($record->recipient_middle_name,0, 1) . '.';
-                                            })->columnSpan(6)
+                                            })->columnSpan(7)
                                             ->visible(fn($record) => !empty($record->recipient_first_name)),
 
                                         TextEntry::make('recipient_contact_number')
                                             ->label('Contact Number')
-                                            ->columnSpan(6)
+                                            ->columnSpan(5)
                                             ->visible(fn($record) => !empty($record->recipient_first_name)),
 
                                         TextEntry::make('address')
@@ -116,17 +179,18 @@ class DocumentRequestInfolist
                                                     ', ' . $record->zip_code;
                                             })
                                             ->visible(fn($record) => !empty($record->recipient_first_name)),
-
-
-
                                     ])
                                     ->columns(12)
-                                    ->columnSpanFull(),
+                                    ->columnSpan(6),
                             ])
-                            ->columnSpan(5  )
+                            ->columnSpanFull()
+                            ->columns(12),
+
+
+
                     ])
-                    ->columnSpanFull()
                     ->columns(12)
+                    ->columnSpanFull()
             ]);
     }
 }

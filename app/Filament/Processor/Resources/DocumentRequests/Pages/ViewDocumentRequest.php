@@ -10,6 +10,15 @@ class ViewDocumentRequest extends ViewRecord
 {
     protected static string $resource = DocumentRequestResource::class;
 
+    public function getBreadcrumbs(): array
+    {
+        return [];
+    }
+
+    public function getHeading(): string
+    {
+        return 'View Request';
+    }
     protected function getHeaderActions(): array
     {
         return [

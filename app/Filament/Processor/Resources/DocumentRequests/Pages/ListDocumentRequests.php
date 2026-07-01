@@ -9,6 +9,14 @@ use Filament\Resources\Pages\ListRecords;
 class ListDocumentRequests extends ListRecords
 {
     protected static string $resource = DocumentRequestResource::class;
+    public function getHeading(): string
+    {
+        return 'Manage Requests';
+    }
+    public function getBreadcrumbs(): array
+    {
+        return [];
+    }
 
     protected function getHeaderActions(): array
     {

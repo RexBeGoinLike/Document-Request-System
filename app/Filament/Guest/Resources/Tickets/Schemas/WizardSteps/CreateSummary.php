@@ -23,7 +23,6 @@ class CreateSummary
                     ->schema([
 
                         Section::make('Requester\'s Information')
-                            ->description('Please review the information you entered')
                             ->schema([
                                 TextEntry::make('s_requester_name')
                                     ->label('Requester\'s Full Name')
@@ -126,6 +125,7 @@ class CreateSummary
                     ->reorderable(false)
                     ->addable(false)
                     ->deletable(false)
+
             ])
             ->columns(12);
     }

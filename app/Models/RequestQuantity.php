@@ -8,7 +8,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-#[Fillable(['document_type_id'])]
+#[Fillable(['document_type_id',
+    'fee',
+    'quantity',
+    'total_fee',])]
 class RequestQuantity extends Model
 {
     protected $table = 'request_quantities';

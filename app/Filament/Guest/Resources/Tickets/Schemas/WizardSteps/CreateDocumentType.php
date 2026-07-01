@@ -163,7 +163,8 @@ class CreateDocumentType
                             ->hiddenLabel()
                             ->extraAttributes([
                                 'style' => 'max-height: 300px; overflow-y: auto;'
-                            ]),
+                            ])
+                            ->dehydrated(false),
 
                         Group::make()
                             ->schema([
@@ -175,7 +176,7 @@ class CreateDocumentType
                                             ->compact()
                                             ->schema([
                                                 TextInput::make('document_type')->disabled(),
-                                                TextInput::make('total_fee')->disabled(),
+                                                TextInput::make('total_fee')->disabled()->dehydrated(),
                                                 Hidden::make('document_type_id'),
                                                 Hidden::make('fee'),
                                                 Hidden::make('quantity'),
@@ -191,7 +192,7 @@ class CreateDocumentType
 
                                     ]),
 
-                                TextEntry::make('total_fee')
+                                TextEntry::make('total_fee_indicator')
                                     ->label('Total Fee')
                                     ->getStateUsing(function (Get $get) {
                                         $breakdown = collect($get('fee_breakdown') ?? [])

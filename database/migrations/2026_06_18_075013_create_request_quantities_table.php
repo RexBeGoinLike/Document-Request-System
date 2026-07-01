@@ -24,9 +24,9 @@ return new class extends Migration
 
             $table->integer('quantity')->default(0);
 
-            $table->decimal('fee', 10, 2)->default(0);
+            $table->double('fee', 10, 2)->default(0);
 
-            $table->decimal('total_fee', 10, 2)->default(0);
+            $table->double('total_fee', 10, 2)->default(0);
 
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();

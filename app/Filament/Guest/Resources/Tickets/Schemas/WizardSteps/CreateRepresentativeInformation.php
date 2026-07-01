@@ -51,7 +51,7 @@ class CreateRepresentativeInformation
                             ->label('Suffix')
                             ->autocapitalize('words')
                             ->columnSpan([2])
-                            ->disabled(fn (Get $get) : bool => $get('self_collect')),
+                            ->disabled(fn (Get $get) : bool => ! $get('self_collect')),
 
                         TextInput::make('representative_office')
                             ->label('Office')
