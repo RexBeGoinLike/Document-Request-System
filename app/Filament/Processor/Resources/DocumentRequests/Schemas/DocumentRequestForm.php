@@ -33,22 +33,34 @@ class DocumentRequestForm
             ->components([
                 Group::make()
                     ->schema([
-
                         Select::make('status')
                             ->label('Status')
                             ->columnSpan(4)
+                            ->live()
                             ->options(
                                 DocumentRequestStatus::class
                             )
                             ->required(),
 
-                        TextInput::make('courier_name')
-                            ->label('Courier Name')
-                            ->columnSpan(4),
+                        Group::make()
+                            ->relationship('deliveryDetail')
+                            ->schema([
+                                TextInput::make('courier_name')
+                                    ->label('Courier Name')
+                                    ->columnSpan(4)
+                                    ->visible(fn (Get $get): bool =>
+                                        $get('../status') === DocumentRequestStatus::FOR_DISPATCH
+                                        || $get('../status') === DocumentRequestStatus::DISPATCHED
+                                    || $get('../status') === DocumentRequestStatus::DELIVERED),
 
-                        TextInput::make('tracking_number')
-                            ->label('Tracking Number')
-                            ->columnSpan(4),
+                                TextInput::make('tracking_number')
+                                    ->label('Tracking Number')
+                                    ->columnSpan(4)
+                                    ->visible(fn (Get $get): bool =>
+                                        $get('../status') === DocumentRequestStatus::FOR_DISPATCH
+                                        || $get('../status') === DocumentRequestStatus::DISPATCHED
+                                        || $get('../status') === DocumentRequestStatus::DELIVERED),
+                                ])->columnSpan(8)->columns(8)
 
                     ])->columnSpanFull()->columns(12),
 

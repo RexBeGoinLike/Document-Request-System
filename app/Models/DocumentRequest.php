@@ -28,7 +28,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
     'representative_suffix',
     'representative_office',
     'representative_contact',
-    'signature_image',
+    'status',
 ])]
 class DocumentRequest extends Model
 {
