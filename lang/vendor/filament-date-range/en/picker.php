@@ -34,13 +34,4 @@ return [
     'validation' => [
         'both_required' => ':label requires both start and end dates.',
     ],
-    'days' => [
-        'Su', // Or 'S'
-        'Mo', // Or 'M'
-        'Tu', // Or 'T'
-        'We', // Or 'W'
-        'Th', // Or 'T'
-        'Fr', // Or 'F'
-        'Sa', // Or 'S'
-    ],
 ];

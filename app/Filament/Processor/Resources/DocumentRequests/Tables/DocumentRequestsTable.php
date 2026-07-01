@@ -10,6 +10,7 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\Hidden;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
@@ -30,15 +31,24 @@ class DocumentRequestsTable
                     ->searchable(),
                 TextColumn::make('requester_name')
                     ->label('Name')
-                    ->searchable()
                     ->getStateUsing(function ($record) {
                         return $record->requester_last_name
                             . ', ' . $record->requester_first_name
                             . ' ' . substr($record->requester_middle_name,0, 1) . '.';
+                    })
+                    ->searchable(query: function ($query, string $search) {
+                        $query->where(function ($q) use ($search) {
+                            $q->where('requester_first_name', 'like', "%{$search}%")
+                                ->orWhere('requester_middle_name', 'like', "%{$search}%")
+                                ->orWhere('requester_last_name', 'like', "%{$search}%")
+                                ->orWhere('requester_suffix', 'like', "%{$search}%");
+                        });
                     }),
                 TextColumn::make('cadet_serial_number')
                     ->label('Serial Number')
-                    ->searchable()
+                    ->searchable(),
+                TextColumn::make('created_at')
+                    ->label('Date')
 
             ])
             ->filters([

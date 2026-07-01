@@ -39,7 +39,6 @@ return new class extends Migration
             $table->string('representative_suffix')->nullable();
             $table->string('representative_office')->nullable();
             $table->string('representative_contact')->nullable();
-            $table->string('signature_image')->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
             $table->softDeletes();

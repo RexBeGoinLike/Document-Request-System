@@ -23,7 +23,7 @@ class CreateMailingInformation
             ->label('Mailing Information')
             ->schema([
                 Group::make()
-                    ->relationship('deliveryDetail', fn (Get $get): bool => (bool) $get('for_mailing'))
+                    ->relationship('deliveryDetail', condition: fn (?array $state): bool => (bool) ($state['for_mailing'] ?? false))
                     ->schema([
                         Checkbox::make('for_mailing')
                             ->live()

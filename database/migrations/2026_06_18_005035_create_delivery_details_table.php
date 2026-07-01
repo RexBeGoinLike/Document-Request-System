@@ -31,7 +31,7 @@ return new class extends Migration
             $table->string('city');
             $table->string('barangay');
             $table->integer('zip_code');
-            $table->integer('recipient_contact_number');
+            $table->string('recipient_contact_number');
 
             $table->string('tracking_number')->nullable();
             $table->string('courier_name')->nullable();
