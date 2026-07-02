@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\DocumentRequestStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -39,6 +40,7 @@ class DocumentRequest extends Model
 
     protected $casts = [
         'for_mailing' => 'boolean',
+        'status'      =>  DocumentRequestStatus::class,
     ];
 
     public function requestQuantity(): HasMany {

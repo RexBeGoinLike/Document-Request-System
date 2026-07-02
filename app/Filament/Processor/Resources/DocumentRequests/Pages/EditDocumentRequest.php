@@ -12,6 +12,8 @@ use Filament\Resources\Pages\EditRecord;
 class EditDocumentRequest extends EditRecord
 {
     protected static string $resource = DocumentRequestResource::class;
+
+    public static bool $formActionsAreSticky = true;
     public function getHeading(): string
     {
         return 'Edit Request';

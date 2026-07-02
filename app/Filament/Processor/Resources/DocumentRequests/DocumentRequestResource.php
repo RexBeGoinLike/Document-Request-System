@@ -7,7 +7,7 @@ use App\Filament\Processor\Resources\DocumentRequests\Pages\EditDocumentRequest;
 use App\Filament\Processor\Resources\DocumentRequests\Pages\ListDocumentRequests;
 use App\Filament\Processor\Resources\DocumentRequests\Pages\ViewDocumentRequest;
 use App\Filament\Processor\Resources\DocumentRequests\Schemas\DocumentRequestForm;
-use App\Filament\Processor\Resources\DocumentRequests\Schemas\DocumentRequestInfolist;
+use App\Filament\Processor\Resources\DocumentRequests\Tables\DocumentRequestInfolist;
 use App\Filament\Processor\Resources\DocumentRequests\Tables\DocumentRequestsTable;
 use App\Models\DocumentRequest;
 use BackedEnum;

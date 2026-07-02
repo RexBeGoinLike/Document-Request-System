@@ -25,43 +25,48 @@ class CreateMailingInformation
                 Group::make()
                     ->relationship('deliveryDetail', condition: fn (?array $state): bool => (bool) ($state['for_mailing'] ?? false))
                     ->schema([
-                        Checkbox::make('for_mailing')
-                            ->live()
-                            ->dehydrated(false)
-                            ->label('I WANT THE DOCUMENT/S TO BE MAILED TO ME')
-                            ->columnSpanFull(),
-
-                        Checkbox::make('use_details')
-                            ->dehydrated(false)
-                            ->live()
-                            ->label('Use Requester\'s Information')
-                            ->disabled(fn (Get $get) : bool => ! $get('for_mailing'))
-                            ->afterStateUpdated(function (bool $state, Get $get, Set $set)
-                            {
-                                if($state){
-                                    $set('recipient_first_name', $get('../requester_first_name'));
-                                    $set('recipient_last_name', $get('../requester_last_name'));
-                                    $set('recipient_middle_name', $get('../requester_middle_name'));
-                                    $set('recipient_suffix', $get('../requester_suffix'));
-                                    $set('street_address', $get('../street_address'));
-                                    $set('region', $get('../region'));
-                                    $set('city', $get('../city'));
-                                    $set('barangay', $get('../barangay'));
-                                    $set('zip_code', $get('../zip_code'));
-                                    $set('recipient_contact_number', $get('../contact_number'));
-                                }else{
-                                    $set('recipient_first_name', null);
-                                    $set('recipient_last_name', null);
-                                    $set('recipient_middle_name', null);
-                                    $set('recipient_suffix', null);
-                                    $set('street_address', null);
-                                    $set('region', null);
-                                    $set('city', null);
-                                    $set('barangay', null);
-                                    $set('zip_code', null);
-                                    $set('recipient_contact_number', null);
-                                }
-                            })
+                        Section::make('Mailing')
+                            ->schema([
+                                Checkbox::make('for_mailing')
+                                    ->live()
+                                    ->dehydrated(false)
+                                    ->label('I WANT THE DOCUMENT/S TO BE MAILED TO ME (PHP 200 Delivery Fee)')
+                                    ->columnSpanFull(),
+                                Checkbox::make('use_details')
+                                    ->dehydrated(false)
+                                    ->live()
+                                    ->label('Use Requester\'s Information')
+                                    ->disabled(fn (Get $get) : bool => ! $get('for_mailing'))
+                                    ->afterStateUpdated(function (bool $state, Get $get, Set $set)
+                                    {
+                                        if($state){
+                                            $set('recipient_first_name', $get('../requester_first_name'));
+                                            $set('recipient_last_name', $get('../requester_last_name'));
+                                            $set('recipient_middle_name', $get('../requester_middle_name'));
+                                            $set('recipient_suffix', $get('../requester_suffix'));
+                                            $set('street_address', $get('../street_address'));
+                                            $set('region', $get('../region'));
+                                            $set('city', $get('../city'));
+                                            $set('barangay', $get('../barangay'));
+                                            $set('zip_code', $get('../zip_code'));
+                                            $set('recipient_contact_number', $get('../contact_number'));
+                                        }else{
+                                            $set('recipient_first_name', null);
+                                            $set('recipient_last_name', null);
+                                            $set('recipient_middle_name', null);
+                                            $set('recipient_suffix', null);
+                                            $set('street_address', null);
+                                            $set('region', null);
+                                            $set('city', null);
+                                            $set('barangay', null);
+                                            $set('zip_code', null);
+                                            $set('recipient_contact_number', null);
+                                        }
+                                    })
+                                    ->visible(fn (Get $get) : bool => $get('for_mailing'))
+                                    ->columnSpanFull(),
+                            ])
+                            ->columns(12)
                             ->columnSpanFull(),
 
                         Section::make('Mailing Information')
@@ -105,6 +110,7 @@ class CreateMailingInformation
                                     })
                                     ->columnSpan([12]),
                             ])->columns(12)
+                            ->visible(fn (Get $get) : bool => $get('for_mailing'))
                             ->disabled(fn (Get $get) : bool => ! $get('for_mailing')),
 
                         Section::make('Mailing Address Information')
@@ -172,6 +178,7 @@ class CreateMailingInformation
                                     })
                                     ->columnSpan([4]),
                             ])->columns(12)
+                            ->visible(fn (Get $get) : bool => $get('for_mailing'))
                             ->disabled(fn (Get $get) : bool => ! $get('for_mailing')),
                     ])
             ]);

@@ -1,22 +1,16 @@
 <?php
 
-namespace App\Filament\Processor\Resources\DocumentRequests\Schemas;
+namespace App\Filament\Processor\Resources\DocumentRequests\Tables;
 
 
-use App\DocumentRequestStatus;
 use App\Models\DocumentType;
-use App\Models\RequestQuantity;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\RepeatableEntry;
-use Filament\Infolists\Components\TextEntry;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Utilities\Get;
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Group;
 use Filament\Infolists\Components\RepeatableEntry\TableColumn;
-use Tiptap\Nodes\Text;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+use Filament\Support\Enums\TextSize;
 use Yajra\Address\Entities\Barangay;
 use Yajra\Address\Entities\City;
 use Yajra\Address\Entities\Province;
@@ -33,10 +27,11 @@ class DocumentRequestInfolist
                             ->schema([
 
                                 TextEntry::make('status')
-                                    ->label('Status')
+                                    ->badge()
+                                    ->hiddenLabel()
                                     ->columnSpan(4)
-                                    ->disabled()
-                                    ->formatStateUsing(fn ($state) => str_replace('_', ' ', strtoupper($state))),
+                                    ->size( TextSize::Large)
+                                    ->disabled(),
 
                                 TextEntry::make('courier_name')
                                     ->label('Courier Name')
@@ -58,14 +53,14 @@ class DocumentRequestInfolist
                                         TableColumn::make('Document Type')
                                             ->width(60),
 
-                                        TableColumn::make('Quantity')
-                                            ->width(10),
-
                                         TableColumn::make('Fee')
-                                            ->width(10),
+                                            ->width(5),
+
+                                        TableColumn::make('Qty')
+                                            ->width(5),
 
                                         TableColumn::make('Total Fee')
-                                            ->width(20),
+                                            ->width(30),
                                     ])
                                     ->schema([
                                         TextEntry::make('documentType')
@@ -75,9 +70,16 @@ class DocumentRequestInfolist
                                                     DocumentType::where('document_type_id', $record->document_type_id)->first()->document_type;
                                             })
                                             ->columnSpanFull(),
-                                        TextEntry::make('quantity'),
-                                        TextEntry::make('fee'),
-                                        TextEntry::make('total_fee'),
+                                        TextEntry::make('fee')
+                                            ->prefix('PHP ')
+                                            ->alignRight(),
+
+                                        TextEntry::make('quantity')
+                                            ->alignRight(),
+
+                                        TextEntry::make('total_fee')
+                                            ->prefix('PHP ')
+                                            ->alignRight(),
                                     ])
                                     ->columnSpanFull(),
                             ])

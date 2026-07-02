@@ -19,30 +19,74 @@ class CreateSummary
         return Step::make('summary_step')
             ->label('Summary of Information')
             ->schema([
+                Section::make('Fee Breakdown')
+                    ->schema([
+                        TextEntry::make('s_fee_breakdown_doc')
+                            ->label('Document Fees')
+                            ->columnSpanFull()
+                            ->inlineLabel()
+                            ->prefix('PHP '),
+
+                        TextEntry::make('s_mailing_fee')
+                            ->label('Mailing Fee')
+                            ->prefix('PHP ')
+                            ->inlineLabel()
+                            ->columnSpanFull(),
+
+                        Repeater::make('s_fee_breakdown')
+                            ->hiddenLabel()
+                            ->table([
+                                TableColumn::make('Type')->width('40%'),
+                                TableColumn::make('Fee')->width('20%'),
+                                TableColumn::make('Quantity')->width('20%'),
+                                TableColumn::make('Total Fee')->width('20%')
+                            ])
+                            ->schema([
+                                TextEntry::make('document_type')
+                                ->label('Document Type'),
+                                TextEntry::make('fee'),
+                                TextEntry::make('quantity'),
+                                TextEntry::make('total_fee'),
+                                Hidden::make('document_type_id'),
+                            ])
+                            ->columnSpanFull()
+                            ->reorderable(false)
+                            ->addable(false)
+                            ->deletable(false),
+
+                        TextEntry::make('s_total_fee')
+                            ->label('Total Fee')
+                            ->prefix('PHP ')
+                            ->inlineLabel()
+                            ->columnSpanFull(),
+                    ])
+                    ->columnSpanFull(),
+
+
+
                 Group::make()
                     ->schema([
-
                         Section::make('Requester\'s Information')
                             ->schema([
                                 TextEntry::make('s_requester_name')
                                     ->label('Requester\'s Full Name')
-                                    ->columnSpanFull(),
+                                    ->columnSpan(4),
 
                                 TextEntry::make('s_cadet_serial_number')
                                     ->label('Serial Number')
-                                    ->columnSpan([4]),
+                                    ->columnSpan(4),
 
                                 TextEntry::make('s_original_class')
                                     ->label('Cadet Class')
-                                    ->columnSpan([4]),
+                                    ->columnSpan(4),
 
                                 TextEntry::make('s_contact_number')
                                     ->label('Contact Number')
-                                    ->columnSpan([4]),
+                                    ->columnSpan(4),
 
                                 TextEntry::make('s_requester_address')
                                     ->label('Requester\'s Full Address')
-                                    ->columnSpanFull(),
+                                    ->columnSpan(8),
                             ])
                             ->columns(12)
                             ->columnSpanFull(),
@@ -61,10 +105,9 @@ class CreateSummary
                                     ->columnSpanFull()
                                     ->visible(fn (Get $get) => $get('s_rep_selected')),
 
-
                                 TextEntry::make('s_representative_office')
                                     ->label('Office')
-                                    ->columnSpan([7])
+                                    ->columnSpan(7)
                                     ->visible(fn (Get $get) => $get('s_rep_selected')),
 
                                 TextEntry::make('s_representative_contact')
@@ -73,7 +116,7 @@ class CreateSummary
                                     ->visible(fn (Get $get) => $get('s_rep_selected')),
                             ])
                             ->columns(12)
-                            ->columnSpanFull(),
+                            ->columnSpan(6),
 
                         Section::make('Mailing Information')
                             ->schema([
@@ -100,31 +143,13 @@ class CreateSummary
 
                             ])
                             ->columns(12)
-                            ->columnSpanFull(),
+                            ->columnSpan(6),
 
                     ])
                     ->columns(12)
-                    ->columnSpan(5),
+                    ->columnSpanFull(),
 
-                Repeater::make('s_fee_breakdown')
-                    ->label('Fee Breakdown')
-                    ->table([
-                        TableColumn::make('Type')->width('40%'),
-                        TableColumn::make('Fee')->width('20%'),
-                        TableColumn::make('Quantity')->width('20%'),
-                        TableColumn::make('Total Fee')->width('20%')
-                    ])
-                    ->schema([
-                        TextEntry::make('document_type'),
-                        TextEntry::make('quantity'),
-                        TextEntry::make('fee'),
-                        TextEntry::make('total_fee'),
-                        Hidden::make('document_type_id'),
-                    ])
-                    ->columnSpan(7)
-                    ->reorderable(false)
-                    ->addable(false)
-                    ->deletable(false)
+
 
             ])
             ->columns(12);

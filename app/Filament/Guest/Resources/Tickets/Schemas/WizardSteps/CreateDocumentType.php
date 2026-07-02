@@ -91,7 +91,10 @@ class CreateDocumentType
 
                                             TextEntry::make('document_type'),
 
-                                            TextEntry::make('fee'),
+                                            TextEntry::make('fee')
+                                                ->alignRight()
+                                                ->numeric()
+                                                ->prefix('PHP '),
 
                                             TextInput::make('quantity')
                                                 ->numeric()
@@ -158,36 +161,43 @@ class CreateDocumentType
                                 return $sections;
                             })
                             ->columns(1)
-                            ->columnSpan([7])
+                            ->columnSpan(fn (Get $get) : int => filled($get('fee_breakdown')) ? 7 : 12)
                             ->compact()
                             ->hiddenLabel()
                             ->extraAttributes([
-                                'style' => 'max-height: 300px; overflow-y: auto;'
+                                'style' => 'max-height: 350px; overflow-y: auto;'
                             ])
                             ->dehydrated(false),
 
                         Group::make()
                             ->schema([
-                                Section::make('Fee Breakdown')
+                                Section::make('Summary of Requested Document\'s')
                                     ->schema([
                                         Repeater::make('fee_breakdown')
                                             ->relationship('requestQuantity')
                                             ->hiddenLabel()
+                                            ->default([])
                                             ->compact()
                                             ->schema([
-                                                TextInput::make('document_type')->disabled(),
-                                                TextInput::make('total_fee')->disabled()->dehydrated(),
+                                                TextEntry::make('type_quantity')
+                                                    ->hiddenLabel()
+                                                    ->getStateUsing(function (Get $get) {
+                                                        return $get('document_type') . ' x ' . $get('quantity');
+                                                    })
+                                                    ->columnSpanFull(),
+
+                                                Hidden::make('quantity'),
+                                                Hidden::make('document_type')->dehydrated(false),
+                                                Hidden::make('total_fee'),
+                                                Hidden::make('quantity'),
                                                 Hidden::make('document_type_id'),
                                                 Hidden::make('fee'),
-                                                Hidden::make('quantity'),
+
                                             ])
                                             ->addable(false)
                                             ->deletable(false)
                                             ->reorderable(false)
-                                            ->columns()
-                                            ->extraAttributes([
-                                                'style' => 'max-height: 150px; overflow-y: auto;display: block;'
-                                            ]),
+                                            ->columns(  2)
 
 
                                     ]),
@@ -201,11 +211,11 @@ class CreateDocumentType
 
                                         return $breakdown->sum('total_fee');
                                     })
-                                    ->suffix(' PHP')
+                                    ->prefix('PHP ')
                                     ->disabled()
                             ])
                             ->columnSpan(5)
-
+                            ->visible(fn (Get $get) => filled($get('fee_breakdown')))
                     ])
             ])
             ->afterValidation(function (Get $get) {

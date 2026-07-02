@@ -2,10 +2,12 @@
 
 namespace App;
 
+use Filament\Support\Contracts\HasColor;
+use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
 use Illuminate\Contracts\Support\Htmlable;
 
-enum DocumentRequestStatus : string implements HasLabel
+enum DocumentRequestStatus : string implements HasLabel, HasColor, HasIcon
 {
     case FOR_REVIEW = 'for_review';
     case APPROVED = 'approved';
@@ -19,7 +21,7 @@ enum DocumentRequestStatus : string implements HasLabel
     public function getLabel(): string|Htmlable|null
     {
        return match ($this) {
-           Self::FOR_REVIEW => 'FOR REVIEW',
+           self::FOR_REVIEW => 'FOR REVIEW',
            self::APPROVED => 'APPROVED',
            self::REJECTED => 'REJECTED',
            self::FOR_COLLECTION => 'FOR COLLECTION',
@@ -29,5 +31,34 @@ enum DocumentRequestStatus : string implements HasLabel
            self::DELIVERED => 'DELIVERED',
            default => null,
        };
+    }
+
+    public function getColor(): string|null
+    {
+        return match ($this) {
+            self::FOR_REVIEW => 'warning',
+            self::APPROVED => 'success',
+            self::REJECTED => 'danger',
+            self::FOR_COLLECTION => 'info',
+            self::COLLECTED => 'primary',
+            self::FOR_DISPATCH => 'warning',
+            self::DISPATCHED => 'primary',
+            self::DELIVERED => 'success',
+            default => null,
+        };
+    }
+
+    public function getIcon(): string|null
+    {
+        return match ($this) {
+            self::FOR_REVIEW => 'heroicon-o-clock',
+            self::APPROVED => 'heroicon-o-check-circle',
+            self::REJECTED => 'heroicon-o-x-circle',
+            self::FOR_COLLECTION => 'heroicon-o-information-circle',
+            self::COLLECTED => 'heroicon-o-shopping-cart',
+            self::FOR_DISPATCH => 'heroicon-o-truck',
+            self::DISPATCHED => 'heroicon-o-truck',
+            self::DELIVERED => 'heroicon-o-check-circle',
+        };
     }
 }

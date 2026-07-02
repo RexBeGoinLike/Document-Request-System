@@ -7,6 +7,7 @@ use App\Filament\Guest\Resources\Tickets\Schemas\WizardSteps\CreateMailingInform
 use App\Filament\Guest\Resources\Tickets\Schemas\WizardSteps\CreateRepresentativeInformation;
 use App\Filament\Guest\Resources\Tickets\Schemas\WizardSteps\CreateRequesterInformation;
 use App\Filament\Guest\Resources\Tickets\Schemas\WizardSteps\CreateSummary;
+use App\Models\DocumentType;
 use Filament\Schemas\Components\Wizard;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Components\Utilities\Get;
@@ -26,10 +27,9 @@ class TicketForm
         return $schema
             ->components([
                 Wizard::make([
+                    CreateDocumentType::make(),
 
                     CreateRequesterInformation::make(),
-
-                    CreateDocumentType::make(),
 
                     CreateRepresentativeInformation::make(),
 
@@ -63,7 +63,7 @@ class TicketForm
 
 
                                 //SELF COLLECTION
-                                $self_collect = $get('self_collect');
+                                $self_collect = $get('has_representative');
 
                                 if (! $self_collect) {
                                     $set('s_representative_full_name',
@@ -77,7 +77,6 @@ class TicketForm
                                 }else{
                                     $set('s_rep_selected', $self_collect);
                                 }
-
 
 
                                 $for_mailing = $get('deliveryDetail.for_mailing');
@@ -106,6 +105,14 @@ class TicketForm
 
                                 //FEE BREAKDANCE
                                 $set('s_fee_breakdown', $get('fee_breakdown'));
+
+                                $items = $get('fee_breakdown') ?? [];
+
+                                $total = collect($items)->sum('total_fee');
+
+                                $set('s_fee_breakdown_doc', $total);
+                                $set('s_mailing_fee', DocumentType::where('document_type_id', '15')->first()->document_fee);
+                                $set('s_total_fee', ($for_mailing) ? $total + 200 : $total);
                             }
                         ),
 

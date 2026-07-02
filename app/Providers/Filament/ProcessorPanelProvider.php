@@ -51,6 +51,7 @@ class ProcessorPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
+            ->navigation(false)
             ->globalSearch(false)
             ->login();
     }

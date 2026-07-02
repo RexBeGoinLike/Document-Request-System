@@ -12,15 +12,13 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Repeater\TableColumn;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\TextColumn;
-use NunoMaduro\Collision\Adapters\Phpunit\State;
-use Tiptap\Nodes\Text;
 use Yajra\Address\Entities\Barangay;
 use Yajra\Address\Entities\City;
 use Yajra\Address\Entities\Province;
@@ -33,9 +31,10 @@ class DocumentRequestForm
             ->components([
                 Group::make()
                     ->schema([
-                        Select::make('status')
+                        ToggleButtons::make('status')
+                            ->inline()
                             ->label('Status')
-                            ->columnSpan(4)
+                            ->columnSpanFull()
                             ->live()
                             ->options(
                                 DocumentRequestStatus::class
@@ -102,7 +101,6 @@ class DocumentRequestForm
                                     ->columnSpanFull(),
 
                                 TextInput::make('quantity')
-                                    ->label('Quantity')
                                     ->numeric()
                                     ->minValue(1)
                                     ->default(1)
@@ -115,7 +113,6 @@ class DocumentRequestForm
                                     ->required(),
 
                                 TextInput::make('fee')
-                                    ->label('Fee')
                                     ->disabled()
                                     ->dehydrated()
                                     ->numeric()

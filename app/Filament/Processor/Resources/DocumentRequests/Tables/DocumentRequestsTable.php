@@ -10,10 +10,13 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
+use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
@@ -25,10 +28,12 @@ class DocumentRequestsTable
         return $table
             ->columns([
                 TextColumn::make('status')
-                    ->formatStateUsing(fn (string $state) => str_replace('_', ' ', strtoupper($state))),
+                    ->badge(),
+
                 TextColumn::make('request_id')
                     ->label('Reference No.')
                     ->searchable(),
+
                 TextColumn::make('requester_name')
                     ->label('Name')
                     ->getStateUsing(function ($record) {
@@ -52,10 +57,21 @@ class DocumentRequestsTable
 
             ])
             ->filters([
-                SelectFilter::make('status')
-                ->options(
-                    DocumentRequestStatus::class
-                )->columnSpan(1),
+                Filter::make('status')
+                    ->schema([
+                        ToggleButtons::make('status')
+                            ->options(DocumentRequestStatus::class)
+                            ->inline()
+                    ])
+                    ->query(fn (Builder $query, array $data): Builder => $query->when(
+                        $data['status'],
+                        fn (Builder $query, $status) => $query->where('status', $status),
+                    ))
+                    ->indicateUsing(fn (array $data): ?string => $data['status']
+                        ? 'Status: ' . DocumentRequestStatus::from($data['status'])->getLabel()
+                        : null)
+                    ->columnSpanFull(),
+
                 DateRangeFilter::make('created_at')
                     ->label('Created Within')
                     ->columnSpan(2),
@@ -64,7 +80,7 @@ class DocumentRequestsTable
                 ViewAction::make(),
                 EditAction::make(),
             ])
-            ->filtersLayout(FiltersLayout::AboveContent)
+            ->filtersLayout(FiltersLayout::AboveContentCollapsible)
             ->filtersFormColumns(3)
             ->deferFilters(false)
             ->toolbarActions([
