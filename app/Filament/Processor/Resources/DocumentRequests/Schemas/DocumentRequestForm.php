@@ -6,14 +6,12 @@ use App\DocumentRequestStatus;
 use App\Filament\Guest\Resources\Tickets\Pages\CreateTicket;
 use App\Models\DocumentType;
 use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Repeater\TableColumn;
 use Filament\Forms\Components\ToggleButtons;
-use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
@@ -36,8 +34,25 @@ class DocumentRequestForm
                             ->label('Status')
                             ->columnSpanFull()
                             ->live()
-                            ->options(
-                                DocumentRequestStatus::class
+                            ->options(fn (Get $get) => collect(DocumentRequestStatus::cases())
+                                ->when($get('is_self_collection'), fn ($collection) => $collection
+                                    ->reject(fn ($case) => in_array($case, [
+                                        DocumentRequestStatus::FOR_COLLECTION,
+                                        DocumentRequestStatus::COLLECTED,
+                                    ])),
+                                    fn ($collection) => $collection->reject(fn ($case) => in_array($case, [
+                                        DocumentRequestStatus::FOR_DISPATCH,
+                                        DocumentRequestStatus::DISPATCHED,
+                                        DocumentRequestStatus::DELIVERED,
+                                    ]))
+                                )
+                                ->mapWithKeys(fn ($case) => [$case->value => $case->getLabel()])
+                            )
+                            ->icons(fn () => collect(DocumentRequestStatus::cases())
+                                ->mapWithKeys(fn ($case) => [$case->value => $case->getIcon()])
+                            )
+                            ->colors(fn () => collect(DocumentRequestStatus::cases())
+                                ->mapWithKeys(fn ($case) => [$case->value => $case->getColor()])
                             )
                             ->required(),
 
@@ -47,18 +62,20 @@ class DocumentRequestForm
                                 TextInput::make('courier_name')
                                     ->label('Courier Name')
                                     ->columnSpan(4)
-                                    ->visible(fn (Get $get): bool =>
-                                        $get('../status') === DocumentRequestStatus::FOR_DISPATCH
-                                        || $get('../status') === DocumentRequestStatus::DISPATCHED
-                                    || $get('../status') === DocumentRequestStatus::DELIVERED),
+                                    ->visible(fn (Get $get, $record): bool =>
+                                        $record?->status === DocumentRequestStatus::FOR_DISPATCH
+                                        ||  $record?->status === DocumentRequestStatus::DISPATCHED
+                                        ||  $record?->status === DocumentRequestStatus::DELIVERED
+                                        && $record?->deliveryDetail() !== null),
 
                                 TextInput::make('tracking_number')
                                     ->label('Tracking Number')
                                     ->columnSpan(4)
-                                    ->visible(fn (Get $get): bool =>
-                                        $get('../status') === DocumentRequestStatus::FOR_DISPATCH
-                                        || $get('../status') === DocumentRequestStatus::DISPATCHED
-                                        || $get('../status') === DocumentRequestStatus::DELIVERED),
+                                    ->visible(fn (Get $get, $record): bool =>
+                                        $record?->status === DocumentRequestStatus::FOR_DISPATCH
+                                        ||  $record?->status === DocumentRequestStatus::DISPATCHED
+                                        ||  $record?->status === DocumentRequestStatus::DELIVERED
+                                        && $get('../mailing')),
                                 ])->columnSpan(8)->columns(8)
 
                     ])->columnSpanFull()->columns(12),
@@ -238,55 +255,71 @@ class DocumentRequestForm
                                     ->label('I WILL HAVE SOMEONE COLLECT THE DOCUMENT/S FOR ME')
                                     ->formatStateUsing(fn (Get $get) => !empty($get('representative_last_name')))
                                     ->columnSpanFull()
-                                    ->live(),
+                                    ->live()
+                                    ->afterStateUpdated(
+                                        function ($state, Set $set) {
+                                                $set('representative_last_name', null);
+                                                $set('representative_first_name', null);
+                                                $set('representative_middle_name', null);
+                                                $set('representative_suffix', null);
+                                                $set('representative_office', null);
+                                                $set('representative_contact', null);
+                                        }
+                                    ),
 
                                 TextInput::make('representative_first_name')
                                     ->label('First Name')
                                     ->columnSpan(4)
                                     ->visible(fn (Get $get): bool => $get('has_representative'))
-                                    ->required(fn (Get $get): bool => $get('has_representative')),
+                                    ->required(fn (Get $get): bool => $get('has_representative'))
+                                    ->dehydrated(true),
 
                                 TextInput::make('representative_last_name')
                                     ->label('Last Name')
                                     ->columnSpan(4)
                                     ->visible(fn (Get $get): bool => $get('has_representative'))
-                                    ->required(fn (Get $get): bool => $get('has_representative')),
+                                    ->required(fn (Get $get): bool => $get('has_representative'))
+                                    ->dehydrated(),
 
                                 TextInput::make('representative_middle_name')
                                     ->label('Middle Name')
                                     ->columnSpan(2)
                                     ->visible(fn (Get $get): bool => $get('has_representative'))
-                                    ->required(fn (Get $get): bool => $get('has_representative')),
+                                    ->required(fn (Get $get): bool => $get('has_representative'))
+                                    ->dehydrated(),
 
                                 TextInput::make('representative_suffix')
                                     ->label('Suffix')
                                     ->columnSpan(2)
                                     ->visible(fn (Get $get): bool => $get('has_representative'))
-                                    ->required(fn (Get $get): bool => $get('has_representative')),
+                                    ->dehydrated(),
 
                                 TextInput::make('representative_office')
                                     ->label('Office')
                                     ->columnSpan(6)
                                     ->visible(fn (Get $get): bool => $get('has_representative'))
-                                    ->required(fn (Get $get): bool => $get('has_representative')),
+                                    ->required(fn (Get $get): bool => $get('has_representative'))
+                                    ->dehydrated(),
 
                                 TextInput::make('representative_contact')
                                     ->label('Contact Number')
                                     ->columnSpan(6)
                                     ->visible(fn (Get $get): bool => $get('has_representative'))
-                                    ->required(fn (Get $get): bool => $get('has_representative')),
+                                    ->required(fn (Get $get): bool => $get('has_representative'))
+                                    ->dehydrated(),
                             ])
                             ->columns(12)
                             ->columnSpanFull(),
 
                         Section::make('Mailing Information')
-                            ->relationship('deliveryDetail', condition: fn (?array $state): bool => (bool) ($state['for_mailing'] ?? false))
+                            ->relationship('deliveryDetail', condition: fn (?array $state): bool => (bool) $state['is_self_collection'])
                             ->schema([
-                                Checkbox::make('is_self_collection')
+                                    Checkbox::make('is_self_collection')
                                     ->label('I WANT THE DOCUMENT/S TO BE MAILED TO ME')
                                     ->columnSpanFull()
                                     ->live()
                                     ->formatStateUsing(fn (Get $get) => !empty($get('recipient_last_name')))
+
                                     ->visible(),
 
                                 TextInput::make('recipient_first_name')

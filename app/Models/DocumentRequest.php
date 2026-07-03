@@ -5,9 +5,15 @@ namespace App\Models;
 use App\DocumentRequestStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Relaticle\ActivityLog\Concerns\InteractsWithTimeline;
+use Relaticle\ActivityLog\Timeline\TimelineBuilder;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
 
 #[Fillable([
     'requester_first_name',
@@ -34,8 +40,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class DocumentRequest extends Model
 {
     use SoftDeletes;
+    use LogsActivity;
+    use InteractsWithTimeline;
 
-    use SoftDeletes;
     protected $primaryKey = 'request_id';
 
     protected $casts = [
@@ -43,15 +50,28 @@ class DocumentRequest extends Model
         'status'      =>  DocumentRequestStatus::class,
     ];
 
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->logFillable();
+    }
+
+
+    public function timeline(): TimelineBuilder
+    {
+        return TimelineBuilder::make($this)
+            ->fromActivityLog()
+            ->fromActivityLogOf(relations: ['requestQuantity', 'deliveryDetail']);
+    }
+
     public function requestQuantity(): HasMany {
         return $this->hasMany(RequestQuantity::class, 'request_id', 'request_id');
     }
 
-    public function deliveryDetail(): HasOne {
-        return $this->hasOne(DeliveryDetail::class, 'request_id', 'request_id');
+    public function processor(): BelongsTo {
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
 
-    public function systemLog(): HasMany {
-        return $this->hasMany(SystemLog::class, 'request_id', 'request_id');
+    public function deliveryDetail(): HasOne {
+        return $this->hasOne(DeliveryDetail::class, 'request_id', 'request_id');
     }
 }

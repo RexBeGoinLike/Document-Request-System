@@ -23,6 +23,13 @@ class DocumentRequestInfolist
             ->components([
                 Group::make()
                     ->schema([
+                        TextEntry::make('user_processor')
+                            ->label('Processor: ')
+                            ->getStateUsing(
+                                    fn ($record) => $record->processor?->name ?? 'Not Assigned'
+                            )
+                            ->inlineLabel()
+                            ->columnSpan(5),
                         Group::make()
                             ->schema([
 
@@ -33,14 +40,17 @@ class DocumentRequestInfolist
                                     ->size( TextSize::Large)
                                     ->disabled(),
 
+
                                 TextEntry::make('courier_name')
                                     ->label('Courier Name')
                                     ->columnSpan(4)
+                                    ->visible(fn($record) => !empty($record->deliveryDetail->courier_name))
                                     ->formatStateUsing(fn ($state) => !empty($state) ? $state : 'N/A'),
 
                                 TextEntry::make('tracking_number')
                                     ->label('Tracking Number')
                                     ->columnSpan(4)
+                                    ->visible(fn($record) => !empty($record->deliveryDetail->courier_name))
                                     ->formatStateUsing(fn ($state) => !empty($state) ? $state : 'N/A'),
 
                             ])->columnSpanFull()->columns(12),

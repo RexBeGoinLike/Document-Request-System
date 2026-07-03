@@ -32,7 +32,6 @@ return new class extends Migration
             $table->string('city');
             $table->string('barangay');
             $table->integer('zip_code');
-            $table->text('others')->nullable();
             $table->string('representative_first_name')->nullable();
             $table->string('representative_last_name')->nullable();
             $table->string('representative_middle_name')->nullable();

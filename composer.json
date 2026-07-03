@@ -11,6 +11,8 @@
         "filament/filament": "^5.6",
         "laravel/framework": "^13.8",
         "laravel/tinker": "^3.0",
+        "relaticle/activity-log": "^1.2",
+        "spatie/laravel-permission": "^8.1",
         "yajra/laravel-address": "^13.0"
     },
     "require-dev": {

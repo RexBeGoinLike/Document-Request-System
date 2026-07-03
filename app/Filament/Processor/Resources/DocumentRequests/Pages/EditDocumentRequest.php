@@ -18,6 +18,28 @@ class EditDocumentRequest extends EditRecord
     {
         return 'Edit Request';
     }
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        $raw = $this->form->getRawState();
+
+        foreach ([
+                     'representative_first_name',
+                     'representative_last_name',
+                     'representative_middle_name',
+                     'representative_suffix',
+                     'representative_office',
+                     'representative_contact',
+                 ] as $field) {
+            $data[$field] = $raw[$field] ?? null;
+        }
+
+        if (! $this->record->is_self_collection) {
+            $this->record->deliveryDetail()->delete();
+        }
+
+        return $data;
+    }
+
 
     public function getBreadcrumbs(): array
     {
@@ -33,4 +55,5 @@ class EditDocumentRequest extends EditRecord
             RestoreAction::make(),
         ];
     }
+
 }

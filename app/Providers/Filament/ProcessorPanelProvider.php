@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Processor\Pages\ActivityLogs;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -31,6 +32,7 @@ class ProcessorPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Processor/Resources'), for: 'App\Filament\Processor\Resources')
             ->discoverPages(in: app_path('Filament/Processor/Pages'), for: 'App\Filament\Processor\Pages')
             ->pages([
+                ActivityLogs::class
             ])
             ->discoverWidgets(in: app_path('Filament/Processor/Widgets'), for: 'App\Filament\Processor\Widgets')
             ->widgets([
@@ -51,7 +53,6 @@ class ProcessorPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->navigation(false)
             ->globalSearch(false)
             ->login();
     }
