@@ -15,11 +15,16 @@ class DocumentTypesTable
         return $table
             ->columns([
                 TextColumn::make('document_type')
+                    ->Label('Document Type')
                     ->searchable(),
                 TextColumn::make('document_fee')
+                    ->Label('Fee')
+                    ->prefix('PHP ')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('document_classification')
+                    ->Label('Group')
+                    ->formatStateUsing(fn ($state) => strtoupper($state))
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()

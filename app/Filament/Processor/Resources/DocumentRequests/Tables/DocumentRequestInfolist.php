@@ -33,9 +33,9 @@ class DocumentRequestInfolist
 
                         TextEntry::make('user_processor')
                             ->label('Processor: ')
-                            ->getStateUsing(
-                                    fn ($record) => $record->processor?->name ?? 'Not Assigned'
-                            )
+                            ->getStateUsing(fn ($record): string => $record?->processor->name ?? 'Not Assigned')
+                            ->badge()
+                            ->color(fn ($state): string => $state === 'Not Assigned' ? 'danger' : 'success')
                             ->inlineLabel()
                             ->columnSpan(5),
 

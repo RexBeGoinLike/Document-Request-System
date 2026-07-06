@@ -95,7 +95,6 @@ class DocumentRequestsTable
                                 'Assigned' => 'Assigned',
                                 'Not Assigned' => 'Not Assigned'
 
-
                             ])
                             ->grouped()
                             ->default(auth()->user()->role === 'admin' ? 'All' : 'Assigned')
@@ -121,11 +120,11 @@ class DocumentRequestsTable
                             return $query;
                         }
                     ))
-                    ->columnSpan(6),
+                    ->columnSpan(4),
 
                 DateRangeFilter::make('created_at')
                     ->label('Created Within')
-                    ->columnSpan(6),
+                    ->columnSpan(8),
             ])
             ->recordActions([
                 ViewAction::make(),
