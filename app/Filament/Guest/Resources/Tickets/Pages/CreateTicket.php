@@ -6,6 +6,7 @@ use App\Filament\Guest\Resources\Tickets\TicketResource;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\HtmlString;
+use Illuminate\Support\Str;
 
 class CreateTicket extends CreateRecord
 {
@@ -13,6 +14,13 @@ class CreateTicket extends CreateRecord
     protected static string $resource = TicketResource::class;
 
     protected static bool $shouldRegisterNavigation = false;
+
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        $data['reference_id'] = strtoupper(Str::random(11));
+
+        return $data;
+    }
 
     // 1. REMOVE BREADCRUMBS: Returns an empty list to kill the breadcrumb bar
     public function getBreadcrumbs(): array
@@ -50,7 +58,7 @@ class CreateTicket extends CreateRecord
             ->label('Ticket Created')
             ->modalHeading('Request Pending')
             ->modalContent(fn () => new HtmlString(
-                '<p class="text-center text-lg">Your Reference No. is: <strong>' . $this->getRecord()->request_id . '</strong></p>'
+                '<p class="text-center text-lg">Your Reference No. is: <strong>' . $this->getRecord()->reference_id . '</strong></p>'
             ))
             ->modalSubmitActionLabel('Go to Portal')
             ->action(function () {

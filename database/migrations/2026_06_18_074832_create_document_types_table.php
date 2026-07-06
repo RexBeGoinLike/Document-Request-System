@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('document_types', function (Blueprint $table) {
             $table->id('document_type_id');
-            $table->string('document_type')->unique();
-            $table->decimal('document_fee');
-            $table->string('document_classification');
+            $table->string('document_type', 50)->unique();
+            $table->decimal('document_fee', 10, 2);
+            $table->string('document_classification', 20);
 
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();

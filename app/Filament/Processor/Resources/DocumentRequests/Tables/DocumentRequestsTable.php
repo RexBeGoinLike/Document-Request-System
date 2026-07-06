@@ -30,7 +30,7 @@ class DocumentRequestsTable
                 TextColumn::make('status')
                     ->badge(),
 
-                TextColumn::make('request_id')
+                TextColumn::make('reference_id')
                     ->label('Reference No.')
                     ->searchable(),
 

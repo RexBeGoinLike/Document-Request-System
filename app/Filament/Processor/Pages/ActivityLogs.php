@@ -17,8 +17,15 @@ class ActivityLogs extends Page implements HasTable
     use InteractsWithTable;
     protected static ?int $navigationSort = 2;
 
+    protected static string|null|\BackedEnum $navigationIcon = 'heroicon-o-clock';
+
     protected string $view = 'filament.processor.pages.activity-logs';
     protected static ?string $navigationLabel = 'Activity Logs';
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()->role === 'admin';
+    }
 
     public function table(Table $table): Table
     {

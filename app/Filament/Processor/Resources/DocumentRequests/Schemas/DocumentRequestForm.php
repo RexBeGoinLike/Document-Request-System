@@ -3,7 +3,6 @@
 namespace App\Filament\Processor\Resources\DocumentRequests\Schemas;
 
 use App\DocumentRequestStatus;
-use App\Filament\Guest\Resources\Tickets\Pages\CreateTicket;
 use App\Models\DocumentType;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Hidden;
@@ -13,7 +12,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Repeater\TableColumn;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Schemas\Components\Group;
-use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Components\Utilities\Get;
@@ -22,6 +20,7 @@ use Filament\Schemas\Schema;
 use Yajra\Address\Entities\Barangay;
 use Yajra\Address\Entities\City;
 use Yajra\Address\Entities\Province;
+use App\Models\User;
 
 class DocumentRequestForm
 {
@@ -57,6 +56,17 @@ class DocumentRequestForm
                                 ->mapWithKeys(fn ($case) => [$case->value => $case->getColor()])
                             )
                             ->required(),
+
+                        Select::make('user_id')
+                            ->label('Processor')
+                            ->columnSpan(6)
+                            ->nullable()
+                            ->options(
+                                fn () => User::where('role', 'processor')->pluck('name', 'user_id')
+                            )
+                            ->hidden(fn () => auth()->user()->role !== 'admin')
+                            ->dehydrated(fn () => auth()->user()->role === 'admin')
+                            ->required(fn () => auth()->user()->role !== 'admin'),
 
                         Group::make()
                             ->relationship('deliveryDetail', condition: fn (?array $state): bool => (bool) ($state['is_mailing_mirror'] ?? false))

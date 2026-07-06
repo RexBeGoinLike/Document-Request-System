@@ -16,6 +16,8 @@ use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
 #[Fillable([
+    'reference_id',
+    'user_id',
     'requester_first_name',
     'requester_last_name',
     'requester_middle_name',

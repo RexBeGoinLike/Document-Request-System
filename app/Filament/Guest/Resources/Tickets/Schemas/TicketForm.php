@@ -63,9 +63,10 @@ class TicketForm
 
 
                                 //SELF COLLECTION
-                                $self_collect = $get('has_representative');
+                                $has_representative = $get('has_representative');
 
-                                if (! $self_collect) {
+                                if ($has_representative) {
+                                    $set('s_rep_selected', true);
                                     $set('s_representative_full_name',
                                         sprintf("%s, %s %s %s",
                                             $get('representative_last_name'),
@@ -75,7 +76,7 @@ class TicketForm
                                     $set('s_representative_office', $get('representative_office'));
                                     $set('s_representative_contact', $get('representative_contact'));
                                 }else{
-                                    $set('s_rep_selected', $self_collect);
+                                    $set('s_rep_selected', false);
                                 }
 
 
