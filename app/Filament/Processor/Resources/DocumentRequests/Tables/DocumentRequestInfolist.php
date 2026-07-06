@@ -9,6 +9,7 @@ use Filament\Infolists\Components\RepeatableEntry\TableColumn;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\TextSize;
 use Yajra\Address\Entities\Barangay;
@@ -134,7 +135,7 @@ class DocumentRequestInfolist
                                         TextEntry::make('has_representative')
                                             ->label('I WILL COLLECT THE DOCUMENTS MYSELF')
                                             ->columnSpanFull()
-                                            ->visible(fn($record) => empty($record->representative_last_name)),
+                                            ->visible(fn($record) => ! $record->has_representative),
 
                                         TextEntry::make('representative_name')
                                             ->label('Name')
@@ -143,54 +144,57 @@ class DocumentRequestInfolist
                                                     . ', ' . $record->representative_first_name
                                                     . ' ' . substr($record->representative_middle_name,0, 1) . '.';
                                             })->columnSpanFull()
-                                            ->visible(fn($record) => !empty($record->representative_last_name)),
+                                            ->visible(fn($record) => $record->has_representative),
 
                                         TextEntry::make('representative_office')
                                             ->label('Office')
                                             ->columnSpan(6)
-                                            ->visible(fn($record) => !empty($record->representative_last_name)),
+                                            ->visible(fn($record) => $record->has_representative),
 
                                         TextEntry::make('representative_contact')
                                             ->label('Office')
                                             ->columnSpan(6)
-                                            ->visible(fn($record) => !empty($record->representative_last_name)),
+                                            ->visible(fn($record) => $record->has_representative),
                                     ])
                                     ->columns(12)
                                     ->columnSpan(6),
 
                                 Section::make('Mailing Information')
-                                    ->relationship('deliveryDetail')
                                     ->schema([
-                                        TextEntry::make('is_self_collection')
+                                        TextEntry::make('is_mailing')
                                             ->label('I WILL BE PICKING UP THE DOCUMENT/S')
                                             ->columnSpanFull()
-                                            ->visible(fn($record) => empty($record->recipient_first_name)),
+                                            ->visible(fn ($record) => ! $record->is_mailing),
 
-                                        TextEntry::make('recipient_name')
-                                            ->label('Name')
-                                            ->getStateUsing(function ($record) {
-                                                return $record->recipient_last_name
-                                                    . ', ' . $record->recipient_first_name
-                                                    . ' ' . substr($record->recipient_middle_name,0, 1) . '.';
-                                            })->columnSpan(7)
-                                            ->visible(fn($record) => !empty($record->recipient_first_name)),
+                                        Group::make()
+                                            ->relationship('deliveryDetail')
+                                            ->schema([
+                                                TextEntry::make('recipient_name')
+                                                    ->label('Name')
+                                                    ->getStateUsing(function ($record) {
+                                                        return $record?->recipient_last_name
+                                                            . ', ' . $record?->recipient_first_name
+                                                            . ' ' . substr($record?->recipient_middle_name,0, 1) . '.';
+                                                    })->columnSpan(7)
+                                                    ->visible(fn (Get $get) => $get('is_mailing')),
 
-                                        TextEntry::make('recipient_contact_number')
-                                            ->label('Contact Number')
-                                            ->columnSpan(5)
-                                            ->visible(fn($record) => !empty($record->recipient_first_name)),
+                                                TextEntry::make('recipient_contact_number')
+                                                    ->label('Contact Number')
+                                                    ->columnSpan(5)
+                                                    ->visible(fn (Get $get) => $get('is_mailing')),
 
-                                        TextEntry::make('address')
-                                            ->label('Address')
-                                            ->columnSpanFull()
-                                            ->getStateUsing(function ($record) {
-                                                return $record->street_address .
-                                                    ', ' . Province::where('province_id', $record->region)->first()->name .
-                                                    ', ' . City::where('city_id', $record->city)?->first()->name .
-                                                    ', ' . Barangay::find($record->barangay)?->name .
-                                                    ', ' . $record->zip_code;
-                                            })
-                                            ->visible(fn($record) => !empty($record->recipient_first_name)),
+                                                TextEntry::make('address')
+                                                    ->label('Address')
+                                                    ->columnSpanFull()
+                                                    ->getStateUsing(function ($record) {
+                                                        return $record?->street_address .
+                                                            ', ' . Province::where('province_id', $record?->region)?->first()?->name .
+                                                            ', ' . City::where('city_id', $record?->city)?->first()?->name .
+                                                            ', ' . Barangay::find($record?->barangay)?->name .
+                                                            ', ' . $record?->zip_code;
+                                                    })
+                                            ])
+                                            ->visible(fn (Get $get) => $get('is_mailing')),
                                     ])
                                     ->columns(12)
                                     ->columnSpan(6),

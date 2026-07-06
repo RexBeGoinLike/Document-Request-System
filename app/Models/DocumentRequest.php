@@ -29,6 +29,8 @@ use Spatie\Activitylog\Support\LogOptions;
     'barangay',
     'zip_code',
     'self_collect',
+    'is_mailing',
+    'has_representative',
     'representative_first_name',
     'representative_last_name',
     'representative_middle_name',

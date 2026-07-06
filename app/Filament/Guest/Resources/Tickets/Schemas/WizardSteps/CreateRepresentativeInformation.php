@@ -22,7 +22,6 @@ class CreateRepresentativeInformation
                     ->heading('Representative Information')
                     ->schema([
                         Checkbox::make('has_representative')
-                            ->dehydrated(false)
                             ->live()
                             ->label('I WILL HAVE SOMEONE COLLECT THE DOCUMENT/S FOR ME')
                             ->columnSpan(12),

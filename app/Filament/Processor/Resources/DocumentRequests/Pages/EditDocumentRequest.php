@@ -33,13 +33,12 @@ class EditDocumentRequest extends EditRecord
             $data[$field] = $raw[$field] ?? null;
         }
 
-        if (! $this->record->is_self_collection) {
+        if (! data_get($this->form->getRawState(), 'is_mailing', false)) {
             $this->record->deliveryDetail()->delete();
         }
 
         return $data;
     }
-
 
     public function getBreadcrumbs(): array
     {

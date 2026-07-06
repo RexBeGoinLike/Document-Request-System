@@ -79,10 +79,10 @@ class TicketForm
                                 }
 
 
-                                $for_mailing = $get('deliveryDetail.for_mailing');
-                                $set('s_mailing_selected', $for_mailing);
+                                $is_mailing = $get('is_mailing');
+                                $set('s_mailing_selected', $is_mailing);
 
-                                if ($for_mailing) {
+                                if ($is_mailing) {
                                     $set('s_mailing_full_name',
                                         sprintf("%s, %s %s %s",
                                             $get('deliveryDetail.recipient_last_name'),
@@ -112,7 +112,7 @@ class TicketForm
 
                                 $set('s_fee_breakdown_doc', $total);
                                 $set('s_mailing_fee', DocumentType::where('document_type_id', '15')->first()->document_fee);
-                                $set('s_total_fee', ($for_mailing) ? $total + 200 : $total);
+                                $set('s_total_fee', ($is_mailing) ? $total + 200 : $total);
                             }
                         ),
 

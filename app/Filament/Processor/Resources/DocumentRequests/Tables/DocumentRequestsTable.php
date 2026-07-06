@@ -52,8 +52,10 @@ class DocumentRequestsTable
                 TextColumn::make('cadet_serial_number')
                     ->label('Serial Number')
                     ->searchable(),
-                TextColumn::make('created_at')
-                    ->label('Date')
+
+                TextColumn::make('user_id')
+                    ->label('Processor')
+                    ->getStateUsing(fn ($record): string => $record?->processor->name ?? 'Not Assigned'),
 
             ])
             ->filters([

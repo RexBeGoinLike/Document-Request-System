@@ -32,6 +32,8 @@ return new class extends Migration
             $table->string('city');
             $table->string('barangay');
             $table->integer('zip_code');
+            $table->boolean('is_mailing')->default(false);
+            $table->boolean('has_representative')->default(false);
             $table->string('representative_first_name')->nullable();
             $table->string('representative_last_name')->nullable();
             $table->string('representative_middle_name')->nullable();
