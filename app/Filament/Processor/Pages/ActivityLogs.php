@@ -20,7 +20,7 @@ class ActivityLogs extends Page implements HasTable
     protected static string|null|\BackedEnum $navigationIcon = 'heroicon-o-clock';
 
     protected string $view = 'filament.processor.pages.activity-logs';
-    protected static ?string $navigationLabel = 'Activity Logs';
+    protected static ?string $navigationLabel = 'View Activity';
 
     public static function canAccess(): bool
     {

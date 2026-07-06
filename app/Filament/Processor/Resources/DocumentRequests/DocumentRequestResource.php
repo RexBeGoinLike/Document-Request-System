@@ -24,6 +24,7 @@ class DocumentRequestResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    protected static ?string $navigationLabel = 'Manage Requests';
     protected static ?string $recordTitleAttribute = 'Manage Requests';
 
     public static function form(Schema $schema): Schema

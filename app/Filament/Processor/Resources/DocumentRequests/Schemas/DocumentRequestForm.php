@@ -55,6 +55,10 @@ class DocumentRequestForm
                             ->colors(fn () => collect(DocumentRequestStatus::cases())
                                 ->mapWithKeys(fn ($case) => [$case->value => $case->getColor()])
                             )
+                            ->extraAttributes([
+                                'style' => 'transform: scale(0.95); transform-origin: left;'
+                            ])
+                            ->grouped()
                             ->required(),
 
                         Select::make('user_id')

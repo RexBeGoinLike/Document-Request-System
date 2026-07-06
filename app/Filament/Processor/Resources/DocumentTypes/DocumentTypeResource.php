@@ -20,7 +20,8 @@ class DocumentTypeResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static ?string $recordTitleAttribute = 'Adjust Documents';
+    protected static ?string $navigationLabel = 'Manage Prices';
+    protected static ?string $recordTitleAttribute = 'Manage Document Prices';
 
     public static function form(Schema $schema): Schema
     {

@@ -26,9 +26,24 @@ class DocumentRequestsTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(
+                function (Builder $query) {
+                    if (auth()->user()->role === 'admin') {
+                        return $query;
+                    } else {
+                        return $query->where('user_id', auth()->user()->user_id);
+                    }
+                }
+            )
             ->columns([
                 TextColumn::make('status')
                     ->badge(),
+
+                TextColumn::make('user_id')
+                    ->label('Processor')
+                    ->badge()
+                    ->getStateUsing(fn ($record): string => $record?->processor->name ?? 'Not Assigned')
+                    ->color(fn ($state): string => $state === 'Not Assigned' ? 'danger' : 'success'),
 
                 TextColumn::make('reference_id')
                     ->label('Reference No.')
@@ -50,12 +65,8 @@ class DocumentRequestsTable
                         });
                     }),
                 TextColumn::make('cadet_serial_number')
-                    ->label('Serial Number')
+                    ->label('Serial No.')
                     ->searchable(),
-
-                TextColumn::make('user_id')
-                    ->label('Processor')
-                    ->getStateUsing(fn ($record): string => $record?->processor->name ?? 'Not Assigned'),
 
             ])
             ->filters([
@@ -64,6 +75,7 @@ class DocumentRequestsTable
                         ToggleButtons::make('status')
                             ->options(DocumentRequestStatus::class)
                             ->inline()
+                            ->columns(4)
                     ])
                     ->query(fn (Builder $query, array $data): Builder => $query->when(
                         $data['status'],
@@ -72,18 +84,55 @@ class DocumentRequestsTable
                     ->indicateUsing(fn (array $data): ?string => $data['status']
                         ? 'Status: ' . DocumentRequestStatus::from($data['status'])->getLabel()
                         : null)
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                ,
+
+                Filter::make('processor')
+                    ->schema([
+                        ToggleButtons::make('processor')
+                            ->options([
+                                'All' => 'All',
+                                'Assigned' => 'Assigned',
+                                'Not Assigned' => 'Not Assigned'
+
+
+                            ])
+                            ->grouped()
+                            ->default(auth()->user()->role === 'admin' ? 'All' : 'Assigned')
+                            ->inline()
+                    ])
+                    ->query(fn (Builder $query, array $data): Builder => $query->when(
+                        $data['processor'],
+                        function (Builder $query, $status) {
+                            if(auth()->user()->role === 'admin')
+                            {
+                                if ($status === 'Assigned') {
+                                    return $query->whereNotNull('user_id');
+                                } elseif ($status === 'Not Assigned') {
+                                    return $query->whereNull('user_id');
+                                }
+                            } else {
+                                if ($status === 'Assigned') {
+                                    return $query->where('user_id', auth()->user()->user_id);
+                                } elseif ($status === 'Not Assigned') {
+                                    return $query->where('user_id', '!=', auth()->user()->user_id);
+                                }
+                            }
+                            return $query;
+                        }
+                    ))
+                    ->columnSpan(6),
 
                 DateRangeFilter::make('created_at')
                     ->label('Created Within')
-                    ->columnSpan(2),
+                    ->columnSpan(6),
             ])
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
             ])
-            ->filtersLayout(FiltersLayout::AboveContentCollapsible)
-            ->filtersFormColumns(3)
+            ->filtersLayout(FiltersLayout::AboveContent)
+            ->filtersFormColumns(12)
             ->deferFilters(false)
             ->toolbarActions([
                 BulkActionGroup::make([
