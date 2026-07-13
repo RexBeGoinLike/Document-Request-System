@@ -3,6 +3,7 @@
 namespace App\Filament\Processor\Resources\DocumentRequests\Pages;
 
 use App\Filament\Processor\Resources\DocumentRequests\DocumentRequestResource;
+use BalisMatz\FilamentPreventOutdatedRecordUpdate\Concerns\PreventsOutdatedRecordUpdate;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
@@ -11,6 +12,8 @@ use Filament\Resources\Pages\EditRecord;
 
 class EditDocumentRequest extends EditRecord
 {
+    use PreventsOutdatedRecordUpdate;
+
     protected static string $resource = DocumentRequestResource::class;
 
     public static bool $formActionsAreSticky = true;
@@ -31,10 +34,6 @@ class EditDocumentRequest extends EditRecord
                      'representative_contact',
                  ] as $field) {
             $data[$field] = $raw[$field] ?? null;
-        }
-
-        if (! data_get($this->form->getRawState(), 'is_mailing', false)) {
-            $this->record->deliveryDetail()->delete();
         }
 
         return $data;

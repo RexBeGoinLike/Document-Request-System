@@ -10,8 +10,10 @@ use Illuminate\Contracts\Support\Htmlable;
 enum DocumentRequestStatus : string implements HasLabel, HasColor, HasIcon
 {
     case FOR_REVIEW = 'for_review';
-    case APPROVED = 'approved';
+
     case REJECTED = 'rejected';
+    case APPROVED = 'approved';
+
     case FOR_COLLECTION = 'for_collection';
     case COLLECTED = 'collected';
     case FOR_DISPATCH = 'for_dispatch';
@@ -39,8 +41,8 @@ enum DocumentRequestStatus : string implements HasLabel, HasColor, HasIcon
             self::FOR_REVIEW => 'warning',
             self::APPROVED => 'success',
             self::REJECTED => 'danger',
-            self::FOR_COLLECTION => 'info',
-            self::COLLECTED => 'primary',
+            self::FOR_COLLECTION => 'warning',
+            self::COLLECTED => 'success',
             self::FOR_DISPATCH => 'warning',
             self::DISPATCHED => 'primary',
             self::DELIVERED => 'success',
@@ -52,11 +54,11 @@ enum DocumentRequestStatus : string implements HasLabel, HasColor, HasIcon
     {
         return match ($this) {
             self::FOR_REVIEW => 'heroicon-o-clock',
-            self::APPROVED => 'heroicon-o-check-circle',
-            self::REJECTED => 'heroicon-o-x-circle',
+            self::APPROVED => 'heroicon-o-hand-thumb-up',
+            self::REJECTED => 'heroicon-o-hand-thumb-down',
             self::FOR_COLLECTION => 'heroicon-o-information-circle',
-            self::COLLECTED => 'heroicon-o-shopping-cart',
-            self::FOR_DISPATCH => 'heroicon-o-truck',
+            self::COLLECTED => 'heroicon-o-check-circle',
+            self::FOR_DISPATCH => 'heroicon-o-paper-airplane',
             self::DISPATCHED => 'heroicon-o-truck',
             self::DELIVERED => 'heroicon-o-check-circle',
         };

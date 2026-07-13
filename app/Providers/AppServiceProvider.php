@@ -20,6 +20,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'your-package');
+
         TextInput::configureUsing(function (TextInput $component) {
             $name = $component->getName();
 

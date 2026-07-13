@@ -29,6 +29,7 @@ class CreateRequesterInformation
                             ->validationAttribute('First Name')
                             ->autocapitalize('words')
                             ->required()
+                            ->maxLength(20)
                             ->columnSpan([4]),
 
                         TextInput::make('requester_last_name')
@@ -36,6 +37,7 @@ class CreateRequesterInformation
                             ->validationAttribute('Last Name')
                             ->autocapitalize('words')
                             ->required()
+                            ->maxLength(15)
                             ->columnSpan([3]),
 
                         TextInput::make('requester_middle_name')
@@ -43,12 +45,14 @@ class CreateRequesterInformation
                             ->validationAttribute('Middle Name')
                             ->autocapitalize('words')
                             ->required()
+                            ->maxLength(15)
                             ->columnSpan([3]),
 
                         TextInput::make('requester_suffix')
                             ->label('Suffix')
                             ->validationAttribute('Suffix')
                             ->autocapitalize('words')
+                            ->maxLength(20)
                             ->columnSpan([2]),
 
                         TextInput::make('cadet_serial_number')
@@ -56,12 +60,14 @@ class CreateRequesterInformation
                             ->validationAttribute('Serial Number')
                             ->autocapitalize('words')
                             ->required()
+                            ->maxLength(4)
                             ->columnSpan([6]),
 
                         TextInput::make('original_class')
                             ->validationAttribute('Original Class')
                             ->autocapitalize('words')
                             ->required()
+                            ->maxLength(20)
                             ->columnSpan([6]),
 
                         TextInput::make('contact_number')
@@ -71,9 +77,7 @@ class CreateRequesterInformation
                             ->length(11)
                             ->required()
                             ->live(onBlur: true)
-                            ->afterStateUpdated(function (CreateTicket $livewire, TextInput $component) {
-                                $livewire->validateOnly($component->getStatePath());
-                            })->columnSpan([4]),
+                            ->columnSpan([4]),
                     ])
                     ->columns(12)
                     ->columnSpan(6),
@@ -86,7 +90,7 @@ class CreateRequesterInformation
                             ->columnSpanFull(),
 
                         Select::make('region')
-                            ->label('Region')
+                            ->label('Province / Major HUC')
                             ->options(Province::pluck('name', 'province_id'))
                             ->searchable()
                             ->preload()
@@ -96,7 +100,7 @@ class CreateRequesterInformation
                                 $set('barangay', null);
                             })
                             ->wrapOptionLabels(false)
-                            ->columnSpan([4])
+                            ->columnSpan([5])
                             ->required(),
 
                         Select::make('city')
@@ -113,7 +117,7 @@ class CreateRequesterInformation
                             ->disabled(fn (Get $get): bool => ! $get('region'))
                             ->afterStateUpdated(fn (Set $set) => $set('barangay', null))
                             ->wrapOptionLabels(false)
-                            ->columnSpan([4])
+                            ->columnSpan([3])
                             ->required(),
 
                         Select::make('barangay')
@@ -129,7 +133,7 @@ class CreateRequesterInformation
                             ->live()
                             ->disabled(fn (Get $get): bool => ! $get('city'))
                             ->wrapOptionLabels(false)
-                            ->columnSpan([4])
+                            ->columnSpan([3])
                             ->required(),
 
                         TextInput::make('zip_code')
@@ -141,9 +145,6 @@ class CreateRequesterInformation
                             ->maxValue(9999)
                             ->required()
                             ->live(onBlur: true)
-                            ->afterStateUpdated(function (CreateTicket $livewire, TextInput $component) {
-                                $livewire->validateOnly($component->getStatePath());
-                            })
                             ->columnSpan([4]),
                     ])
                     ->columns(12)

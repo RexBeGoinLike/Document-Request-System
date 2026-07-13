@@ -1,10 +1,6 @@
 <?php
 
-namespace App\Policies;
-
-use App\Models\DeliveryDetail;
-use App\Models\User;
-use Illuminate\Auth\Access\Response;
+namespace App\Models;
 
 class DeliveryDetailPolicy
 {

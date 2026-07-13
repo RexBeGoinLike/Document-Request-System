@@ -32,6 +32,7 @@ class CreateRepresentativeInformation
                                     ->label('First Name')
                                     ->autocapitalize('words')
                                     ->columnSpan([4])
+                                    ->maxLength(20)
                                     ->required(fn (Get $get) : bool => $get('has_representative'))
                                     ->disabled(fn (Get $get) : bool => !  $get('has_representative')),
 
@@ -39,6 +40,7 @@ class CreateRepresentativeInformation
                                     ->label('Last Name')
                                     ->autocapitalize('words')
                                     ->columnSpan([3])
+                                    ->maxLength(15)
                                     ->required(fn (Get $get) : bool => $get('has_representative'))
                                     ->disabled(fn (Get $get) : bool => ! $get('has_representative')),
 
@@ -46,6 +48,7 @@ class CreateRepresentativeInformation
                                     ->label('Middle Name')
                                     ->autocapitalize('words')
                                     ->columnSpan([3])
+                                    ->maxLength(15)
                                     ->required(fn (Get $get) : bool => $get('has_representative'))
                                     ->disabled(fn (Get $get) : bool => ! $get('has_representative')),
 
@@ -53,12 +56,14 @@ class CreateRepresentativeInformation
                                     ->label('Suffix')
                                     ->autocapitalize('words')
                                     ->columnSpan([2])
+                                    ->maxLength(20)
                                     ->disabled(fn (Get $get) : bool => ! $get('has_representative')),
 
                                 TextInput::make('representative_office')
                                     ->label('Office')
                                     ->autocapitalize('words')
                                     ->columnSpan([7])
+                                    ->maxLength(20)
                                     ->required(fn (Get $get) : bool => $get('has_representative'))
                                     ->disabled(fn (Get $get) : bool => ! $get('has_representative')),
 
@@ -67,6 +72,7 @@ class CreateRepresentativeInformation
                                     ->label('Contact Number')
                                     ->autocapitalize('words')
                                     ->columnSpan([5])
+                                    ->length(11)
                                     ->required(fn (Get $get) : bool => $get('has_representative'))
                                     ->disabled(fn (Get $get) : bool => ! $get('has_representative')),
                             ])

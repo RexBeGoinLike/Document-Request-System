@@ -43,7 +43,8 @@ class DocumentRequestsTable
                     ->label('Processor')
                     ->badge()
                     ->getStateUsing(fn ($record): string => $record?->processor->name ?? 'Not Assigned')
-                    ->color(fn ($state): string => $state === 'Not Assigned' ? 'danger' : 'success'),
+                    ->color(fn ($state): string => $state === 'Not Assigned' ? 'danger' : 'success')
+                    ->sortable(),
 
                 TextColumn::make('reference_id')
                     ->label('Reference No.')
@@ -54,7 +55,8 @@ class DocumentRequestsTable
                     ->getStateUsing(function ($record) {
                         return $record->requester_last_name
                             . ', ' . $record->requester_first_name
-                            . ' ' . substr($record->requester_middle_name,0, 1) . '.';
+                            . ' ' . substr($record->requester_middle_name,0, 1) . '.'
+                            . $record->requester_suffix; ;
                     })
                     ->searchable(query: function ($query, string $search) {
                         $query->where(function ($q) use ($search) {
@@ -63,10 +65,12 @@ class DocumentRequestsTable
                                 ->orWhere('requester_last_name', 'like', "%{$search}%")
                                 ->orWhere('requester_suffix', 'like', "%{$search}%");
                         });
-                    }),
+                    })
+                    ->sortable(),
                 TextColumn::make('cadet_serial_number')
-                    ->label('Serial No.')
-                    ->searchable(),
+                    ->label('Serial')
+                    ->searchable()
+                    ->sortable(),
 
             ])
             ->filters([
@@ -75,7 +79,6 @@ class DocumentRequestsTable
                         ToggleButtons::make('status')
                             ->options(DocumentRequestStatus::class)
                             ->inline()
-                            ->columns(4)
                     ])
                     ->query(fn (Builder $query, array $data): Builder => $query->when(
                         $data['status'],

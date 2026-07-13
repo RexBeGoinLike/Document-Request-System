@@ -63,7 +63,7 @@ class DocumentRequestForm
 
                         Select::make('user_id')
                             ->label('Processor')
-                            ->columnSpan(6)
+                            ->columnSpan(4)
                             ->nullable()
                             ->options(
                                 fn () => User::where('role', 'processor')->pluck('name', 'user_id')
@@ -79,19 +79,32 @@ class DocumentRequestForm
                                     ->label('Courier Name')
                                     ->columnSpan(4)
                                     ->visible(fn (Get $get, $record): bool =>
-                                        $get('../status') === DocumentRequestStatus::FOR_DISPATCH
-                                        ||  $get('../status') === DocumentRequestStatus::DISPATCHED
-                                        ||  $get('../status') === DocumentRequestStatus::DELIVERED
-                                        && $get('../is_mailing') !== null),
+                                        $get('../status') === DocumentRequestStatus::FOR_DISPATCH->value
+                                        ||  $get('../status') === DocumentRequestStatus::DISPATCHED->value
+
+                                        ||  $get('../status') === DocumentRequestStatus::DELIVERED->value
+                                        && $get('../is_mailing'))
+                                    ->required(fn (Get $get, $record): bool =>
+                                        $get('../status') === DocumentRequestStatus::FOR_DISPATCH->value
+                                        ||  $get('../status') === DocumentRequestStatus::DISPATCHED->value
+
+                                        ||  $get('../status') === DocumentRequestStatus::DELIVERED->value
+                                        && $get('../is_mailing')),
 
                                 TextInput::make('tracking_number')
                                     ->label('Tracking Number')
                                     ->columnSpan(4)
                                     ->visible(fn (Get $get, $record): bool =>
-                                        $get('../status') === DocumentRequestStatus::FOR_DISPATCH
-                                        ||  $get('../status') === DocumentRequestStatus::DISPATCHED
-                                        ||  $get('../status') === DocumentRequestStatus::DELIVERED
-                                        && $get('../is_mailing') !== null),
+                                        $get('../status') === DocumentRequestStatus::FOR_DISPATCH->value
+                                        ||  $get('../status') === DocumentRequestStatus::DISPATCHED->value
+                                        ||  $get('../status') === DocumentRequestStatus::DELIVERED->value
+                                        && $get('../is_mailing'))
+                                    ->required(fn (Get $get, $record): bool =>
+                                        $get('../status') === DocumentRequestStatus::FOR_DISPATCH->value
+                                        ||  $get('../status') === DocumentRequestStatus::DISPATCHED->value
+
+                                        ||  $get('../status') === DocumentRequestStatus::DELIVERED->value
+                                        && $get('../is_mailing')),
                                 ])->columnSpan(8)->columns(8)
 
                     ])->columnSpanFull()->columns(12),
@@ -207,7 +220,7 @@ class DocumentRequestForm
                                             ->columnSpanFull(),
 
                                         Select::make('region')
-                                            ->label('Region')
+                                            ->label('Province / Major HUC')
                                             ->options(Province::pluck('name', 'province_id'))
                                             ->searchable()
                                             ->preload()
@@ -217,7 +230,7 @@ class DocumentRequestForm
                                                 $set('barangay', null);
                                             })
                                             ->wrapOptionLabels(false)
-                                            ->columnSpan([4])
+                                            ->columnSpan([5])
                                             ->required(),
 
                                         Select::make('city')
@@ -234,7 +247,7 @@ class DocumentRequestForm
                                             ->disabled(fn (Get $get): bool => ! $get('region'))
                                             ->afterStateUpdated(fn (Set $set) => $set('barangay', null))
                                             ->wrapOptionLabels(false)
-                                            ->columnSpan([4])
+                                            ->columnSpan([3])
                                             ->required(),
 
                                         Select::make('barangay')
@@ -250,7 +263,7 @@ class DocumentRequestForm
                                             ->live()
                                             ->disabled(fn (Get $get): bool => ! $get('city'))
                                             ->wrapOptionLabels(false)
-                                            ->columnSpan([4])
+                                            ->columnSpan([3])
                                             ->required(),
 
                                         TextInput::make('zip_code')
@@ -337,6 +350,7 @@ class DocumentRequestForm
                                     ->label('I WANT THE DOCUMENT/S TO BE MAILED TO ME')
                                     ->columnSpanFull()
                                     ->live()
+                                    ->afterStateHydrated(fn (Set $set, $state) => $set('deliveryDetail.is_mailing_mirror', $state))
                                     ->afterStateUpdated(fn (Set $set, $state) => $set('deliveryDetail.is_mailing_mirror', $state))
                                     ->visible(),
 
@@ -380,7 +394,7 @@ class DocumentRequestForm
                                             ->columnSpanFull(),
 
                                         Select::make('region')
-                                            ->label('Region')
+                                            ->label('Province / Major HUC')
                                             ->options(Province::pluck('name', 'province_id'))
                                             ->searchable()
                                             ->preload()
@@ -390,7 +404,7 @@ class DocumentRequestForm
                                                 $set('barangay', null);
                                             })
                                             ->wrapOptionLabels(false)
-                                            ->columnSpan([4])
+                                            ->columnSpan([5])
                                             ->required()
                                             ->visible(fn (Get $get): bool => $get('../is_mailing')),
 
@@ -408,7 +422,7 @@ class DocumentRequestForm
                                             ->disabled(fn (Get $get): bool => ! $get('region'))
                                             ->afterStateUpdated(fn (Set $set) => $set('barangay', null))
                                             ->wrapOptionLabels(false)
-                                            ->columnSpan([4])
+                                            ->columnSpan([3])
                                             ->required()
                                             ->visible(fn (Get $get): bool => $get('../is_mailing')),
 
@@ -425,7 +439,7 @@ class DocumentRequestForm
                                             ->live()
                                             ->disabled(fn (Get $get): bool => ! $get('city'))
                                             ->wrapOptionLabels(false)
-                                            ->columnSpan([4])
+                                            ->columnSpan([3])
                                             ->required()
                                             ->visible(fn (Get $get): bool => $get('../is_mailing')),
 

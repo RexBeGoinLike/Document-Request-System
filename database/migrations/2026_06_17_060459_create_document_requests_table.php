@@ -25,9 +25,9 @@ return new class extends Migration
             $table->string('status')->default(DocumentRequestStatus::FOR_REVIEW->value);
             $table->string('requester_first_name', 20);
             $table->string('requester_last_name', 15);
-            $table->string('requester_middle_name', 15)->nullable();
+            $table->string('requester_middle_name', 15);
             $table->string('requester_suffix', 20)->nullable();
-            $table->string('cadet_serial_number', 6);
+            $table->string('cadet_serial_number', 4);
             $table->string('original_class', 20);
             $table->string('contact_number', 11);
             $table->text('street_address');

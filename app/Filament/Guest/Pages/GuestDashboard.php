@@ -3,8 +3,11 @@
 namespace App\Filament\Guest\Pages;
 
 use App\Filament\Guest\Resources\Tickets\TicketResource;
+use App\Filament\Processor\Resources\DocumentRequests\DocumentRequestResource;
+use App\Filament\Processor\Resources\DocumentRequests\Tables\DocumentRequestInfolist;
 use App\Models\DocumentRequest;
 use Filament\Actions\Action;
+use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
@@ -19,9 +22,11 @@ use Filament\Support\Icons\Heroicon;
 class GuestDashboard extends Page implements HasSchemas
 {
     use InteractsWithSchemas;
+    use InteractsWithActions;
 
     protected string $view = 'filament.guest.pages.guest-dashboard';
 
+    public ?array $data = [];
     protected static ?string $slug = '/';
 
     protected static ?string $title = '';
@@ -54,43 +59,55 @@ class GuestDashboard extends Page implements HasSchemas
                             ->schema([
                                 TextInput::make('tracking_number')
                                     ->label('Tracking Number')
-                                    ->columnSpanFull(),
-                            ])
-                            ->footerActions([
-                                Action::make('track_request')
-                                    ->label('Track Status')
-                                    ->color('gray')
-                                    ->action(function (Get $get) {
-                                        $trackingNumber = $get('tracking_number');
+                                    ->live(onBlur: true)
+                                    ->columnSpanFull()
+                                    ->suffixAction(
+                                        Action::make('track')
+                                            ->label('Track')
+                                            ->icon('heroicon-m-magnifying-glass')
+                                            ->modalHeading('Request Status')
+                                            ->modalSubmitAction(false)
+                                            ->modalCancelActionLabel('Close')
+                                            ->record(function (Get $get) {
+                                                return DocumentRequest::where('reference_id', $get('tracking_number'))->first();
+                                            })
+                                            ->schema(fn (Schema $schema) => DocumentRequestResource::infolist($schema))
+                                            ->before(function (Get $get, Action $action) {
+                                                $trackingNumber = $get('tracking_number');
 
-                                        if (blank($trackingNumber)) {
-                                            Notification::make()
-                                                ->title('Enter a tracking number')
-                                                ->danger()
-                                                ->send();
+                                                if (empty($trackingNumber)) {
+                                                    Notification::make()
+                                                        ->title('Please enter a tracking number.')
+                                                        ->warning()
+                                                        ->send();
 
-                                            return;
-                                        }
+                                                    $action->halt();
+                                                }
 
-                                        $ticket = DocumentRequest::find($trackingNumber);
+                                                $exists = DocumentRequest::where('reference_id', $trackingNumber)->exists();
 
-                                        if (! $ticket) {
-                                            Notification::make()
-                                                ->title('Not found')
-                                                ->body('No request matches that tracking number.')
-                                                ->danger()
-                                                ->send();
+                                                if (! $exists) {
+                                                    Notification::make()
+                                                        ->title('No request found for that tracking number.')
+                                                        ->danger()
+                                                        ->send();
 
-                                            return;
-                                        }
-
-                                        return redirect()->to(
-                                            TicketResource::getUrl('view', ['record' => $ticket])
-                                        );
-                                    })
-                                    ->button(),
+                                                    $action->halt();
+                                                }
+                                            })
+                                    ),
                             ]),
                     ]),
-            ]);
+            ])->statePath('data');
+    }
+
+    public function viewRequestStatusAction(): Action
+    {
+        return Action::make('viewRequestStatus')
+            ->modalHeading('Request Status')
+            ->modalSubmitAction(false)
+            ->modalCancelActionLabel('Close')
+            ->record(fn (array $arguments) => DocumentRequest::find($arguments['record']))
+            ->schema(fn (Schema $schema) => DocumentRequestResource::infolist($schema));
     }
 }

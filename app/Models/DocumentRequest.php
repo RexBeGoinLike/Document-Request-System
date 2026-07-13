@@ -14,6 +14,7 @@ use Relaticle\ActivityLog\Concerns\InteractsWithTimeline;
 use Relaticle\ActivityLog\Timeline\TimelineBuilder;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
+use Yajra\Address\Entities\Barangay;
 
 #[Fillable([
     'reference_id',

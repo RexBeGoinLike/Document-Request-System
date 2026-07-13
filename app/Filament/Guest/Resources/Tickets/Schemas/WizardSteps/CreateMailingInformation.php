@@ -75,27 +75,31 @@ class CreateMailingInformation
                                     ->validationAttribute('First Name')
                                     ->autocapitalize('words')
                                     ->required(fn (Get $get) : bool => $get('../is_mailing'))
-                                    ->columnSpan([4]),
+                                    ->columnSpan([4])
+                                    ->maxLength(20),
 
                                 TextInput::make('recipient_last_name')
                                     ->label('Last Name')
                                     ->validationAttribute('Last Name')
                                     ->autocapitalize('words')
                                     ->required(fn (Get $get) : bool => $get('../is_mailing'))
-                                    ->columnSpan([3]),
+                                    ->columnSpan([3])
+                                    ->maxLength(15),
 
                                 TextInput::make('recipient_middle_name')
                                     ->label('Middle Name')
                                     ->validationAttribute('Middle Name')
                                     ->autocapitalize('words')
                                     ->required(fn (Get $get) : bool => $get('../is_mailing'))
-                                    ->columnSpan([3]),
+                                    ->columnSpan([3])
+                                    ->maxLength(15),
 
                                 TextInput::make('recipient_suffix')
                                     ->label('Suffix')
                                     ->validationAttribute('Suffix')
                                     ->autocapitalize('words')
-                                    ->columnSpan([2]),
+                                    ->columnSpan([2])
+                                    ->maxLength(20),
 
                                 TextInput::make('recipient_contact_number')
                                     ->validationAttribute('Contact Number')
@@ -119,9 +123,10 @@ class CreateMailingInformation
                                     ->columnSpan([12]),
 
                                 Select::make('region')
-                                    ->label('Region')
+                                    ->label('Province / Major HUC')
                                     ->options(Province::pluck('name', 'province_id'))
                                     ->searchable()
+                                    ->columnSpan(5)
                                     ->preload()
                                     ->live()
 
@@ -129,7 +134,7 @@ class CreateMailingInformation
                                         $set('city', null);
                                         $set('barangay', null);
                                     })
-                                    ->columnSpan([4])
+                                    ->columnSpan(3)
                                     ->required(fn (Get $get) : bool => $get('../is_mailing')),
 
                                 Select::make('city')
@@ -145,7 +150,7 @@ class CreateMailingInformation
                                     ->live()
                                     ->disabled(fn (Get $get): bool => ! $get('region'))
                                     ->afterStateUpdated(fn (Set $set) => $set('barangay', null))
-                                    ->columnSpan([4])
+                                    ->columnSpan(3)
                                     ->required(fn (Get $get) : bool => $get('../is_mailing')),
 
                                 Select::make('barangay')

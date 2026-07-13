@@ -35,11 +35,11 @@ class RequestQuantity extends Model
         return TimelineBuilder::make($this)->fromActivityLog();
     }
 
-    public function documentRequests(): BelongsToMany {
+    public function documentRequestsss(): BelongsToMany {
         return $this->belongsToMany(DocumentRequest::class, 'request_id', 'request_id');
     }
 
-    public Function documentType(): BelongsToMany {
-        return $this->BelongsToMany(DocumentType::class, 'document_type_id', 'document_type_id');
+    public Function documentType(): BelongsTo {
+        return $this->BelongsTo(DocumentType::class, 'document_type_id', 'document_type_id');
     }
 }

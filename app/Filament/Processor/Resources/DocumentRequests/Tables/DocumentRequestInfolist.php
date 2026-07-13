@@ -3,6 +3,8 @@
 namespace App\Filament\Processor\Resources\DocumentRequests\Tables;
 
 
+use App\DocumentRequestStatus;
+use App\Models\DocumentRequest;
 use App\Models\DocumentType;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\RepeatableEntry\TableColumn;
@@ -12,7 +14,9 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\FontWeight;
 use Filament\Support\Enums\TextSize;
+use Torgodly\Html2Media\Actions\Html2MediaAction;
 use Yajra\Address\Entities\Barangay;
 use Yajra\Address\Entities\City;
 use Yajra\Address\Entities\Province;
@@ -23,21 +27,43 @@ class DocumentRequestInfolist
     {
         return $schema
             ->components([
+
                 Group::make()
                     ->schema([
-                        TextEntry::make('status')
-                            ->label('Status')
-                            ->badge()
+                        TextEntry::make('reference_id')
+                            ->label('Reference No: ')
                             ->size('lg')
-                            ->columnSpanFull(),
-
-                        TextEntry::make('user_processor')
-                            ->label('Processor: ')
-                            ->getStateUsing(fn ($record): string => $record?->processor->name ?? 'Not Assigned')
-                            ->badge()
-                            ->color(fn ($state): string => $state === 'Not Assigned' ? 'danger' : 'success')
                             ->inlineLabel()
+                            ->weight(FontWeight::Bold)
                             ->columnSpan(5),
+
+                        Group::make()
+                            ->schema([
+                                TextEntry::make('status')
+                                    ->hiddenLabel()
+                                    ->badge()
+                                    ->columnSpan(2),
+
+                                TextEntry::make('user_processor')
+                                    ->hiddenLabel()
+                                    ->getStateUsing(fn ($record): string => $record?->processor->name ?? 'Not Assigned')
+                                    ->badge()
+                                    ->color(fn ($state): string => $state === 'Not Assigned' ? 'danger' : 'success')
+                                    ->columnSpan(3),
+
+                                Group::make()
+                                    ->schema([
+                                        Html2MediaAction::make('print')
+                                            ->content(fn($record) => view('filament.processor.pages.document-request-print', [
+                                                'record' => $record,
+                                            ]))
+                                            ->hiddenLabel()
+                                            ->icon('heroicon-o-printer')
+                                            ->margins(10)
+                                    ])
+                                    ->columnStart(12)
+                            ])->columnSpanFull()->columns(12),
+
 
                         Tabs::make('General Information')
                             ->tabs([
@@ -148,50 +174,60 @@ class DocumentRequestInfolist
                                         ->columns(12)
                                         ->columnSpanFull(),
                                 ]),
-                            Tab::make('Mailing Information')
-                                ->schema([
-                                    Group::make()
-                                        ->schema([
-                                            TextEntry::make('is_mailing')
-                                                ->label('I WILL BE PICKING UP THE DOCUMENT/S')
-                                                ->columnSpanFull()
-                                                ->getStateUsing(fn () => '')
-                                                ->visible(fn ($record) => ! $record->is_mailing),
+                                Tab::make('Mailing Information')
+                                    ->schema([
+                                        Group::make()
+                                            ->schema([
+                                                TextEntry::make('is_mailing')
+                                                    ->label('I WILL BE PICKING UP THE DOCUMENT/S')
+                                                    ->columnSpanFull()
+                                                    ->getStateUsing(fn () => '')
+                                                    ->visible(fn ($record) => ! $record->is_mailing),
 
-                                            Group::make()
-                                                ->relationship('deliveryDetail')
-                                                ->schema([
-                                                    TextEntry::make('recipient_name')
-                                                        ->label('Name')
-                                                        ->getStateUsing(function ($record) {
-                                                            return $record?->recipient_last_name
-                                                                . ', ' . $record?->recipient_first_name
-                                                                . ' ' . substr($record?->recipient_middle_name,0, 1) . '.';
-                                                        })->columnSpan(7),
+                                                Group::make()
+                                                    ->schema([
+                                                        TextEntry::make('deliveryDetail.recipient_name')
+                                                            ->label('Name')
+                                                            ->getStateUsing(function ($record) {
+                                                                $delivery = $record->deliveryDetail;
+                                                                if (! $delivery) {
+                                                                    return null;
+                                                                }
 
+                                                                return $delivery->recipient_last_name
+                                                                    . ', ' . $delivery->recipient_first_name
+                                                                    . ' ' . substr($delivery->recipient_middle_name, 0, 1) . '.';
+                                                            })
+                                                            ->columnSpan(7),
 
-                                                    TextEntry::make('recipient_contact_number')
-                                                        ->label('Contact Number')
-                                                        ->columnSpan(5),
+                                                        TextEntry::make('deliveryDetail.recipient_contact_number')
+                                                            ->label('Contact Number')
+                                                            ->columnSpan(5),
 
-                                                    TextEntry::make('address')
-                                                        ->label('Address')
-                                                        ->columnSpanFull()
-                                                        ->getStateUsing(function ($record) {
-                                                            return $record?->street_address .
-                                                                ', ' . Province::where('province_id', $record?->region)?->first()?->name .
-                                                                ', ' . City::where('city_id', $record?->city)?->first()?->name .
-                                                                ', ' . Barangay::find($record?->barangay)?->name .
-                                                                ', ' . $record?->zip_code;
-                                                        })
-                                                ])
-                                                ->visible(fn ($record) => $record->is_mailing)
-                                                ->columnSpanFull()
-                                                ->columns(12),
-                                        ])
-                                        ->columns(12)
-                                        ->columnSpanFull(),
-                                ])
+                                                        TextEntry::make('deliveryDetail.address')
+                                                            ->label('Address')
+                                                            ->columnSpanFull()
+                                                            ->getStateUsing(function ($record) {
+                                                                $delivery = $record->deliveryDetail;
+                                                                if (! $delivery) {
+                                                                    return null;
+                                                                }
+
+                                                                return $delivery->street_address .
+                                                                    ', ' . Province::where('province_id', $delivery->region)->first()?->name .
+                                                                    ', ' . City::where('city_id', $delivery->city)->first()?->name .
+                                                                    ', ' . Barangay::find($delivery->barangay)?->name .
+                                                                    ', ' . $delivery->zip_code;
+                                                            }),
+
+                                                    ])
+                                                    ->visible(fn ($record) => $record->is_mailing)
+                                                    ->columnSpanFull()
+                                                    ->columns(12),
+                                            ])
+                                            ->columns(12)
+                                            ->columnSpanFull(),
+                                    ]),
                             ])
                             ->columns(12)
                             ->columnSpanFull()
