@@ -100,7 +100,7 @@ class CreateRequesterInformation
                                 $set('barangay', null);
                             })
                             ->wrapOptionLabels(false)
-                            ->columnSpan([5])
+                            ->columnSpan([6])
                             ->required(),
 
                         Select::make('city')
@@ -117,7 +117,7 @@ class CreateRequesterInformation
                             ->disabled(fn (Get $get): bool => ! $get('region'))
                             ->afterStateUpdated(fn (Set $set) => $set('barangay', null))
                             ->wrapOptionLabels(false)
-                            ->columnSpan([3])
+                            ->columnSpan(6)
                             ->required(),
 
                         Select::make('barangay')
@@ -133,7 +133,7 @@ class CreateRequesterInformation
                             ->live()
                             ->disabled(fn (Get $get): bool => ! $get('city'))
                             ->wrapOptionLabels(false)
-                            ->columnSpan([3])
+                            ->columnSpan(6)
                             ->required(),
 
                         TextInput::make('zip_code')

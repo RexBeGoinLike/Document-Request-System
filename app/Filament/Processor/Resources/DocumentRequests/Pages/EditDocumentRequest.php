@@ -2,17 +2,19 @@
 
 namespace App\Filament\Processor\Resources\DocumentRequests\Pages;
 
+use App\DocumentRequestStatus;
 use App\Filament\Processor\Resources\DocumentRequests\DocumentRequestResource;
 use BalisMatz\FilamentPreventOutdatedRecordUpdate\Concerns\PreventsOutdatedRecordUpdate;
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Schemas\Components\Utilities\Get;
 
 class EditDocumentRequest extends EditRecord
 {
-    use PreventsOutdatedRecordUpdate;
 
     protected static string $resource = DocumentRequestResource::class;
 
@@ -38,6 +40,7 @@ class EditDocumentRequest extends EditRecord
 
         return $data;
     }
+    
 
     public function getBreadcrumbs(): array
     {
@@ -47,6 +50,11 @@ class EditDocumentRequest extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('back')
+                ->label('Back to List')
+                ->color('gray')
+                ->url($this->getResource()::getUrl('index')),
+
             ViewAction::make(),
             DeleteAction::make(),
             ForceDeleteAction::make(),

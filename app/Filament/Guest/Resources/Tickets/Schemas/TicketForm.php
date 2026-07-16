@@ -114,6 +114,7 @@ class TicketForm
                                 $set('s_fee_breakdown_doc', $total);
                                 $set('s_mailing_fee', DocumentType::where('document_type_id', '15')->first()->document_fee);
                                 $set('s_total_fee', ($is_mailing) ? $total + 200 : $total);
+                                $set('f_total_fee', ($is_mailing) ? $total + 200 : $total);
                             }
                         ),
 

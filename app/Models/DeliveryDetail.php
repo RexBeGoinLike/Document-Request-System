@@ -11,6 +11,8 @@ use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
 #[Fillable([
+    'courier_name',
+    'tracking_number',
     'request_id',
     'user_id',
     'for_mailing',

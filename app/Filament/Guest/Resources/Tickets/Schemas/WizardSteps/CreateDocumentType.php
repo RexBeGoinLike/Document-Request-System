@@ -146,6 +146,7 @@ class CreateDocumentType
                                                     $set('../../fee_breakdown', $breakdown->toArray());
                                                 })
                                                 ->minValue(0)
+                                                ->maxValue(2)
                                                 ->extraInputAttributes([
                                                     'onkeypress' => 'return event.charCode !== 45', // Blocks '-' key
                                                 ]),

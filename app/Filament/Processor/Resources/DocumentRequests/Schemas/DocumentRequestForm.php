@@ -35,6 +35,9 @@ class DocumentRequestForm
                             ->label('Status')
                             ->columnSpanFull()
                             ->live()
+                            ->extraAttributes([
+                                'class' => '[&_button:disabled]:opacity-100 [&_button:disabled]:bg-gray-100 [&_button:disabled]:text-gray-400 [&_button:disabled]:border-gray-300 [&_button:disabled]:cursor-not-allowed dark:[&_button:disabled]:bg-gray-800',
+                            ])
                             ->options(fn (Get $get) => collect(DocumentRequestStatus::cases())
                                 ->when($get('is_mailing'), fn ($collection) => $collection
                                     ->reject(fn ($case) => in_array($case, [
@@ -56,10 +59,10 @@ class DocumentRequestForm
                                 ->mapWithKeys(fn ($case) => [$case->value => $case->getColor()])
                             )
                             ->extraAttributes([
-                                'style' => 'transform: scale(0.95); transform-origin: left;'
+                                'class' => '[&_.fi-btn]:[--btn-bg:var(--color-600)] [&_.fi-btn]:[--btn-text:white]'
                             ])
-                            ->grouped()
-                            ->required(),
+                            ->default(fn ($record) => $record?->status?->value)
+                            ->grouped(),
 
                         Select::make('user_id')
                             ->label('Processor')
@@ -79,14 +82,12 @@ class DocumentRequestForm
                                     ->label('Courier Name')
                                     ->columnSpan(4)
                                     ->visible(fn (Get $get, $record): bool =>
-                                        $get('../status') === DocumentRequestStatus::FOR_DISPATCH->value
-                                        ||  $get('../status') === DocumentRequestStatus::DISPATCHED->value
+                                        $get('../status') === DocumentRequestStatus::DISPATCHED->value
 
                                         ||  $get('../status') === DocumentRequestStatus::DELIVERED->value
                                         && $get('../is_mailing'))
                                     ->required(fn (Get $get, $record): bool =>
-                                        $get('../status') === DocumentRequestStatus::FOR_DISPATCH->value
-                                        ||  $get('../status') === DocumentRequestStatus::DISPATCHED->value
+                                        $get('../status') === DocumentRequestStatus::DISPATCHED->value
 
                                         ||  $get('../status') === DocumentRequestStatus::DELIVERED->value
                                         && $get('../is_mailing')),
@@ -95,13 +96,11 @@ class DocumentRequestForm
                                     ->label('Tracking Number')
                                     ->columnSpan(4)
                                     ->visible(fn (Get $get, $record): bool =>
-                                        $get('../status') === DocumentRequestStatus::FOR_DISPATCH->value
-                                        ||  $get('../status') === DocumentRequestStatus::DISPATCHED->value
+                                        $get('../status') === DocumentRequestStatus::DISPATCHED->value
                                         ||  $get('../status') === DocumentRequestStatus::DELIVERED->value
                                         && $get('../is_mailing'))
                                     ->required(fn (Get $get, $record): bool =>
-                                        $get('../status') === DocumentRequestStatus::FOR_DISPATCH->value
-                                        ||  $get('../status') === DocumentRequestStatus::DISPATCHED->value
+                                        $get('../status') === DocumentRequestStatus::DISPATCHED->value
 
                                         ||  $get('../status') === DocumentRequestStatus::DELIVERED->value
                                         && $get('../is_mailing')),
@@ -117,6 +116,7 @@ class DocumentRequestForm
                                     ->schema([
                                         Repeater::make('requestQuantity')
                                             ->hiddenLabel()
+                                            ->required()
                                             ->table([
                                                 TableColumn::make('Document Type')
                                                     ->width(70),
@@ -230,7 +230,7 @@ class DocumentRequestForm
                                                 $set('barangay', null);
                                             })
                                             ->wrapOptionLabels(false)
-                                            ->columnSpan([5])
+                                            ->columnSpan([6])
                                             ->required(),
 
                                         Select::make('city')
@@ -247,7 +247,7 @@ class DocumentRequestForm
                                             ->disabled(fn (Get $get): bool => ! $get('region'))
                                             ->afterStateUpdated(fn (Set $set) => $set('barangay', null))
                                             ->wrapOptionLabels(false)
-                                            ->columnSpan([3])
+                                            ->columnSpan(3)
                                             ->required(),
 
                                         Select::make('barangay')
@@ -404,7 +404,7 @@ class DocumentRequestForm
                                                 $set('barangay', null);
                                             })
                                             ->wrapOptionLabels(false)
-                                            ->columnSpan([5])
+                                            ->columnSpan([6])
                                             ->required()
                                             ->visible(fn (Get $get): bool => $get('../is_mailing')),
 

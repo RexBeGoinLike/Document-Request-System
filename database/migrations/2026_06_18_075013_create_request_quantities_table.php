@@ -22,7 +22,7 @@ return new class extends Migration
             ->constrained('document_types', 'document_type_id')
             ->onUpdate('cascade');
 
-            $table->integer('quantity')->default(0);
+            $table->integer('quantity');
 
             $table->double('fee', 10,    2)->default(0);
 

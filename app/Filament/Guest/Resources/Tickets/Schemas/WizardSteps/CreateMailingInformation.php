@@ -126,7 +126,7 @@ class CreateMailingInformation
                                     ->label('Province / Major HUC')
                                     ->options(Province::pluck('name', 'province_id'))
                                     ->searchable()
-                                    ->columnSpan(5)
+                                    ->columnSpan(12)
                                     ->preload()
                                     ->live()
 
@@ -134,7 +134,7 @@ class CreateMailingInformation
                                         $set('city', null);
                                         $set('barangay', null);
                                     })
-                                    ->columnSpan(3)
+                                    ->columnSpan(6)
                                     ->required(fn (Get $get) : bool => $get('../is_mailing')),
 
                                 Select::make('city')
@@ -165,7 +165,7 @@ class CreateMailingInformation
                                     ->preload()
                                     ->live()
                                     ->disabled(fn (Get $get): bool => ! $get('city'))
-                                    ->columnSpan([4])
+                                    ->columnSpan(3)
                                     ->required(fn (Get $get) : bool => $get('../is_mailing')),
 
                                 TextInput::make('zip_code')

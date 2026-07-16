@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\DocumentRequestStatus;
 use App\Models\DocumentRequest;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
@@ -11,7 +12,7 @@ class DocumentRequestPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(?User $user): bool
+    public function viewAny(User $user): bool
     {
         return true;
     }
@@ -37,7 +38,8 @@ class DocumentRequestPolicy
      */
     public function update(User $user, DocumentRequest $documentRequest): bool
     {
-        return ($user->role === 'admin') || $user->user_id === $documentRequest->user_id;
+        return $documentRequest->status !== DocumentRequestStatus::REJECTED
+            && ($user->role === 'admin' || $user->user_id === $documentRequest->user_id);
     }
 
     /**

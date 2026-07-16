@@ -40,12 +40,11 @@ class GuestDashboard extends Page implements HasSchemas
     {
         return $schema
             ->components([
-                Grid::make(2)
+                Section::make()
                     ->schema([
                         Section::make('Request a Document')
                             ->description('Diplomas, transcripts, certifications, and other cadet records.')
                             ->icon('heroicon-o-document-text')
-
                             ->footerActions([
                                 Action::make('start_request')
                                     ->label('Start Request')
@@ -53,7 +52,7 @@ class GuestDashboard extends Page implements HasSchemas
                                     ->button(),
                             ]),
 
-                        Section::make('Track a Request')
+                         Section::make('Track a Request')
                             ->description('Check the status of a document request using your ticket number.')
                             ->icon('heroicon-o-magnifying-glass')
                             ->schema([
@@ -72,7 +71,7 @@ class GuestDashboard extends Page implements HasSchemas
                                                 return DocumentRequest::where('reference_id', $get('tracking_number'))->first();
                                             })
                                             ->schema(fn (Schema $schema) => DocumentRequestResource::infolist($schema))
-                                            ->before(function (Get $get, Action $action) {
+                                            ->mountUsing(function (Get $get, Action$action) {
                                                 $trackingNumber = $get('tracking_number');
 
                                                 if (empty($trackingNumber)) {
@@ -95,9 +94,9 @@ class GuestDashboard extends Page implements HasSchemas
                                                     $action->halt();
                                                 }
                                             })
-                                    ),
-                            ]),
-                    ]),
+                    ),
+            ]),
+                    ])
             ])->statePath('data');
     }
 

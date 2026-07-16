@@ -29,6 +29,7 @@ use Yajra\Address\Entities\Barangay;
     'street_address',
     'region',
     'city',
+    'f_total_fee',
     'barangay',
     'zip_code',
     'self_collect',

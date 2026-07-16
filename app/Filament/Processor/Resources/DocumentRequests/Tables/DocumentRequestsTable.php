@@ -26,15 +26,6 @@ class DocumentRequestsTable
     public static function configure(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(
-                function (Builder $query) {
-                    if (auth()->user()->role === 'admin') {
-                        return $query;
-                    } else {
-                        return $query->where('user_id', auth()->user()->user_id);
-                    }
-                }
-            )
             ->columns([
                 TextColumn::make('status')
                     ->badge(),
@@ -55,8 +46,8 @@ class DocumentRequestsTable
                     ->getStateUsing(function ($record) {
                         return $record->requester_last_name
                             . ', ' . $record->requester_first_name
-                            . ' ' . substr($record->requester_middle_name,0, 1) . '.'
-                            . $record->requester_suffix; ;
+                            . ' ' . substr($record->requester_middle_name,0, 1) . '. '
+                            . $record->requester_suffix;
                     })
                     ->searchable(query: function ($query, string $search) {
                         $query->where(function ($q) use ($search) {
@@ -120,6 +111,7 @@ class DocumentRequestsTable
                                     return $query->where('user_id', '!=', auth()->user()->user_id);
                                 }
                             }
+
                             return $query;
                         }
                     ))

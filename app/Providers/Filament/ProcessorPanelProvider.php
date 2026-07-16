@@ -54,6 +54,10 @@ class ProcessorPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->globalSearch(false)
+            ->favicon(asset('css/images/pma_logo.svg'))
+            ->brandName('OFFICE OF THE REGISTRAR')
+            ->brandLogo(asset('css/images/pma_logo.svg'))
+            ->brandLogoHeight('3rem')
             ->login();
     }
 }

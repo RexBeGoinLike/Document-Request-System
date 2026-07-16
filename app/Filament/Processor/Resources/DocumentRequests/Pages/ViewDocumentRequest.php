@@ -3,6 +3,7 @@
 namespace App\Filament\Processor\Resources\DocumentRequests\Pages;
 
 use App\Filament\Processor\Resources\DocumentRequests\DocumentRequestResource;
+use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 
@@ -17,11 +18,17 @@ class ViewDocumentRequest extends ViewRecord
 
     public function getHeading(): string
     {
-        return 'View Request';
+        return "Reference #{$this->record->reference_id}";
     }
+
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('back')
+                ->label('Back to List')
+                ->color('gray')
+                ->url($this->getResource()::getUrl('index')),
+
             EditAction::make(),
         ];
     }

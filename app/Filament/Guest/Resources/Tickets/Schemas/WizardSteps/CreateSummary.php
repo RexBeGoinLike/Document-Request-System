@@ -21,17 +21,6 @@ class CreateSummary
             ->schema([
                 Section::make('Fee Breakdown')
                     ->schema([
-                        TextEntry::make('s_fee_breakdown_doc')
-                            ->label('Document Fees')
-                            ->columnSpanFull()
-                            ->inlineLabel()
-                            ->prefix('PHP '),
-
-                        TextEntry::make('s_mailing_fee')
-                            ->label('Mailing Fee')
-                            ->prefix('PHP ')
-                            ->inlineLabel()
-                            ->columnSpanFull(),
 
                         Repeater::make('s_fee_breakdown')
                             ->hiddenLabel()
@@ -44,9 +33,11 @@ class CreateSummary
                             ->schema([
                                 TextEntry::make('document_type')
                                 ->label('Document Type'),
-                                TextEntry::make('fee'),
+                                TextEntry::make('fee')
+                                    ->numeric(decimalPlaces: 0),
                                 TextEntry::make('quantity'),
-                                TextEntry::make('total_fee'),
+                                TextEntry::make('total_fee')
+                                    ->numeric(decimalPlaces: 0),
                                 Hidden::make('document_type_id'),
                             ])
                             ->columnSpanFull()
@@ -54,15 +45,29 @@ class CreateSummary
                             ->addable(false)
                             ->deletable(false),
 
-                        TextEntry::make('s_total_fee')
-                            ->label('Total Fee')
+                        TextEntry::make('s_fee_breakdown_doc')
+                            ->label('Document Fees')
+                            ->columnSpanFull()
+                            ->inlineLabel()
+                            ->prefix('PHP '),
+
+                        TextEntry::make('s_mailing_fee')
+                            ->label('Mailing Fee')
+                            ->numeric(decimalPlaces: 0)
                             ->prefix('PHP ')
                             ->inlineLabel()
                             ->columnSpanFull(),
+
+                        TextEntry::make('s_total_fee')
+                            ->label('Total Fee')
+                            ->numeric(decimalPlaces: 0)
+                            ->prefix('PHP ')
+                            ->inlineLabel()
+                            ->columnSpanFull(),
+
+                        Hidden::make('f_total_fee')
                     ])
                     ->columnSpanFull(),
-
-
 
                 Group::make()
                     ->schema([
@@ -147,9 +152,7 @@ class CreateSummary
 
                     ])
                     ->columns(12)
-                    ->columnSpanFull(),
-
-
+                    ->columnSpanFull()
 
             ])
             ->columns(12);

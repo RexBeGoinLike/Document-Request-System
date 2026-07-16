@@ -3,19 +3,15 @@
 namespace App\Filament\Processor\Resources\DocumentRequests\Tables;
 
 
-use App\DocumentRequestStatus;
-use App\Models\DocumentRequest;
 use App\Models\DocumentType;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\RepeatableEntry\TableColumn;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Flex;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
-use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
-use Filament\Support\Enums\FontWeight;
-use Filament\Support\Enums\TextSize;
 use Torgodly\Html2Media\Actions\Html2MediaAction;
 use Yajra\Address\Entities\Barangay;
 use Yajra\Address\Entities\City;
@@ -27,43 +23,79 @@ class DocumentRequestInfolist
     {
         return $schema
             ->components([
-
                 Group::make()
                     ->schema([
-                        TextEntry::make('reference_id')
-                            ->label('Reference No: ')
+                        TextEntry::make('status')
+                            ->hiddenLabel()
+                            ->badge()
                             ->size('lg')
-                            ->inlineLabel()
-                            ->weight(FontWeight::Bold)
-                            ->columnSpan(5),
+                            ->columnSpanFull(),
 
-                        Group::make()
-                            ->schema([
-                                TextEntry::make('status')
+                        Flex::make([
+                                TextEntry::make('type')
                                     ->hiddenLabel()
                                     ->badge()
-                                    ->columnSpan(2),
+                                    ->size('sm')
+                                    ->icon(fn ($record): string => $record?->is_mailing ? 'heroicon-o-envelope' : 'heroicon-o-archive-box')
+                                    ->getStateUsing(fn ($record): string => $record?->is_mailing ? 'For Mailing' : 'Self Collection')
+                                    ->grow(false),
 
                                 TextEntry::make('user_processor')
                                     ->hiddenLabel()
                                     ->getStateUsing(fn ($record): string => $record?->processor->name ?? 'Not Assigned')
                                     ->badge()
-                                    ->color(fn ($state): string => $state === 'Not Assigned' ? 'danger' : 'success')
-                                    ->columnSpan(3),
+                                    ->size('sm')
+                                    ->icon(fn ($state): string => $state === 'Not Assigned' ? 'heroicon-o-x-mark' : 'heroicon-o-user')
+                                    ->color(fn ($state): string => $state === 'Not Assigned' ? 'danger' : 'success'),
 
-                                Group::make()
-                                    ->schema([
-                                        Html2MediaAction::make('print')
-                                            ->content(fn($record) => view('filament.processor.pages.document-request-print', [
-                                                'record' => $record,
-                                            ]))
-                                            ->hiddenLabel()
-                                            ->icon('heroicon-o-printer')
-                                            ->margins(10)
-                                    ])
-                                    ->columnStart(12)
-                            ])->columnSpanFull()->columns(12),
+                            Html2MediaAction::make('print')
+                                ->content(fn($record) => view('filament.processor.pages.document-request-print', [
+                                    'record' => $record,
+                                ]))
+                                ->hiddenLabel()
+                                ->icon('heroicon-o-printer')
+                                ->margins(10),
+                            ])->columnSpanFull()->from('sm'),
 
+
+                        Section::make('Requester Information')
+                            ->schema([
+                                TextEntry::make('requester_name')
+                                    ->label('Name')
+                                    ->getStateUsing(function ($record) {
+                                        return $record->requester_last_name
+                                            . ', ' . $record->requester_first_name
+                                            . ' ' . $record->requester_middle_name .
+                                            ' ' . $record->requester_suffix;
+                                    })->columnSpan(4),
+
+                                TextEntry::make('cadet_serial_number')
+                                    ->label('Serial Number')
+                                    ->columnSpan(4),
+
+                                TextEntry::make('original_class')
+                                    ->label('Original Class')
+                                    ->columnSpan(4),
+
+                                TextEntry::make('contact_number')
+                                    ->label('Contact Number')
+                                    ->columnSpan(2),
+
+                                TextEntry::make('address')
+                                    ->label('Address')
+                                    ->columnSpan(10)
+                                    ->getStateUsing(function ($record) {
+                                        return $record->street_address .
+                                            ', ' . Province::where('province_id', $record->region)->first()->name .
+                                            ', ' . City::where('city_id', $record->city)?->first()->name .
+                                            ', ' . Barangay::find($record->barangay)?->name .
+                                            ', ' . $record->zip_code;
+                                    })
+
+
+                            ])
+                            ->columns(12)
+                            ->columnSpan(12),
 
                         Tabs::make('General Information')
                             ->tabs([
@@ -108,40 +140,20 @@ class DocumentRequestInfolist
                                                 ->columnSpanFull(),
                                         ])
                                         ->columnSpanFull(),
-                                ]),
-                            Tab::make('Requester Information')
-                                ->schema([
-                                    Group::make()
-                                        ->schema([
-                                            TextEntry::make('requester_name')
-                                                ->label('Name')
-                                                ->getStateUsing(function ($record) {
-                                                    return $record->requester_last_name
-                                                        . ', ' . $record->requester_first_name
-                                                        . ' ' . substr($record->requester_middle_name,0, 1) . '.';
-                                                })->columnSpan(4),
 
-                                            TextEntry::make('cadet_serial_number')
-                                                ->label('Serial Number')
-                                                ->columnSpan(4),
+                                    TextEntry::make('mailing_fee')
+                                        ->label('Mailing Fee')
+                                        ->inlineLabel()
+                                        ->prefix('PHP ')
+                                        ->getStateUsing(fn()=>200)
+                                        ->columnSpanFull(),
 
-                                            TextEntry::make('original_class')
-                                                ->label('Original Class')
-                                                ->columnSpan(4),
-
-                                            TextEntry::make('address')
-                                                ->label('Address')
-                                                ->columnSpanFull()
-                                                ->getStateUsing(function ($record) {
-                                                    return $record->street_address .
-                                                        ', ' . Province::where('province_id', $record->region)->first()->name .
-                                                        ', ' . City::where('city_id', $record->city)?->first()->name .
-                                                        ', ' . Barangay::find($record->barangay)?->name .
-                                                        ', ' . $record->zip_code;
-                                                })
-                                        ])
-                                        ->columns(12)
-                                        ->columnSpan(12),
+                                    TextEntry::make('f_total_fee')
+                                        ->label('Total Fee')
+                                        ->inlineLabel()
+                                        ->numeric(decimalPlaces: 0)
+                                        ->prefix('PHP ')
+                                        ->columnSpanFull()
                                 ]),
                             Tab::make('Representative Information')
                                 ->schema([
@@ -157,7 +169,8 @@ class DocumentRequestInfolist
                                                 ->getStateUsing(function ($record) {
                                                     return $record->representative_last_name
                                                         . ', ' . $record->representative_first_name
-                                                        . ' ' . substr($record->representative_middle_name,0, 1) . '.';
+                                                        . ' ' . $record->representative_middle_name.
+                                                        ' ' . $record->representative_suffix;
                                                 })->columnSpanFull()
                                                 ->visible(fn($record) => $record->has_representative),
 
@@ -196,7 +209,8 @@ class DocumentRequestInfolist
 
                                                                 return $delivery->recipient_last_name
                                                                     . ', ' . $delivery->recipient_first_name
-                                                                    . ' ' . substr($delivery->recipient_middle_name, 0, 1) . '.';
+                                                                    . ' ' . $delivery->recipient_middle_name .
+                                                                    ' ' . $delivery->recipient_suffix;
                                                             })
                                                             ->columnSpan(7),
 
@@ -219,6 +233,14 @@ class DocumentRequestInfolist
                                                                     ', ' . Barangay::find($delivery->barangay)?->name .
                                                                     ', ' . $delivery->zip_code;
                                                             }),
+
+                                                        TextEntry::make('deliveryDetail.courier_name')
+                                                            ->columnSpan(3)
+                                                            ->visible(fn ($record) => $record->deliveryDetail->courier_name ?? false),
+
+                                                        TextEntry::make('deliveryDetail.tracking_number')
+                                                            ->columnSpan(4)
+                                                            ->visible(fn ($record) => $record->deliveryDetail->courier_name ?? false),
 
                                                     ])
                                                     ->visible(fn ($record) => $record->is_mailing)

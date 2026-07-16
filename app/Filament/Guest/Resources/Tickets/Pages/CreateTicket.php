@@ -3,6 +3,7 @@
 namespace App\Filament\Guest\Resources\Tickets\Pages;
 
 use App\Filament\Guest\Resources\Tickets\TicketResource;
+use App\Models\DocumentRequest;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\HtmlString;
@@ -17,7 +18,11 @@ class CreateTicket extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['reference_id'] = strtoupper(Str::random(11));
+        do {
+            $referenceId = strtoupper(Str::random(11));
+        } while (DocumentRequest::where('reference_id', $referenceId)->exists());
+
+        $data['reference_id'] = $referenceId;
 
         return $data;
     }

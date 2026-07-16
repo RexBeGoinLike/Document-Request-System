@@ -35,6 +35,7 @@ return new class extends Migration
             $table->string('city');
             $table->string('barangay');
             $table->tinyInteger('zip_code');
+            $table->decimal('f_total_fee');
             $table->boolean('is_mailing')->default(false);
             $table->boolean('has_representative')->default(false);
             $table->string('representative_first_name', 20)->nullable();
@@ -45,6 +46,7 @@ return new class extends Migration
             $table->string('representative_contact', 11)->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
+            $table->text('remarks')->nullable();
             $table->softDeletes();
         });
     }
