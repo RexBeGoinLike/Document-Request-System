@@ -61,8 +61,8 @@ class DocumentRequestForm
                             ->extraAttributes([
                                 'class' => '[&_.fi-btn]:[--btn-bg:var(--color-600)] [&_.fi-btn]:[--btn-text:white]'
                             ])
-                            ->default(fn ($record) => $record?->status?->value)
-                            ->grouped(),
+                            ->grouped()
+                            ->required(),
 
                         Select::make('user_id')
                             ->label('Processor')
@@ -76,7 +76,7 @@ class DocumentRequestForm
                             ->required(fn () => auth()->user()->role !== 'admin'),
 
                         Group::make()
-                            ->relationship('deliveryDetail', condition: fn (?array $state): bool => (bool) ($state['is_mailing_mirror'] ?? false))
+                            ->relationship('deliveryDetail', condition: fn (Get $get) => $get('is_mailing'))
                             ->schema([
                                 TextInput::make('courier_name')
                                     ->label('Courier Name')
@@ -136,7 +136,7 @@ class DocumentRequestForm
                                                 Select::make('document_type')
                                                     ->label('Document Type')
                                                     ->options(
-                                                        DocumentType::query()->pluck('document_type', 'document_type_id')->all()
+                                                        DocumentType::query()->pluck('document_type', 'id')->all()
                                                     )
                                                     ->formatStateUsing(
                                                         fn (Get $get) => $get('document_type_id')
@@ -144,7 +144,7 @@ class DocumentRequestForm
                                                     ->afterStateUpdated(
                                                         function ($state, Set $set, Get $get) {
                                                             $set('document_type_id', $state);
-                                                            $set('fee', DocumentType::where('document_type_id', $state)->first()->document_fee);
+                                                            $set('fee', DocumentType::find($state)->first()->document_fee);
                                                             $set('total_fee', $get('quantity') * $get('fee'));
                                                         }
                                                     )
@@ -186,32 +186,32 @@ class DocumentRequestForm
                             ->schema([
                                 Group::make()
                                     ->schema([
-                                        TextInput::make('requester_first_name')
+                                        TextInput::make('first_name')
                                             ->label('First Name')
                                             ->required()
                                             ->columnSpan(4),
 
-                                        TextInput::make('requester_last_name')
+                                        TextInput::make('last_name')
                                             ->label('Last Name')
                                             ->required()
                                             ->columnSpan(4),
 
-                                        TextInput::make('requester_middle_name')
+                                        TextInput::make('middle_name')
                                             ->label('Middle Name')
                                             ->required()
                                             ->columnSpan(2),
 
-                                        TextInput::make('requester_suffix')
+                                        TextInput::make('suffix')
                                             ->label('Suffix')
                                             ->columnSpan(2),
 
-                                        TextInput::make('cadet_serial_number')
+                                        TextInput::make('serial_number')
                                             ->label('Serial Number')
                                             ->required()
                                             ->columnSpan(6),
 
-                                        TextInput::make('original_class')
-                                            ->label('Original Class')
+                                        TextInput::make('class')
+                                            ->label('Class')
                                             ->required()
                                             ->columnSpan(6),
 
@@ -282,63 +282,69 @@ class DocumentRequestForm
                             ]),
                         Tab::make('Representative Information')
                             ->schema([
-                                Group::make()
-                                    ->schema([
-                                        Checkbox::make('has_representative')
-                                            ->label('I WILL HAVE SOMEONE COLLECT THE DOCUMENT/S FOR ME')
-                                            ->formatStateUsing(fn (Get $get) => !empty($get('representative_last_name')))
-                                            ->columnSpanFull()
-                                            ->live()
-                                            ->afterStateUpdated(
-                                                function ($state, Set $set) {
-                                                        $set('representative_last_name', null);
-                                                        $set('representative_first_name', null);
-                                                        $set('representative_middle_name', null);
-                                                        $set('representative_suffix', null);
-                                                        $set('representative_office', null);
-                                                        $set('representative_contact', null);
-                                                }
-                                            ),
+                                Checkbox::make('has_representative')
+                                    ->label('I WILL HAVE SOMEONE COLLECT THE DOCUMENT/S FOR ME')
+                                    ->columnSpanFull()
+                                    ->live()
+                                    ->afterStateUpdated(
+                                        function ($state, Set $set) {
+                                            $set('representative.last_name', null);
+                                            $set('representative.first_name', null);
+                                            $set('representative.middle_name', null);
+                                            $set('representative.suffix', null);
+                                            $set('representative.office', null);
+                                            $set('representative.contact', null);
+                                        }
+                                    ),
 
-                                        TextInput::make('representative_first_name')
+                                Group::make()
+                                    ->relationship('representative', condition: fn (Get $get) => $get('has_representative'))
+                                    ->schema([
+                                        TextInput::make('first_name')
                                             ->label('First Name')
                                             ->columnSpan(4)
-                                            ->visible(fn (Get $get): bool => $get('has_representative'))
-                                            ->required(fn (Get $get): bool => $get('has_representative'))
+                                            ->visible(fn (Get $get): bool => $get('../has_representative'))
+                                            ->required(fn (Get $get): bool => $get('../has_representative'))
                                             ->dehydrated(true),
 
-                                        TextInput::make('representative_last_name')
+                                        TextInput::make('last_name')
                                             ->label('Last Name')
                                             ->columnSpan(4)
-                                            ->visible(fn (Get $get): bool => $get('has_representative'))
-                                            ->required(fn (Get $get): bool => $get('has_representative'))
+                                            ->visible(fn (Get $get): bool => $get('../has_representative'))
+                                            ->required(fn (Get $get): bool => $get('../has_representative'))
                                             ->dehydrated(),
 
-                                        TextInput::make('representative_middle_name')
+                                        TextInput::make('middle_name')
                                             ->label('Middle Name')
                                             ->columnSpan(2)
-                                            ->visible(fn (Get $get): bool => $get('has_representative'))
-                                            ->required(fn (Get $get): bool => $get('has_representative'))
+                                            ->visible(fn (Get $get): bool => $get('../has_representative'))
+                                            ->required(fn (Get $get): bool => $get('../has_representative'))
                                             ->dehydrated(),
 
-                                        TextInput::make('representative_suffix')
+                                        TextInput::make('suffix')
                                             ->label('Suffix')
                                             ->columnSpan(2)
-                                            ->visible(fn (Get $get): bool => $get('has_representative'))
+                                            ->visible(fn (Get $get): bool => $get('../has_representative'))
                                             ->dehydrated(),
 
-                                        TextInput::make('representative_office')
+                                        TextInput::make('relationship')
+                                            ->label('Relationship')
+                                            ->columnSpan(4)
+                                            ->visible(fn (Get $get): bool => $get('../has_representative'))
+                                            ->required(fn (Get $get): bool => $get('../has_representative'))
+                                            ->dehydrated(),
+
+                                        TextInput::make('office')
                                             ->label('Office')
-                                            ->columnSpan(6)
-                                            ->visible(fn (Get $get): bool => $get('has_representative'))
-                                            ->required(fn (Get $get): bool => $get('has_representative'))
+                                            ->columnSpan(4)
+                                            ->visible(fn (Get $get): bool => $get('../has_representative'))
                                             ->dehydrated(),
 
-                                        TextInput::make('representative_contact')
+                                        TextInput::make('contact')
                                             ->label('Contact Number')
-                                            ->columnSpan(6)
-                                            ->visible(fn (Get $get): bool => $get('has_representative'))
-                                            ->required(fn (Get $get): bool => $get('has_representative'))
+                                            ->columnSpan(4)
+                                            ->visible(fn (Get $get): bool => $get('../has_representative'))
+                                            ->required(fn (Get $get): bool => $get('../has_representative'))
                                             ->dehydrated(),
                                     ])
                                     ->columns(12)
@@ -350,40 +356,37 @@ class DocumentRequestForm
                                     ->label('I WANT THE DOCUMENT/S TO BE MAILED TO ME')
                                     ->columnSpanFull()
                                     ->live()
-                                    ->afterStateHydrated(fn (Set $set, $state) => $set('deliveryDetail.is_mailing_mirror', $state))
-                                    ->afterStateUpdated(fn (Set $set, $state) => $set('deliveryDetail.is_mailing_mirror', $state))
                                     ->visible(),
 
                                 Group::make()
-                                    ->relationship('deliveryDetail', condition: fn (?array $state): bool => (bool) ($state['is_mailing_mirror'] ?? false))
+                                    ->relationship('deliveryDetail', condition: fn (Get $get) => $get('is_mailing'))
                                     ->schema([
-                                        Hidden::make('is_mailing_mirror')
-                                        ->default(fn (Get $get) => $get('../is_mailing')),
 
-                                        TextInput::make('recipient_first_name')
+
+                                        TextInput::make('first_name')
                                             ->label('First Name')
                                             ->columnSpan(4)
                                             ->visible(fn (Get $get): bool => $get('../is_mailing'))
                                             ->required(fn (Get $get): bool => $get('../is_mailing')),
 
-                                        TextInput::make('recipient_last_name')
+                                        TextInput::make('last_name')
                                             ->label('Last Name')
                                             ->columnSpan(4)
                                             ->visible(fn (Get $get): bool => $get('../is_mailing'))
                                             ->required(fn (Get $get): bool => $get('../is_mailing')),
 
-                                        TextInput::make('recipient_middle_name')
+                                        TextInput::make('middle_name')
                                             ->label('Middle Name')
                                             ->columnSpan(2)
                                             ->visible(fn (Get $get): bool => $get('../is_mailing'))
                                             ->required(fn (Get $get): bool => $get('../is_mailing')),
 
-                                        TextInput::make('recipient_suffix')
+                                        TextInput::make('suffix')
                                             ->label('Suffix')
                                             ->columnSpan(2)
                                             ->visible(fn (Get $get): bool => $get('../is_mailing')),
 
-                                        TextInput::make('recipient_contact_number')
+                                        TextInput::make('contact_number')
                                             ->label('Contact Number')
                                             ->columnSpanFull()
                                             ->visible(fn (Get $get): bool => $get('../is_mailing')),

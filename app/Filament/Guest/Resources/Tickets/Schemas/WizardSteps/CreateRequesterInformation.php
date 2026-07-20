@@ -24,7 +24,7 @@ class CreateRequesterInformation
                 Section::make('requester_information')
                     ->heading('Requester Information')
                     ->schema([
-                        TextInput::make('requester_first_name')
+                        TextInput::make('first_name')
                             ->label('First Name')
                             ->validationAttribute('First Name')
                             ->autocapitalize('words')
@@ -32,7 +32,7 @@ class CreateRequesterInformation
                             ->maxLength(20)
                             ->columnSpan([4]),
 
-                        TextInput::make('requester_last_name')
+                        TextInput::make('last_name')
                             ->label('Last Name')
                             ->validationAttribute('Last Name')
                             ->autocapitalize('words')
@@ -40,7 +40,7 @@ class CreateRequesterInformation
                             ->maxLength(15)
                             ->columnSpan([3]),
 
-                        TextInput::make('requester_middle_name')
+                        TextInput::make('middle_name')
                             ->label('Middle Name')
                             ->validationAttribute('Middle Name')
                             ->autocapitalize('words')
@@ -48,14 +48,14 @@ class CreateRequesterInformation
                             ->maxLength(15)
                             ->columnSpan([3]),
 
-                        TextInput::make('requester_suffix')
+                        TextInput::make('suffix')
                             ->label('Suffix')
                             ->validationAttribute('Suffix')
                             ->autocapitalize('words')
                             ->maxLength(20)
                             ->columnSpan([2]),
 
-                        TextInput::make('cadet_serial_number')
+                        TextInput::make('serial_number')
                             ->label('Cadet (CCAFP) Serial Number')
                             ->validationAttribute('Serial Number')
                             ->autocapitalize('words')
@@ -63,11 +63,13 @@ class CreateRequesterInformation
                             ->maxLength(4)
                             ->columnSpan([6]),
 
-                        TextInput::make('original_class')
-                            ->validationAttribute('Original Class')
+                        TextInput::make('class')
+                            ->label('Class (Year)')
                             ->autocapitalize('words')
                             ->required()
-                            ->maxLength(20)
+                            ->numeric()
+                            ->maxLength(4)
+                            ->minLength(4)
                             ->columnSpan([6]),
 
                         TextInput::make('contact_number')
@@ -90,6 +92,7 @@ class CreateRequesterInformation
                             ->columnSpanFull(),
 
                         Select::make('region')
+
                             ->label('Province / Major HUC')
                             ->options(Province::pluck('name', 'province_id'))
                             ->searchable()

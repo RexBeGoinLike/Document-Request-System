@@ -19,28 +19,21 @@ use Yajra\Address\Entities\Barangay;
 #[Fillable([
     'reference_id',
     'user_id',
-    'requester_first_name',
-    'requester_last_name',
-    'requester_middle_name',
-    'requester_suffix',
-    'cadet_serial_number',
-    'original_class',
+    'first_name',
+    'last_name',
+    'middle_name',
+    'suffix',
+    'serial_number',
+    'class',
     'contact_number',
     'street_address',
     'region',
     'city',
-    'f_total_fee',
+    'amount_payable',
     'barangay',
     'zip_code',
-    'self_collect',
-    'is_mailing',
     'has_representative',
-    'representative_first_name',
-    'representative_last_name',
-    'representative_middle_name',
-    'representative_suffix',
-    'representative_office',
-    'representative_contact',
+    'is_mailing',
     'status',
 ])]
 class DocumentRequest extends Model
@@ -49,7 +42,6 @@ class DocumentRequest extends Model
     use LogsActivity;
     use InteractsWithTimeline;
 
-    protected $primaryKey = 'request_id';
 
     protected $casts = [
         'for_mailing' => 'boolean',
@@ -70,14 +62,18 @@ class DocumentRequest extends Model
     }
 
     public function requestQuantity(): HasMany {
-        return $this->hasMany(RequestQuantity::class, 'request_id', 'request_id');
+        return $this->hasMany(RequestQuantity::class, 'request_id');
     }
 
     public function processor(): BelongsTo {
-        return $this->belongsTo(User::class, 'user_id', 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function deliveryDetail(): HasOne {
-        return $this->hasOne(DeliveryDetail::class, 'request_id', 'request_id');
+        return $this->hasOne(DeliveryDetail::class, 'request_id');
+    }
+
+    public function representative(): HasOne {
+        return $this->hasOne(Representative::class, 'request_id');
     }
 }

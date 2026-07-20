@@ -12,9 +12,8 @@ use Spatie\Activitylog\Support\LogOptions;
 class DocumentType extends Model
 {
 
-    protected $primaryKey = 'document_type_id';
     public function requestQuantity(): HasMany {
-        return $this->hasMany(RequestQuantity::class, 'document_type_id', 'document_type_id');
+        return $this->hasMany(RequestQuantity::class, 'document_type_id');
     }
 
     public function getActivitylogOptions(): LogOptions

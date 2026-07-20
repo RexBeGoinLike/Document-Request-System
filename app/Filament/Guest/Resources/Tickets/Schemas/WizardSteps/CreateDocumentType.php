@@ -48,7 +48,7 @@ class CreateDocumentType
                                         ])
                                         ->default(
                                             $documents->map(fn ($document) => [
-                                                'document_type_id' => $document->document_type_id,
+                                                'document_type_id' => $document->id,
                                                 'document_type' => $document->document_type,
                                                 'fee' => $document->document_fee,
                                                 'selected' => false,
@@ -102,16 +102,8 @@ class CreateDocumentType
                                                 ->live()
                                                 ->afterStateUpdated(function (?string $state, Get $get, Set $set) {
 
-
-                                                    logger('QTY DEBUG', [
-                                                        'selected_raw' => $get('selected'),
-                                                        'document_type_id' => $get('document_type_id'),
-                                                        'state' => $state,
-                                                    ]);
-
                                                     $documentTypeId = $get('document_type_id');
 
-                                                    //Delete the thing if 0
 
                                                     if ((int) $state <= 0 && $state != null) {
                                                         $breakdown = collect($get('../../fee_breakdown') ?? [])

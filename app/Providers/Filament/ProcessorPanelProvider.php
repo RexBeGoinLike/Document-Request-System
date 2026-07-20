@@ -52,7 +52,10 @@ class ProcessorPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                AuthenticateSession::class,
             ])
+            ->topNavigation()
+            ->navigation(fn () => auth()->user()->role === 'admin')
             ->globalSearch(false)
             ->favicon(asset('css/images/pma_logo.svg'))
             ->brandName('OFFICE OF THE REGISTRAR')

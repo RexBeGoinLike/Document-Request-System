@@ -65,7 +65,7 @@ class CreateSummary
                             ->inlineLabel()
                             ->columnSpanFull(),
 
-                        Hidden::make('f_total_fee')
+                        Hidden::make('amount_payable')
                     ])
                     ->columnSpanFull(),
 
@@ -73,23 +73,23 @@ class CreateSummary
                     ->schema([
                         Section::make('Requester\'s Information')
                             ->schema([
-                                TextEntry::make('s_requester_name')
+                                TextEntry::make('s_full_name')
                                     ->label('Requester\'s Full Name')
                                     ->columnSpan(4),
 
-                                TextEntry::make('s_cadet_serial_number')
+                                TextEntry::make('s_serial_number')
                                     ->label('Serial Number')
                                     ->columnSpan(4),
 
-                                TextEntry::make('s_original_class')
-                                    ->label('Cadet Class')
+                                TextEntry::make('s_class')
+                                    ->label('Class')
                                     ->columnSpan(4),
 
                                 TextEntry::make('s_contact_number')
                                     ->label('Contact Number')
                                     ->columnSpan(4),
 
-                                TextEntry::make('s_requester_address')
+                                TextEntry::make('s_address')
                                     ->label('Requester\'s Full Address')
                                     ->columnSpan(8),
                             ])
@@ -110,12 +110,12 @@ class CreateSummary
                                     ->columnSpanFull()
                                     ->visible(fn (Get $get) => $get('s_rep_selected')),
 
-                                TextEntry::make('s_representative_office')
+                                TextEntry::make('s_office')
                                     ->label('Office')
                                     ->columnSpan(7)
                                     ->visible(fn (Get $get) => $get('s_rep_selected')),
 
-                                TextEntry::make('s_representative_contact')
+                                TextEntry::make('s_contact_number')
                                     ->label('Contact Number')
                                     ->columnSpan([5])
                                     ->visible(fn (Get $get) => $get('s_rep_selected')),

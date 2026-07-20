@@ -14,72 +14,80 @@ use Filament\Schemas\Components\Group;
 class CreateRepresentativeInformation
 {
     public static function make(): Step{
-        return Step::make('representative_step')
+
+        $checkboxPath = '../has_representative';
+
+        return Step::make('step')
             ->label('Representative Information')
             ->schema([
+                Checkbox::make('has_representative')
+                    ->live()
+                    ->label('I WILL HAVE SOMEONE COLLECT THE DOCUMENT/S FOR ME')
+                    ->columnSpanFull(),
 
-                Section::make('representative_information')
+                Section::make('information')
+                    ->relationship('representative', condition: fn (Get $get) => (bool) $get('has_representative'))
                     ->heading('Representative Information')
                     ->schema([
-                        Checkbox::make('has_representative')
-                            ->live()
-                            ->label('I WILL HAVE SOMEONE COLLECT THE DOCUMENT/S FOR ME')
-                            ->columnSpan(12),
 
-                        Group::make()
-                            ->schema([
-                                TextInput::make('representative_first_name')
-                                    ->label('First Name')
-                                    ->autocapitalize('words')
-                                    ->columnSpan([4])
-                                    ->maxLength(20)
-                                    ->required(fn (Get $get) : bool => $get('has_representative'))
-                                    ->disabled(fn (Get $get) : bool => !  $get('has_representative')),
+                        TextInput::make('first_name')
+                            ->label('First Name')
+                            ->autocapitalize('words')
+                            ->columnSpan([4])
+                            ->maxLength(20)
+                            ->required(fn (Get $get) : bool => $get($checkboxPath ))
+                            ->disabled(fn (Get $get) : bool => !  $get($checkboxPath )),
 
-                                TextInput::make('representative_last_name')
-                                    ->label('Last Name')
-                                    ->autocapitalize('words')
-                                    ->columnSpan([3])
-                                    ->maxLength(15)
-                                    ->required(fn (Get $get) : bool => $get('has_representative'))
-                                    ->disabled(fn (Get $get) : bool => ! $get('has_representative')),
+                        TextInput::make('last_name')
+                            ->label('Last Name')
+                            ->autocapitalize('words')
+                            ->columnSpan([3])
+                            ->maxLength(15)
+                            ->required(fn (Get $get) : bool => $get($checkboxPath ))
+                            ->disabled(fn (Get $get) : bool => ! $get($checkboxPath )),
 
-                                TextInput::make('representative_middle_name')
-                                    ->label('Middle Name')
-                                    ->autocapitalize('words')
-                                    ->columnSpan([3])
-                                    ->maxLength(15)
-                                    ->required(fn (Get $get) : bool => $get('has_representative'))
-                                    ->disabled(fn (Get $get) : bool => ! $get('has_representative')),
+                        TextInput::make('middle_name')
+                            ->label('Middle Name')
+                            ->autocapitalize('words')
+                            ->columnSpan([3])
+                            ->maxLength(15)
+                            ->required(fn (Get $get) : bool => $get($checkboxPath ))
+                            ->disabled(fn (Get $get) : bool => ! $get($checkboxPath )),
 
-                                TextInput::make('representative_suffix')
-                                    ->label('Suffix')
-                                    ->autocapitalize('words')
-                                    ->columnSpan([2])
-                                    ->maxLength(20)
-                                    ->disabled(fn (Get $get) : bool => ! $get('has_representative')),
+                        TextInput::make('suffix')
+                            ->label('Suffix')
+                            ->autocapitalize('words')
+                            ->columnSpan([2])
+                            ->maxLength(20)
+                            ->disabled(fn (Get $get) : bool => ! $get($checkboxPath )),
 
-                                TextInput::make('representative_office')
-                                    ->label('Office')
-                                    ->autocapitalize('words')
-                                    ->columnSpan([7])
-                                    ->maxLength(20)
-                                    ->required(fn (Get $get) : bool => $get('has_representative'))
-                                    ->disabled(fn (Get $get) : bool => ! $get('has_representative')),
+                        TextInput::make('relationship')
+                            ->label('Relationship')
+                            ->autocapitalize('words')
+                            ->columnSpan(4)
+                            ->maxLength(15)
+                            ->required(fn (Get $get) : bool => $get($checkboxPath ))
+                            ->disabled(fn (Get $get) : bool => ! $get($checkboxPath )),
 
+                        TextInput::make('office')
+                            ->label('Office')
+                            ->autocapitalize('words')
+                            ->columnSpan([4])
+                            ->maxLength(20)
+                            ->disabled(fn (Get $get) : bool => ! $get($checkboxPath )),
 
-                                TextInput::make('representative_contact')
-                                    ->label('Contact Number')
-                                    ->autocapitalize('words')
-                                    ->columnSpan([5])
-                                    ->length(11)
-                                    ->required(fn (Get $get) : bool => $get('has_representative'))
-                                    ->disabled(fn (Get $get) : bool => ! $get('has_representative')),
-                            ])
-                                ->columns(12)
-                                ->columnSpanFull()
-                                ->visible(fn (Get $get) : bool => $get('has_representative'))
-                    ])->columns(12)
-            ]);
+                        TextInput::make('contact')
+                            ->label('Contact Number')
+                            ->autocapitalize('words')
+                            ->columnSpan(4)
+                            ->length(11)
+                            ->required(fn (Get $get) : bool => $get($checkboxPath ))
+                            ->disabled(fn (Get $get) : bool => ! $get($checkboxPath )),
+                    ])
+                    ->visible(fn (Get $get) : bool => $get('has_representative'))
+                    ->columnSpanFull()
+                    ->columns(12)
+            ])
+            ->columnSpanFull();
     }
 }

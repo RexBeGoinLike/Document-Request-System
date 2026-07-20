@@ -11,7 +11,7 @@ class ListDocumentRequests extends ListRecords
     protected static string $resource = DocumentRequestResource::class;
     public function getHeading(): string
     {
-        return 'Manage Requests';
+        return '';
     }
     public function getBreadcrumbs(): array
     {

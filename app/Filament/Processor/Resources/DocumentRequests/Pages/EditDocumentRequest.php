@@ -38,9 +38,10 @@ class EditDocumentRequest extends EditRecord
             $data[$field] = $raw[$field] ?? null;
         }
 
+
         return $data;
     }
-    
+
 
     public function getBreadcrumbs(): array
     {

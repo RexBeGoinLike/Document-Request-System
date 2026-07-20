@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('delivery_details', function (Blueprint $table) {
-            $table->id('delivery_detail_id');
+            $table->id();
             $table->foreignId('request_id')
-                ->constrained('document_requests', 'request_id')
+                ->constrained('document_requests')
                 ->onUpdate('cascade');
 
             $table->foreignId('user_id')
@@ -22,16 +22,16 @@ return new class extends Migration
                 ->constrained('users', 'user_id')
                 ->onUpdate('cascade');
 
-            $table->string('recipient_first_name', 20);
-            $table->string('recipient_last_name', 15);
-            $table->string('recipient_middle_name', 15)->nullable();
-            $table->string('recipient_suffix', 20)->nullable();
+            $table->string('first_name', 20);
+            $table->string('last_name', 15);
+            $table->string('middle_name', 15)->nullable();
+            $table->string('suffix', 20)->nullable();
             $table->text('street_address');
             $table->string('region');
             $table->string('city');
             $table->string('barangay');
             $table->integer('zip_code');
-            $table->string('recipient_contact_number', 11);
+            $table->string('contact_number', 11);
 
             $table->string('tracking_number', 20)->nullable();
             $table->string('courier_name', 20)->nullable();

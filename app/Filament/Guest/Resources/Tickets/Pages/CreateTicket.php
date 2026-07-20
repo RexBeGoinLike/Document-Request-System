@@ -3,9 +3,13 @@
 namespace App\Filament\Guest\Resources\Tickets\Pages;
 
 use App\Filament\Guest\Resources\Tickets\TicketResource;
+use App\Filament\Processor\Resources\DocumentRequests\DocumentRequestResource;
 use App\Models\DocumentRequest;
 use Filament\Actions\Action;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
+use Filament\Schemas\Schema;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 
@@ -79,4 +83,5 @@ class CreateTicket extends CreateRecord
     {
         return "";
     }
+
 }

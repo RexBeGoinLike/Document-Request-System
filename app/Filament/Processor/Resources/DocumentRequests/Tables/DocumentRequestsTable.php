@@ -41,35 +41,51 @@ class DocumentRequestsTable
                     ->label('Reference No.')
                     ->searchable(),
 
-                TextColumn::make('requester_name')
+                TextColumn::make('name')
                     ->label('Name')
                     ->getStateUsing(function ($record) {
-                        return $record->requester_last_name
-                            . ', ' . $record->requester_first_name
-                            . ' ' . substr($record->requester_middle_name,0, 1) . '. '
-                            . $record->requester_suffix;
+                        return $record->last_name
+                            . ', ' . $record->first_name
+                            . ' ' . substr($record->middle_name,0, 1) . '. '
+                            . $record->suffix;
                     })
                     ->searchable(query: function ($query, string $search) {
                         $query->where(function ($q) use ($search) {
-                            $q->where('requester_first_name', 'like', "%{$search}%")
-                                ->orWhere('requester_middle_name', 'like', "%{$search}%")
-                                ->orWhere('requester_last_name', 'like', "%{$search}%")
-                                ->orWhere('requester_suffix', 'like', "%{$search}%");
+                            $q->where('first_name', 'like', "%{$search}%")
+                                ->orWhere('middle_name', 'like', "%{$search}%")
+                                ->orWhere('last_name', 'like', "%{$search}%")
+                                ->orWhere('suffix', 'like', "%{$search}%");
                         });
                     })
                     ->sortable(),
-                TextColumn::make('cadet_serial_number')
+
+                TextColumn::make('representative_name')
+                ->label('Representative')
+                ->getStateUsing(function ($record) {
+                    return ($record->has_representative === true) ?
+                        ($record?->representative?->last_name
+                    . ', ' . $record?->representative?->first_name
+                    . ' ' . substr($record?->representative?->middle_name, 0, 1)
+                    . '. ' . $record?->representative?->suffix) : 'None';
+                }),
+
+                TextColumn::make('serial_number')
                     ->label('Serial')
                     ->searchable()
                     ->sortable(),
 
             ])
             ->filters([
+
+
                 Filter::make('status')
                     ->schema([
                         ToggleButtons::make('status')
                             ->options(DocumentRequestStatus::class)
                             ->inline()
+                            ->extraAttributes(['class' => 'text-sm'])
+                            ->grouped()
+
                     ])
                     ->query(fn (Builder $query, array $data): Builder => $query->when(
                         $data['status'],
@@ -78,16 +94,16 @@ class DocumentRequestsTable
                     ->indicateUsing(fn (array $data): ?string => $data['status']
                         ? 'Status: ' . DocumentRequestStatus::from($data['status'])->getLabel()
                         : null)
-                    ->columnSpanFull()
-                ,
+                    ->columnSpanFull(),
+
 
                 Filter::make('processor')
                     ->schema([
                         ToggleButtons::make('processor')
                             ->options([
                                 'All' => 'All',
-                                'Assigned' => 'Assigned',
-                                'Not Assigned' => 'Not Assigned'
+                                'Assigned' => 'Handled',
+                                'Not Assigned' => 'Open'
 
                             ])
                             ->grouped()

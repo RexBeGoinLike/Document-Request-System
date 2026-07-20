@@ -13,7 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('document_requests', function (Blueprint $table) {
-            $table->id('request_id');
+            $table->id();
 
             $table->string('reference_id', 11)->unique();
 
@@ -23,30 +23,23 @@ return new class extends Migration
                 ->onUpdate('cascade');
 
             $table->string('status')->default(DocumentRequestStatus::FOR_REVIEW->value);
-            $table->string('requester_first_name', 20);
-            $table->string('requester_last_name', 15);
-            $table->string('requester_middle_name', 15);
-            $table->string('requester_suffix', 20)->nullable();
-            $table->string('cadet_serial_number', 4);
-            $table->string('original_class', 20);
+            $table->string('first_name', 20);
+            $table->string('last_name', 15);
+            $table->string('middle_name', 15);
+            $table->string('suffix', 20)->nullable();
+            $table->string('serial_number', 4);
+            $table->string('class', 20);
             $table->string('contact_number', 11);
             $table->text('street_address');
             $table->string('region');
             $table->string('city');
             $table->string('barangay');
-            $table->tinyInteger('zip_code');
-            $table->decimal('f_total_fee');
+            $table->string('zip_code', 4);
+            $table->decimal('amount_payable');
             $table->boolean('is_mailing')->default(false);
             $table->boolean('has_representative')->default(false);
-            $table->string('representative_first_name', 20)->nullable();
-            $table->string('representative_last_name', 15)->nullable();
-            $table->string('representative_middle_name', 15)->nullable();
-            $table->string('representative_suffix', 20)->nullable();
-            $table->string('representative_office', 20)->nullable();
-            $table->string('representative_contact', 11)->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
-            $table->text('remarks')->nullable();
             $table->softDeletes();
         });
     }

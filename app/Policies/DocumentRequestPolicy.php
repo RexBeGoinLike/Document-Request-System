@@ -12,7 +12,7 @@ class DocumentRequestPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function viewAny(?User $user): bool
     {
         return true;
     }
@@ -38,8 +38,11 @@ class DocumentRequestPolicy
      */
     public function update(User $user, DocumentRequest $documentRequest): bool
     {
-        return $documentRequest->status !== DocumentRequestStatus::REJECTED
-            && ($user->role === 'admin' || $user->user_id === $documentRequest->user_id);
+        return ! in_array($documentRequest->status, [
+            DocumentRequestStatus::DELIVERED,
+            DocumentRequestStatus::COLLECTED
+        ]) && ($user->role === 'admin' || $user->user_id === $documentRequest->user_id);
+
     }
 
     /**

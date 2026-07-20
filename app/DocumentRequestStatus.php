@@ -11,9 +11,6 @@ enum DocumentRequestStatus : string implements HasLabel, HasColor, HasIcon
 {
     case FOR_REVIEW = 'for_review';
 
-    case REJECTED = 'rejected';
-    case APPROVED = 'approved';
-
     case FOR_COLLECTION = 'for_collection';
     case COLLECTED = 'collected';
     case FOR_DISPATCH = 'for_dispatch';
@@ -24,8 +21,6 @@ enum DocumentRequestStatus : string implements HasLabel, HasColor, HasIcon
     {
        return match ($this) {
            self::FOR_REVIEW => 'FOR REVIEW',
-           self::APPROVED => 'APPROVED',
-           self::REJECTED => 'REJECTED',
            self::FOR_COLLECTION => 'FOR COLLECTION',
            self::COLLECTED => 'COLLECTED',
            self::FOR_DISPATCH => 'FOR DISPATCH',
@@ -39,8 +34,6 @@ enum DocumentRequestStatus : string implements HasLabel, HasColor, HasIcon
     {
         return match ($this) {
             self::FOR_REVIEW => 'warning',
-            self::APPROVED => 'success',
-            self::REJECTED => 'danger',
             self::FOR_COLLECTION => 'warning',
             self::COLLECTED => 'success',
             self::FOR_DISPATCH => 'warning',
@@ -54,8 +47,6 @@ enum DocumentRequestStatus : string implements HasLabel, HasColor, HasIcon
     {
         return match ($this) {
             self::FOR_REVIEW => 'heroicon-o-clock',
-            self::APPROVED => 'heroicon-o-hand-thumb-up',
-            self::REJECTED => 'heroicon-o-hand-thumb-down',
             self::FOR_COLLECTION => 'heroicon-o-information-circle',
             self::COLLECTED => 'heroicon-o-check-circle',
             self::FOR_DISPATCH => 'heroicon-o-paper-airplane',

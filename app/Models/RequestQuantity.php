@@ -23,7 +23,6 @@ class RequestQuantity extends Model
 
     protected $table = 'request_quantities';
 
-    protected $primaryKey = 'request_quantity_id';
 
     public function getActivitylogOptions(): LogOptions
     {
@@ -35,11 +34,11 @@ class RequestQuantity extends Model
         return TimelineBuilder::make($this)->fromActivityLog();
     }
 
-    public function documentRequestsss(): BelongsToMany {
-        return $this->belongsToMany(DocumentRequest::class, 'request_id', 'request_id');
+    public function documentRequests(): BelongsToMany {
+        return $this->belongsToMany(DocumentRequest::class, 'request_id');
     }
 
     public Function documentType(): BelongsTo {
-        return $this->BelongsTo(DocumentType::class, 'document_type_id', 'document_type_id');
+        return $this->BelongsTo(DocumentType::class, 'document_type_id');
     }
 }

@@ -25,17 +25,19 @@ class DocumentRequestInfolist
             ->components([
                 Group::make()
                     ->schema([
-                        TextEntry::make('status')
-                            ->hiddenLabel()
-                            ->badge()
-                            ->size('lg')
-                            ->columnSpanFull(),
 
                         Flex::make([
-                                TextEntry::make('type')
+                            TextEntry::make('status')
+                                ->hiddenLabel()
+                                ->badge()
+                                ->size('lg')
+                                ->columnSpanFull()
+                                ->grow(false),
+
+                            TextEntry::make('type')
                                     ->hiddenLabel()
                                     ->badge()
-                                    ->size('sm')
+                                    ->size('lg')
                                     ->icon(fn ($record): string => $record?->is_mailing ? 'heroicon-o-envelope' : 'heroicon-o-archive-box')
                                     ->getStateUsing(fn ($record): string => $record?->is_mailing ? 'For Mailing' : 'Self Collection')
                                     ->grow(false),
@@ -44,9 +46,9 @@ class DocumentRequestInfolist
                                     ->hiddenLabel()
                                     ->getStateUsing(fn ($record): string => $record?->processor->name ?? 'Not Assigned')
                                     ->badge()
-                                    ->size('sm')
-                                    ->icon(fn ($state): string => $state === 'Not Assigned' ? 'heroicon-o-x-mark' : 'heroicon-o-user')
-                                    ->color(fn ($state): string => $state === 'Not Assigned' ? 'danger' : 'success'),
+                                    ->size('lg')
+                                    ->icon(fn ($state): string => $state === 'Not Started' ? 'heroicon-o-x-mark' : 'heroicon-o-user')
+                                    ->color(fn ($state): string => $state === 'Not Started' ? 'danger' : 'success'),
 
                             Html2MediaAction::make('print')
                                 ->content(fn($record) => view('filament.processor.pages.document-request-print', [
@@ -55,26 +57,28 @@ class DocumentRequestInfolist
                                 ->hiddenLabel()
                                 ->icon('heroicon-o-printer')
                                 ->margins(10),
-                            ])->columnSpanFull()->from('sm'),
+                            ])
+                            ->columnSpanFull()
+                            ->from('sm'),
 
 
                         Section::make('Requester Information')
                             ->schema([
-                                TextEntry::make('requester_name')
+                                TextEntry::make('name')
                                     ->label('Name')
                                     ->getStateUsing(function ($record) {
-                                        return $record->requester_last_name
-                                            . ', ' . $record->requester_first_name
-                                            . ' ' . $record->requester_middle_name .
-                                            ' ' . $record->requester_suffix;
+                                        return $record->last_name
+                                            . ', ' . $record->first_name
+                                            . ' ' . $record->middle_name .
+                                            ' ' . $record->suffix;
                                     })->columnSpan(4),
 
-                                TextEntry::make('cadet_serial_number')
+                                TextEntry::make('serial_number')
                                     ->label('Serial Number')
                                     ->columnSpan(4),
 
-                                TextEntry::make('original_class')
-                                    ->label('Original Class')
+                                TextEntry::make('class')
+                                    ->label('Class')
                                     ->columnSpan(4),
 
                                 TextEntry::make('contact_number')
@@ -123,7 +127,7 @@ class DocumentRequestInfolist
                                                         ->label('Document Type')
                                                         ->getStateUsing(function ($record) {
                                                             return
-                                                                DocumentType::where('document_type_id', $record->document_type_id)->first()->document_type;
+                                                                DocumentType::where('id', $record->document_type_id)->first()->document_type;
                                                         })
                                                         ->columnSpanFull(),
                                                     TextEntry::make('fee')
@@ -148,7 +152,7 @@ class DocumentRequestInfolist
                                         ->getStateUsing(fn()=>200)
                                         ->columnSpanFull(),
 
-                                    TextEntry::make('f_total_fee')
+                                    TextEntry::make('amount_payable')
                                         ->label('Total Fee')
                                         ->inlineLabel()
                                         ->numeric(decimalPlaces: 0)
@@ -164,23 +168,23 @@ class DocumentRequestInfolist
                                                 ->columnSpanFull()
                                                 ->visible(fn($record) => ! $record->has_representative),
 
-                                            TextEntry::make('representative_name')
+                                            TextEntry::make('name')
                                                 ->label('Name')
                                                 ->getStateUsing(function ($record) {
-                                                    return $record->representative_last_name
-                                                        . ', ' . $record->representative_first_name
-                                                        . ' ' . $record->representative_middle_name.
-                                                        ' ' . $record->representative_suffix;
+                                                    return $record?->representative?->last_name
+                                                        . ', ' . $record?->representative?->first_name
+                                                        . ' ' . $record?->representative?->middle_name.
+                                                        ' ' . $record?->representative?->suffix;
                                                 })->columnSpanFull()
                                                 ->visible(fn($record) => $record->has_representative),
 
-                                            TextEntry::make('representative_office')
+                                            TextEntry::make('representative.office')
                                                 ->label('Office')
                                                 ->columnSpan(6)
                                                 ->visible(fn($record) => $record->has_representative),
 
-                                            TextEntry::make('representative_contact')
-                                                ->label('Office')
+                                            TextEntry::make('representative.contact')
+                                                ->label('Contact')
                                                 ->columnSpan(6)
                                                 ->visible(fn($record) => $record->has_representative),
                                         ])
@@ -199,7 +203,7 @@ class DocumentRequestInfolist
 
                                                 Group::make()
                                                     ->schema([
-                                                        TextEntry::make('deliveryDetail.recipient_name')
+                                                        TextEntry::make('deliveryDetail.name')
                                                             ->label('Name')
                                                             ->getStateUsing(function ($record) {
                                                                 $delivery = $record->deliveryDetail;
@@ -207,14 +211,14 @@ class DocumentRequestInfolist
                                                                     return null;
                                                                 }
 
-                                                                return $delivery->recipient_last_name
-                                                                    . ', ' . $delivery->recipient_first_name
-                                                                    . ' ' . $delivery->recipient_middle_name .
-                                                                    ' ' . $delivery->recipient_suffix;
+                                                                return $delivery->last_name
+                                                                    . ', ' . $delivery->first_name
+                                                                    . ' ' . $delivery->middle_name .
+                                                                    ' ' . $delivery->suffix;
                                                             })
                                                             ->columnSpan(7),
 
-                                                        TextEntry::make('deliveryDetail.recipient_contact_number')
+                                                        TextEntry::make('deliveryDetail.contact_number')
                                                             ->label('Contact Number')
                                                             ->columnSpan(5),
 
@@ -252,7 +256,7 @@ class DocumentRequestInfolist
                                     ]),
                             ])
                             ->columns(12)
-                            ->columnSpanFull()
+                            ->columnSpan(12)
 
                     ])
                     ->columns(12)

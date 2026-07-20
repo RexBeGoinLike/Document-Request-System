@@ -12,14 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('request_quantities', function (Blueprint $table) {
-            $table->id("request_quantity_id");
+            $table->id();
 
             $table->foreignId('request_id')
-            ->constrained('document_requests', 'request_id')
+            ->constrained('document_requests')
             ->onUpdate('cascade');
 
             $table->foreignId('document_type_id')
-            ->constrained('document_types', 'document_type_id')
+            ->constrained('document_types')
             ->onUpdate('cascade');
 
             $table->integer('quantity');

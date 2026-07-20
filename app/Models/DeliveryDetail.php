@@ -17,11 +17,11 @@ use Spatie\Activitylog\Support\LogOptions;
     'user_id',
     'for_mailing',
     'use_details',
-    'recipient_first_name',
-    'recipient_last_name',
-    'recipient_middle_name',
-    'recipient_suffix',
-    'recipient_contact_number',
+    'first_name',
+    'last_name',
+    'middle_name',
+    'suffix',
+    'contact_number',
     'street_address',
     'region',
     'city',
@@ -33,10 +33,9 @@ class DeliveryDetail extends Model
 {
     use LogsActivity;
     use InteractsWithTimeline;
-    protected $primaryKey = 'delivery_detail_id';
     public function documentRequest(): BelongsTo
     {
-        return $this->belongsTo(DocumentRequest::class, 'request_id', 'request_id');
+        return $this->belongsTo(DocumentRequest::class, 'request_id');
     }
 
     public function getActivitylogOptions(): LogOptions

@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use EightCedars\FilamentInactivityGuard\FilamentInactivityGuardPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -27,6 +28,9 @@ class GuestPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
+            ->plugins([
+
+                ])
             ->renderHook(
                 PanelsRenderHook::HEAD_END,
                 function (): string {
@@ -47,8 +51,11 @@ class GuestPanelProvider extends PanelProvider
                     HTML);
                 },
             )
+            ->renderHook(PanelsRenderHook::GLOBAL_SEARCH_BEFORE,
+                fn (): string => Blade::render('@livewire(\'request-tracker\')'))
             ->id('guest')
             ->path('portal')
+            ->viteTheme('resources/css/filament/guest/theme.css')
             ->colors([
                 'primary' => Color::Blue,
             ])
@@ -73,8 +80,10 @@ class GuestPanelProvider extends PanelProvider
             ])
             ->globalSearch(false)
             ->brandName('OFFICE OF THE REGISTRAR')
+            ->brandLogo(asset('css/images/pma_logo.svg'))
+            ->brandLogoHeight('3rem')
             ->navigation(false)
             ->darkMode(false)
-            ->topbar(false);
+            ;
     }
 }

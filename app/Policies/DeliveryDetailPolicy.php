@@ -1,6 +1,9 @@
 <?php
 
-namespace App\Models;
+namespace App\Policies;
+
+use App\Models\DeliveryDetail;
+use App\Models\User;
 
 class DeliveryDetailPolicy
 {
