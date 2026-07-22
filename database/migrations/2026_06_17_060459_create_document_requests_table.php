@@ -17,7 +17,12 @@ return new class extends Migration
 
             $table->string('reference_id', 11)->unique();
 
-            $table->foreignId('user_id')
+            $table->foreignId('last_field_modified_by')
+                ->nullable()
+                ->constrained('users', 'user_id')
+                ->onUpdate('cascade');
+
+            $table->foreignId('last_status_modified_by')
                 ->nullable()
                 ->constrained('users', 'user_id')
                 ->onUpdate('cascade');

@@ -121,51 +121,49 @@ class CreateMailingInformation
                                     ->required(fn (Get $get) : bool => $get($checkboxPath))
                                     ->columnSpan([12]),
 
-                                Select::make('region')
+                                TextInput::make('region')
                                     ->label('Province / Major HUC')
-                                    ->options(Province::pluck('name', 'province_id'))
-                                    ->searchable()
-                                    ->columnSpan(12)
-                                    ->preload()
-                                    ->live()
-
+                                    ->datalist(Province::pluck('name')->toArray())
+                                    ->live(debounce: 500)
                                     ->afterStateUpdated(function (Set $set) {
                                         $set('city', null);
                                         $set('barangay', null);
                                     })
                                     ->columnSpan(6)
-                                    ->required(fn (Get $get) : bool => $get($checkboxPath)),
+                                    ->required(),
 
-                                Select::make('city')
+                                TextInput::make('city')
                                     ->label('City / Town')
-                                    ->options(function (Get $get) {
-                                        $provinceId = $get('region');
+                                    ->datalist(function (Get $get) {
+                                        $region = $get('region');
+                                        if (! $region) return [];
+
+                                        $provinceId = Province::where('name', $region)->value('province_id');
                                         if (! $provinceId) return [];
 
-                                        return City::where('province_id', $provinceId)->pluck('name', 'city_id');
+                                        return City::where('province_id', $provinceId)->pluck('name')->toArray();
                                     })
-                                    ->searchable()
-                                    ->preload()
-                                    ->live()
+                                    ->live(debounce: 500)
                                     ->disabled(fn (Get $get): bool => ! $get('region'))
                                     ->afterStateUpdated(fn (Set $set) => $set('barangay', null))
-                                    ->columnSpan(3)
-                                    ->required(fn (Get $get) : bool => $get($checkboxPath)),
+                                    ->columnSpan(6)
+                                    ->required(),
 
-                                Select::make('barangay')
+                                TextInput::make('barangay')
                                     ->label('Barangay')
-                                    ->options(function (Get $get) {
-                                        $city_id = $get('city');
-                                        if (! $city_id) return [];
+                                    ->datalist(function (Get $get) {
+                                        $city = $get('city');
+                                        if (! $city) return [];
 
-                                        return Barangay::where('city_id', $city_id)->pluck('name', 'id');
+                                        $cityId = City::where('name', $city)->value('city_id');
+                                        if (! $cityId) return [];
+
+                                        return Barangay::where('city_id', $cityId)->pluck('name')->toArray();
                                     })
-                                    ->searchable()
-                                    ->preload()
-                                    ->live()
+                                    ->live(debounce: 500)
                                     ->disabled(fn (Get $get): bool => ! $get('city'))
-                                    ->columnSpan(3)
-                                    ->required(fn (Get $get) : bool => $get($checkboxPath)),
+                                    ->columnSpan(6)
+                                    ->required(),
 
                                 TextInput::make('zip_code')
                                     ->label('Zip Code')

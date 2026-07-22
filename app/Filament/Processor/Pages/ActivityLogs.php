@@ -36,6 +36,7 @@ class ActivityLogs extends Page implements HasTable
                     ->label('Model')
                     ->formatStateUsing(fn (?string $state) => $state ? class_basename($state) : '—')
                     ->badge(),
+
                 TextColumn::make('subject_id')->label('Record ID'),
                 TextColumn::make('event')
                     ->badge()

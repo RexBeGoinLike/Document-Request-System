@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Relaticle\ActivityLog\Concerns\InteractsWithTimeline;
+use Relaticle\ActivityLog\Contracts\HasTimeline;
 use Relaticle\ActivityLog\Timeline\TimelineBuilder;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
@@ -16,7 +17,7 @@ use Spatie\Activitylog\Support\LogOptions;
     'fee',
     'quantity',
     'total_fee',])]
-class RequestQuantity extends Model
+class RequestQuantity extends Model implements HasTimeline
 {
     use LogsActivity;
     use InteractsWithTimeline;

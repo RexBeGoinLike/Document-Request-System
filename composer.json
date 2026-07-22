@@ -7,10 +7,13 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
+        "arielmejiadev/filament-printable": "^4.0",
+        "asmit/filament-upload": "^2.1",
         "balismatz/filament-prevent-outdated-record-update": "^5.0",
         "codewithkyrian/filament-date-range": "^2.2",
         "eightcedars/filament-inactivity-guard": "^1.1",
         "filament/filament": "^5.6",
+        "joaopaulolndev/filament-pdf-viewer": "^3.0",
         "laravel/framework": "^13.8",
         "laravel/tinker": "^3.0",
         "relaticle/activity-log": "^1.2",

@@ -3,10 +3,13 @@
 namespace App\Filament\Processor\Resources\DocumentRequests\Tables;
 
 use App\DocumentRequestStatus;
+use App\Filament\Exports\DocumentRequestExporter;
 use CodeWithKyrian\FilamentDateRange\Tables\Filters\DateRangeFilter;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ExportAction;
+use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
@@ -26,15 +29,20 @@ class DocumentRequestsTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(DocumentRequestExporter::class)
+                    ->formats([ExportFormat::Xlsx]),
+            ])
             ->columns([
                 TextColumn::make('status')
                     ->badge(),
 
-                TextColumn::make('user_id')
-                    ->label('Processor')
+                TextColumn::make('last_status_modified_by')
+                    ->label('Last Status Update')
                     ->badge()
-                    ->getStateUsing(fn ($record): string => $record?->processor->name ?? 'Not Assigned')
-                    ->color(fn ($state): string => $state === 'Not Assigned' ? 'danger' : 'success')
+                    ->getStateUsing(fn ($record): string => $record?->lastStatusModifiedBy->name ?? 'No Activity')
+                    ->color(fn ($state): string => $state === 'No Activity' ? 'danger' : 'success')
                     ->sortable(),
 
                 TextColumn::make('reference_id')
@@ -87,15 +95,10 @@ class DocumentRequestsTable
                             ->grouped()
 
                     ])
-                    ->query(fn (Builder $query, array $data): Builder => $query->when(
-                        $data['status'],
-                        fn (Builder $query, $status) => $query->where('status', $status),
-                    ))
                     ->indicateUsing(fn (array $data): ?string => $data['status']
                         ? 'Status: ' . DocumentRequestStatus::from($data['status'])->getLabel()
                         : null)
                     ->columnSpanFull(),
-
 
                 Filter::make('processor')
                     ->schema([
@@ -107,26 +110,18 @@ class DocumentRequestsTable
 
                             ])
                             ->grouped()
-                            ->default(auth()->user()->role === 'admin' ? 'All' : 'Assigned')
+                            ->default('All')
                             ->inline()
                     ])
                     ->query(fn (Builder $query, array $data): Builder => $query->when(
                         $data['processor'],
                         function (Builder $query, $status) {
-                            if(auth()->user()->role === 'admin')
-                            {
-                                if ($status === 'Assigned') {
-                                    return $query->whereNotNull('user_id');
-                                } elseif ($status === 'Not Assigned') {
-                                    return $query->whereNull('user_id');
-                                }
-                            } else {
-                                if ($status === 'Assigned') {
-                                    return $query->where('user_id', auth()->user()->user_id);
-                                } elseif ($status === 'Not Assigned') {
-                                    return $query->where('user_id', '!=', auth()->user()->user_id);
-                                }
-                            }
+
+                        if ($status === 'Assigned') {
+                            return $query->whereNotNull('last_field_modified_by');
+                        } elseif ($status === 'Not Assigned') {
+                            return $query->whereNull('last_field_modified_by');
+                        }
 
                             return $query;
                         }

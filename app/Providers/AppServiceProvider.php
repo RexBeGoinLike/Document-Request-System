@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Filament\Forms\Components\TextInput;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider

@@ -91,51 +91,47 @@ class CreateRequesterInformation
                             ->required()
                             ->columnSpanFull(),
 
-                        Select::make('region')
-
+                        TextInput::make('region')
                             ->label('Province / Major HUC')
-                            ->options(Province::pluck('name', 'province_id'))
-                            ->searchable()
-                            ->preload()
-                            ->live()
+                            ->datalist(Province::pluck('name')->toArray())
+                            ->live(debounce: 500)
                             ->afterStateUpdated(function (Set $set) {
                                 $set('city', null);
                                 $set('barangay', null);
                             })
-                            ->wrapOptionLabels(false)
-                            ->columnSpan([6])
-                            ->required(),
-
-                        Select::make('city')
-                            ->label('City / Town')
-                            ->options(function (Get $get) {
-                                $provinceId = $get('region');
-                                if (! $provinceId) return [];
-
-                                return City::where('province_id', $provinceId)->pluck('name', 'city_id');
-                            })
-                            ->searchable()
-                            ->preload()
-                            ->live()
-                            ->disabled(fn (Get $get): bool => ! $get('region'))
-                            ->afterStateUpdated(fn (Set $set) => $set('barangay', null))
-                            ->wrapOptionLabels(false)
                             ->columnSpan(6)
                             ->required(),
 
-                        Select::make('barangay')
-                            ->label('Barangay')
-                            ->options(function (Get $get) {
-                                $city_id = $get('city');
-                                if (! $city_id) return [];
+                        TextInput::make('city')
+                            ->label('City / Town')
+                            ->datalist(function (Get $get) {
+                                $region = $get('region');
+                                if (! $region) return [];
 
-                                return Barangay::where('city_id', $city_id)->pluck('name', 'id');
+                                $provinceId = Province::where('name', $region)->value('province_id');
+                                if (! $provinceId) return [];
+
+                                return City::where('province_id', $provinceId)->pluck('name')->toArray();
                             })
-                            ->searchable()
-                            ->preload()
-                            ->live()
+                            ->live(debounce: 500)
+                            ->disabled(fn (Get $get): bool => ! $get('region'))
+                            ->afterStateUpdated(fn (Set $set) => $set('barangay', null))
+                            ->columnSpan(6)
+                            ->required(),
+
+                        TextInput::make('barangay')
+                            ->label('Barangay')
+                            ->datalist(function (Get $get) {
+                                $city = $get('city');
+                                if (! $city) return [];
+
+                                $cityId = City::where('name', $city)->value('city_id');
+                                if (! $cityId) return [];
+
+                                return Barangay::where('city_id', $cityId)->pluck('name')->toArray();
+                            })
+                            ->live(debounce: 500)
                             ->disabled(fn (Get $get): bool => ! $get('city'))
-                            ->wrapOptionLabels(false)
                             ->columnSpan(6)
                             ->required(),
 

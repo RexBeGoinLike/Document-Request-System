@@ -41,7 +41,7 @@ class DocumentRequestPolicy
         return ! in_array($documentRequest->status, [
             DocumentRequestStatus::DELIVERED,
             DocumentRequestStatus::COLLECTED
-        ]) && ($user->role === 'admin' || $user->user_id === $documentRequest->user_id);
+        ]);
 
     }
 

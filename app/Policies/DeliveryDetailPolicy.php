@@ -36,8 +36,7 @@ class DeliveryDetailPolicy
      */
     public function update(User $user, DeliveryDetail $deliveryDetail): bool
     {
-        return $user->role === 'admin'
-            || $user->role === 'processor' && $user->user_id === $deliveryDetail->documentRequest->user_id;
+        return true;
     }
 
     /**

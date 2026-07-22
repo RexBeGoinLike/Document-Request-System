@@ -27,17 +27,15 @@ class EditDocumentRequest extends EditRecord
     {
         $raw = $this->form->getRawState();
 
-        foreach ([
-                     'representative_first_name',
-                     'representative_last_name',
-                     'representative_middle_name',
-                     'representative_suffix',
-                     'representative_office',
-                     'representative_contact',
-                 ] as $field) {
-            $data[$field] = $raw[$field] ?? null;
-        }
+        // 1. Get the current fresh database values for this record
+        $record = $this->getRecord();
 
+        $data['last_field_modified_by'] = auth()->id();
+
+
+        if ($data['status'] !== $this->getRecord()->status) {
+            $data['last_status_modified_by'] = auth()->id();
+        }
 
         return $data;
     }
@@ -51,12 +49,10 @@ class EditDocumentRequest extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('back')
-                ->label('Back to List')
-                ->color('gray')
-                ->url($this->getResource()::getUrl('index')),
+            ViewAction::make()
+                ->icon('heroicon-o-chevron-left')
+                ->label('Back to View'),
 
-            ViewAction::make(),
             DeleteAction::make(),
             ForceDeleteAction::make(),
             RestoreAction::make(),

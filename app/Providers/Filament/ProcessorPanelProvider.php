@@ -17,6 +17,8 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class ProcessorPanelProvider extends PanelProvider
@@ -63,4 +65,5 @@ class ProcessorPanelProvider extends PanelProvider
             ->brandLogoHeight('3rem')
             ->login();
     }
+
 }

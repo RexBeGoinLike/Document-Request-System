@@ -18,18 +18,20 @@ class ViewDocumentRequest extends ViewRecord
 
     public function getHeading(): string
     {
-        return "Reference #{$this->record->reference_id}";
+        return '';
     }
 
     protected function getHeaderActions(): array
     {
         return [
+            /*
             Action::make('back')
                 ->label('Back to List')
                 ->color('gray')
                 ->url($this->getResource()::getUrl('index')),
 
             EditAction::make(),
+            */
         ];
     }
 }

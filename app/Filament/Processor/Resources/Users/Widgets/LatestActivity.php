@@ -21,6 +21,7 @@ class LatestActivity extends TableWidget
         $this->user_id = $user_id;
     }
 
+
     public function table(Table $table): Table
     {
         return $table

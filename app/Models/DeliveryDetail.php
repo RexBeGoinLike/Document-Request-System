@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Relaticle\ActivityLog\Concerns\InteractsWithTimeline;
+use Relaticle\ActivityLog\Contracts\HasTimeline;
 use Relaticle\ActivityLog\Timeline\TimelineBuilder;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
@@ -29,7 +30,7 @@ use Spatie\Activitylog\Support\LogOptions;
     'zip_code',
 ])]
 
-class DeliveryDetail extends Model
+class DeliveryDetail extends Model implements HasTimeline
 {
     use LogsActivity;
     use InteractsWithTimeline;

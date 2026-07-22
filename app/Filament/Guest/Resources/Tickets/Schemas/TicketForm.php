@@ -56,9 +56,9 @@ class TicketForm
                                 $set('s_address',
                                     sprintf("%s, %s, %s, %s, %d",
                                         $get('street_address'),
-                                        Barangay::find($get('barangay'))->name,
-                                        City::where('city_id', $get('city'))?->first()->name,
-                                        Province::where('province_id', $get('region'))?->first()->name,
+                                        $get('barangay'),
+                                        $get('city'),
+                                        $get('region'),
                                         $get('zip_code')));
 
 
@@ -93,9 +93,9 @@ class TicketForm
                                     $set('s_mailing_full_address',
                                         sprintf("%s, %s, %s, %s, %d",
                                             $get('deliveryDetail.street_address'),
-                                            Barangay::find($get('deliveryDetail.barangay'))->name,
-                                            City::where('city_id',$get('deliveryDetail.city'))->first()->name,
-                                            Province::where('province_id', $get('deliveryDetail.region'))->first()->name,
+                                            $get('deliveryDetail.barangay'),
+                                            $get('deliveryDetail.city'),
+                                            $get('deliveryDetail.region'),
                                             $get('deliveryDetail.zip_code')));
                                     $set('s_mailing_contact', $get('deliveryDetail.contact_number'));
                                 }

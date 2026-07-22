@@ -34,7 +34,11 @@ class User extends Authenticatable
         ];
     }
 
-    public function documentRequest() : HasMany {
-        return $this->hasMany(DocumentRequest::class, 'user_id', 'user_id');
+    public function last_field_edit() : HasMany {
+        return $this->hasMany(DocumentRequest::class, 'last_field_modified_by', 'user_id');
+    }
+
+    public function last_status_edit() : HasMany {
+        return $this->hasMany(DocumentRequest::class, 'last_status_modified_by', 'user_id');
     }
 }

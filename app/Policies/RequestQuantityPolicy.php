@@ -37,7 +37,7 @@ class RequestQuantityPolicy
      */
     public function update(User $user, RequestQuantity $requestQuantity): bool
     {
-        return ($user->role === 'admin') || $user->user_id === $requestQuantity->user_id;
+        return true;
     }
 
     /**

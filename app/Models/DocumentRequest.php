@@ -6,19 +6,19 @@ use App\DocumentRequestStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Relaticle\ActivityLog\Concerns\InteractsWithTimeline;
+use Relaticle\ActivityLog\Contracts\HasTimeline;
 use Relaticle\ActivityLog\Timeline\TimelineBuilder;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
-use Yajra\Address\Entities\Barangay;
 
 #[Fillable([
     'reference_id',
-    'user_id',
+    'last_field_modified_by',
+    'last_status_modified_by',
     'first_name',
     'last_name',
     'middle_name',
@@ -36,7 +36,9 @@ use Yajra\Address\Entities\Barangay;
     'is_mailing',
     'status',
 ])]
-class DocumentRequest extends Model
+
+
+class DocumentRequest extends Model implements HasTimeline
 {
     use SoftDeletes;
     use LogsActivity;
@@ -65,12 +67,16 @@ class DocumentRequest extends Model
         return $this->hasMany(RequestQuantity::class, 'request_id');
     }
 
-    public function processor(): BelongsTo {
-        return $this->belongsTo(User::class, 'user_id');
-    }
-
     public function deliveryDetail(): HasOne {
         return $this->hasOne(DeliveryDetail::class, 'request_id');
+    }
+
+    public function lastFieldModifiedBy(): BelongsTo {
+        return $this->belongsTo(User::class, 'last_field_modified_by', 'user_id');
+    }
+
+    public function lastStatusModifiedBy(): BelongsTo {
+            return $this->belongsTo(User::class, 'last_status_modified_by', 'user_id');
     }
 
     public function representative(): HasOne {

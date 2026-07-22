@@ -38,6 +38,13 @@ return [
             'report' => false,
         ],
 
+        'attachments' => [
+            'driver' => 'local',
+            'root' => storage_path('app/private/attachments'),
+            'visibility' => 'private',
+            'throw' => false,
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

@@ -4,8 +4,134 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "db361c83bdfa7eba9fb18a744feef156",
+    "content-hash": "8548ac51bef3048a4cb292b8d3e2f4bf",
     "packages": [
+        {
+            "name": "arielmejiadev/filament-printable",
+            "version": "4.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ArielMejiaDev/filament-printable.git",
+                "reference": "dedf67f3f80dca0b9d55f5a01f2af6f084b1b835"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ArielMejiaDev/filament-printable/zipball/dedf67f3f80dca0b9d55f5a01f2af6f084b1b835",
+                "reference": "dedf67f3f80dca0b9d55f5a01f2af6f084b1b835",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^3.0|^4.0|^5.0",
+                "php": "^8.1|^8.2",
+                "spatie/laravel-package-tools": "^1.15.0"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.0",
+                "nunomaduro/collision": "^7.9",
+                "nunomaduro/larastan": "^2.0.1",
+                "orchestra/testbench": "^8.0",
+                "pestphp/pest": "^2.1",
+                "pestphp/pest-plugin-arch": "^2.0",
+                "pestphp/pest-plugin-laravel": "^2.0",
+                "phpstan/extension-installer": "^1.1",
+                "phpstan/phpstan-deprecation-rules": "^1.0",
+                "phpstan/phpstan-phpunit": "^1.0",
+                "spatie/laravel-ray": "^1.26"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "FilamentPrintable": "ArielMejiaDev\\FilamentPrintable\\Facades\\FilamentPrintable"
+                    },
+                    "providers": [
+                        "ArielMejiaDev\\FilamentPrintable\\FilamentPrintableServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "ArielMejiaDev\\FilamentPrintable\\": "src/",
+                    "ArielMejiaDev\\FilamentPrintable\\Database\\Factories\\": "database/factories/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "ArielMejiaDev",
+                    "email": "arielmejiadev@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Package to get your Filament Resources Printable",
+            "homepage": "https://github.com/arielmejiadev/filament-printable",
+            "keywords": [
+                "arielmejiadev",
+                "filament-printable",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/arielmejiadev/filament-printable/issues",
+                "source": "https://github.com/arielmejiadev/filament-printable"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/ArielMejiaDev",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-07-12T19:26:42+00:00"
+        },
+        {
+            "name": "asmit/filament-upload",
+            "version": "v2.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/AsmitNepali/filament-upload.git",
+                "reference": "47d5fac1e594dccb85c55a6633a7f3f856d373e4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/AsmitNepali/filament-upload/zipball/47d5fac1e594dccb85c55a6633a7f3f856d373e4",
+                "reference": "47d5fac1e594dccb85c55a6633a7f3f856d373e4",
+                "shasum": ""
+            },
+            "require": {
+                "filament/support": "^3.0|^4.0|^5.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Asmit\\FilamentUpload\\FilamentUploadServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Asmit\\FilamentUpload\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "AsmitNepali",
+                    "email": "mail2asmitnepali@gmail.com"
+                }
+            ],
+            "description": "Filament PDF file upload and preview.",
+            "support": {
+                "issues": "https://github.com/AsmitNepali/filament-upload/issues",
+                "source": "https://github.com/AsmitNepali/filament-upload/tree/v2.1.0"
+            },
+            "time": "2026-07-20T05:00:19+00:00"
+        },
         {
             "name": "balismatz/filament-prevent-outdated-record-update",
             "version": "v5.0.1",
@@ -2142,6 +2268,76 @@
                 }
             ],
             "time": "2026-06-23T13:02:23+00:00"
+        },
+        {
+            "name": "joaopaulolndev/filament-pdf-viewer",
+            "version": "v3.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/joaopaulolndev/filament-pdf-viewer.git",
+                "reference": "a4d208db6018184cb19eb9b2f19029fb42ba6bd2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/joaopaulolndev/filament-pdf-viewer/zipball/a4d208db6018184cb19eb9b2f19029fb42ba6bd2",
+                "reference": "a4d208db6018184cb19eb9b2f19029fb42ba6bd2",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^5.3",
+                "php": "^8.2",
+                "spatie/laravel-package-tools": "^1.15.0"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.0",
+                "nunomaduro/collision": "^7.9|^8.6",
+                "orchestra/testbench": "^8.0|^9.0|^10.0",
+                "pestphp/pest": "^2.1|^3.4.7",
+                "pestphp/pest-plugin-arch": "^2.0|^3.0",
+                "pestphp/pest-plugin-laravel": "^2.0|^3.1.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Joaopaulolndev\\FilamentPdfViewer\\FilamentPdfViewerServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Joaopaulolndev\\FilamentPdfViewer\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "João Paulo Leite Nascimento",
+                    "email": "joaopauloln7@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Filament package to show pdf document viewer",
+            "homepage": "https://github.com/joaopaulolndev/filament-pdf-viewer",
+            "keywords": [
+                "filament-pdf-viewer",
+                "joaopaulolndev",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/joaopaulolndev/filament-pdf-viewer/issues",
+                "source": "https://github.com/joaopaulolndev/filament-pdf-viewer"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/joaopaulolndev",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-03-04T02:40:18+00:00"
         },
         {
             "name": "kirschbaum-development/eloquent-power-joins",
