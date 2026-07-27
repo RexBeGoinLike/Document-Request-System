@@ -4,3 +4,11 @@
 @source '../../../../resources/views/filament/guest/**/*';
 @source '../../../../resources/views/livewire';
 @source '../../../../resources/views/components';
+
+.fi-section {
+    @apply bg-slate-50 dark:bg-slate-900;
+}
+
+.fi-section-header {
+    @apply bg-slate-100 dark:bg-slate-800;
+}

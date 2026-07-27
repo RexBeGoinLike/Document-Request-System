@@ -28,12 +28,12 @@ return new class extends Migration
                 ->onUpdate('cascade');
 
             $table->string('status')->default(DocumentRequestStatus::FOR_REVIEW->value);
-            $table->string('first_name', 20);
-            $table->string('last_name', 15);
-            $table->string('middle_name', 15);
-            $table->string('suffix', 20)->nullable();
-            $table->string('serial_number', 4);
-            $table->string('class', 20);
+            $table->string('first_name', 100);
+            $table->string('last_name', 100);
+            $table->string('middle_name', 100);
+            $table->string('suffix', 10)->nullable();
+            $table->string('serial_number', 6);
+            $table->string('class', 4);
             $table->string('contact_number', 11);
             $table->text('street_address');
             $table->string('region');

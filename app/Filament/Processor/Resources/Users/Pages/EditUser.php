@@ -13,7 +13,7 @@ class EditUser extends EditRecord
 
     public function getHeading(): string
     {
-        return 'Manage Requests';
+        return 'Manage Users';
     }
     public function getBreadcrumbs(): array
     {

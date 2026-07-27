@@ -74,7 +74,7 @@ class CreateMailingInformation
                                     ->autocapitalize('words')
                                     ->required(fn (Get $get) : bool => $get($checkboxPath))
                                     ->columnSpan([4])
-                                    ->maxLength(20),
+                                    ->maxLength(100),
 
                                 TextInput::make('last_name')
                                     ->label('Last Name')
@@ -82,7 +82,7 @@ class CreateMailingInformation
                                     ->autocapitalize('words')
                                     ->required(fn (Get $get) : bool => $get($checkboxPath))
                                     ->columnSpan([3])
-                                    ->maxLength(15),
+                                    ->maxLength(100),
 
                                 TextInput::make('middle_name')
                                     ->label('Middle Name')
@@ -90,14 +90,14 @@ class CreateMailingInformation
                                     ->autocapitalize('words')
                                     ->required(fn (Get $get) : bool => $get($checkboxPath))
                                     ->columnSpan([3])
-                                    ->maxLength(15),
+                                    ->maxLength(100),
 
                                 TextInput::make('suffix')
                                     ->label('Suffix')
                                     ->validationAttribute('Suffix')
                                     ->autocapitalize('words')
                                     ->columnSpan([2])
-                                    ->maxLength(20),
+                                    ->maxLength(10),
 
                                 TextInput::make('contact_number')
                                     ->validationAttribute('Contact Number')

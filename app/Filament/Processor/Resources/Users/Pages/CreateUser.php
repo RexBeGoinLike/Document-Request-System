@@ -10,7 +10,7 @@ class CreateUser extends CreateRecord
 {
     public function getHeading(): string
     {
-        return 'Manage Requests';
+        return 'Manage Users';
     }
     public function getBreadcrumbs(): array
     {
@@ -22,6 +22,7 @@ class CreateUser extends CreateRecord
         return [
             Action::make('back')
                 ->label('Back to List')
+                ->icon('heroicon-o-chevron-left')
                 ->color('gray')
                 ->url($this->getResource()::getUrl('index')),
         ];

@@ -60,7 +60,7 @@ class DocumentRequest extends Model implements HasTimeline
     {
         return TimelineBuilder::make($this)
             ->fromActivityLog()
-            ->fromActivityLogOf(relations: ['requestQuantity', 'deliveryDetail']);
+            ->fromActivityLogOf(relations: ['requestQuantity', 'deliveryDetail', 'representative']);
     }
 
     public function requestQuantity(): HasMany {

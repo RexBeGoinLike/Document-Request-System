@@ -19,12 +19,6 @@ class UserForm
                     ->label('Email address')
                     ->email()
                     ->required(),
-                Select::make('role')
-                    ->required()
-                    ->options([
-                       'processor' => 'Processor',
-                       'admin' => 'Admin',
-                    ]),
                 TextInput::make('password')
                     ->password()
                     ->required(),

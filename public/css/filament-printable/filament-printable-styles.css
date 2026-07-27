@@ -1,15 +1,23 @@
 @media print {
     /* Base print settings */
+    @page  {
+        size: A4 landscape;
+    }
+
     body {
-        zoom: 99%;
+        zoom: 90%;
         print-color-adjust: exact !important;
         -webkit-print-color-adjust: exact !important;
+    }
+    .print {
+        display: block !important;
     }
 
     /* Hide unwanted UI elements */
     .fi-sidebar,
-    .fi-topbar,
+    .fi-topbar-nav-groups,
     .fi-sidebar-close-overlay,
+    .fi-topbar-database-notifications-btn,
     .fi-breadcrumbs,
     .fi-btn:not(.printable),
     .fi-btn-color-danger:not(.printable),
@@ -97,6 +105,7 @@
         font-size: 12px !important;
         line-height: 1.4 !important;
     }
+
 
     .fi-ta-header-cell,
     .fi-ta-cell {

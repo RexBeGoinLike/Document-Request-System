@@ -8,6 +8,7 @@ use Filament\Actions\Contracts\HasActions;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
+use Filament\Support\Enums\Width;
 use Livewire\Component;
 
 new class extends Component implements HasActions, HasSchemas {
@@ -50,6 +51,8 @@ new class extends Component implements HasActions, HasSchemas {
     {
         return Action::make('viewRequestStatus')
             ->modalHeading('Request Status')
+            ->modalWidth(Width::Screen)
+            ->slideOver()
             ->modalSubmitAction(false)
             ->modalCancelActionLabel('Close')
             ->record(fn(array $arguments) => DocumentRequest::find($arguments['record']))

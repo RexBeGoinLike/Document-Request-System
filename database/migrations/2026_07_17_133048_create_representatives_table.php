@@ -16,10 +16,10 @@ return new class extends Migration
             $table->foreignId('request_id')
                 ->constrained('document_requests')
                 ->onUpdate('cascade');
-            $table->string('first_name', 20);
-            $table->string('last_name', 15);
-            $table->string('middle_name', 15);
-            $table->string('suffix', 20)->nullable();
+            $table->string('first_name', 100);
+            $table->string('last_name', 100);
+            $table->string('middle_name', 100);
+            $table->string('suffix', 10)->nullable();
             $table->string('office', 20)->nullable();
             $table->string('contact', 11);
             $table->string('relationship', 20);

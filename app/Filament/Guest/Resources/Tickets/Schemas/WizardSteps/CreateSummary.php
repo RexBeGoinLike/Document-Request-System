@@ -115,9 +115,14 @@ class CreateSummary
                                     ->columnSpan(7)
                                     ->visible(fn (Get $get) => $get('s_rep_selected')),
 
+                                TextEntry::make('s_relationship')
+                                    ->label('Relationship')
+                                    ->columnSpan(5)
+                                    ->visible(fn (Get $get) => $get('s_rep_selected')),
+
                                 TextEntry::make('s_contact_number')
                                     ->label('Contact Number')
-                                    ->columnSpan([5])
+                                    ->columnSpan([12])
                                     ->visible(fn (Get $get) => $get('s_rep_selected')),
                             ])
                             ->columns(12)

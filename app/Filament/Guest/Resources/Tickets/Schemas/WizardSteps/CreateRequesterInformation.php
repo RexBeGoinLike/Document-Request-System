@@ -29,7 +29,7 @@ class CreateRequesterInformation
                             ->validationAttribute('First Name')
                             ->autocapitalize('words')
                             ->required()
-                            ->maxLength(20)
+                            ->maxLength(100)
                             ->columnSpan([4]),
 
                         TextInput::make('last_name')
@@ -37,7 +37,7 @@ class CreateRequesterInformation
                             ->validationAttribute('Last Name')
                             ->autocapitalize('words')
                             ->required()
-                            ->maxLength(15)
+                            ->maxLength(100)
                             ->columnSpan([3]),
 
                         TextInput::make('middle_name')
@@ -45,14 +45,14 @@ class CreateRequesterInformation
                             ->validationAttribute('Middle Name')
                             ->autocapitalize('words')
                             ->required()
-                            ->maxLength(15)
+                            ->maxLength(100)
                             ->columnSpan([3]),
 
                         TextInput::make('suffix')
                             ->label('Suffix')
                             ->validationAttribute('Suffix')
                             ->autocapitalize('words')
-                            ->maxLength(20)
+                            ->maxLength(10)
                             ->columnSpan([2]),
 
                         TextInput::make('serial_number')
@@ -60,7 +60,7 @@ class CreateRequesterInformation
                             ->validationAttribute('Serial Number')
                             ->autocapitalize('words')
                             ->required()
-                            ->maxLength(4)
+                            ->maxLength(6)
                             ->columnSpan([6]),
 
                         TextInput::make('class')

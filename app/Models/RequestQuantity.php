@@ -35,8 +35,8 @@ class RequestQuantity extends Model implements HasTimeline
         return TimelineBuilder::make($this)->fromActivityLog();
     }
 
-    public function documentRequests(): BelongsToMany {
-        return $this->belongsToMany(DocumentRequest::class, 'request_id');
+    public function documentRequest(): BelongsTo {
+        return $this->belongsTo(DocumentRequest::class, 'request_id');
     }
 
     public Function documentType(): BelongsTo {

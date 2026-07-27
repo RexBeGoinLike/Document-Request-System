@@ -16,6 +16,7 @@
         "joaopaulolndev/filament-pdf-viewer": "^3.0",
         "laravel/framework": "^13.8",
         "laravel/tinker": "^3.0",
+        "redberry/page-builder-plugin": "^3.0",
         "relaticle/activity-log": "^1.2",
         "spatie/laravel-permission": "^8.1",
         "swisnl/filament-backgrounds": "^2.0",
@@ -23,6 +24,7 @@
         "yajra/laravel-address": "^13.0"
     },
     "require-dev": {
+        "beyondcode/laravel-er-diagram-generator": "^6.0",
         "fakerphp/faker": "^1.23",
         "laravel/pail": "^1.2.5",
         "laravel/pao": "^1.0.6",

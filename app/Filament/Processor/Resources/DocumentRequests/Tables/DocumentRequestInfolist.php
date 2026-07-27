@@ -85,6 +85,7 @@ class DocumentRequestInfolist
                                                 ->emptyState('Nothing here yet — give it time.'),
                                         ]),
                                 ])
+                                    ->visible(fn () => auth()->user() ?? false)
                                 ->columnSpanFull()
                                 ->from('sm'),
 
@@ -104,10 +105,11 @@ class DocumentRequestInfolist
                                             ])
                                             ->modalSubmitAction(false)
                                             ->modalCancelAction(false)
-                                            ->visible(fn ($record) => $record?->representative?->authorization_letter ?? false),
+                                            ->visible(fn ($record) => $record?->representative?->authorization_letter && auth()->user() ?? false),
 
 
                                         PrintAction::make()
+                                                ->visible(fn () => auth()->user() ?? false)
 
                                     ])
                                     ->schema([
@@ -228,12 +230,12 @@ class DocumentRequestInfolist
 
                                                         TextEntry::make('representative.office')
                                                             ->label('Office')
-                                                            ->columnSpan(6)
+                                                            ->columnSpan(8)
                                                             ->visible(fn($record) => $record->has_representative),
 
                                                         TextEntry::make('representative.contact')
                                                             ->label('Contact')
-                                                            ->columnSpan(6)
+                                                            ->columnSpan(4)
                                                             ->visible(fn($record) => $record->has_representative),
                                                     ])
                                                     ->columns(12)
@@ -317,6 +319,19 @@ class DocumentRequestInfolist
                             ])
                             ->columnSpanFull()
                             ->columns(12),
+
+                        Group::make()
+                            ->schema([
+                                TextEntry::make('signature')
+                                    ->label('Signature')
+                                    ->id('signature')
+                                    ->getStateUsing(fn () => '________________________________')
+                                    ->columnSpan(5)
+                                    ->columnStart(11)
+                            ])
+                                ->extraAttributes(['class' => 'print hidden'])
+                                ->columnSpanFull()
+                                ->columns(12)
             ]);
     }
 }

@@ -8,9 +8,11 @@ use App\Filament\Guest\Resources\Tickets\Schemas\WizardSteps\CreateRepresentativ
 use App\Filament\Guest\Resources\Tickets\Schemas\WizardSteps\CreateRequesterInformation;
 use App\Filament\Guest\Resources\Tickets\Schemas\WizardSteps\CreateSummary;
 use App\Models\DocumentType;
+use Filament\Schemas\Components\Text;
 use Filament\Schemas\Components\Wizard;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Wizard\Step;
 use Filament\Schemas\Schema;
 use Filament\Support\Exceptions\Halt;
 use Illuminate\Support\Facades\Blade;
@@ -27,6 +29,40 @@ class TicketForm
         return $schema
             ->components([
                 Wizard::make([
+                    Step::make('Welcome')
+                        ->label('Start')
+                        ->icon('heroicon-o-hand-raised')
+                        ->schema([
+                            Text::make(new HtmlString('
+                                <div style="
+                                    width: 100%;
+                                    min-height: 60vh;
+                                    display: flex;
+                                    flex-direction: column;
+                                    align-items: center;
+                                    justify-content: center;
+                                    text-align: center;
+                                    background-image:
+                                    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+                                    url(\'' . asset('css/images/guest_bg.jpg') . '\');
+                                    background-size: cover;
+                                    background-position: center;
+                                    border-radius: 12px;
+                                    padding: 10px;
+                                   ">
+                                   <img src="' . asset('css/images/pma_logo.svg') . '" style="height: 100px; width: auto;">
+                                    <h1 style="font-size: 64px; font-weight: bold; color: white; text-shadow: 0 2px 8px rgba(0,0,0,0.6);">
+                                        Office of the Registrar
+                                    </h1>
+                                    <p style="font-size: 32px; color: white; text-shadow: 0 2px 8px rgba(0,0,0,0.6); margin-top: 12px;">
+                                        Tap the "Next" below to start the request form.
+                                    </p>
+                                </div>
+                            '))
+                                ->extraAttributes(['class' => 'w-full']),
+                        ]),
+
+
                     CreateRequesterInformation::make(),
 
                     CreateDocumentType::make(),
@@ -74,7 +110,8 @@ class TicketForm
                                             $get('representative.suffix'),
                                             $get('representative.middle_name')));
                                     $set('s_office', $get('representative.office'));
-                                    $set('s_contact', $get('representative.contact'));
+                                    $set('s_contact_number', $get('representative.contact'));
+                                    $set('s_relationship', $get('representative.relationship'));
                                 }else{
                                     $set('s_rep_selected', false);
                                 }
@@ -123,6 +160,7 @@ class TicketForm
                     CreateSummary::make(),
 
                 ])
+                    ->hiddenHeader(/*fn (Wizard $wizard) => $wizard->getCurrentStepIndex() === 0*/)
                     ->columnSpanFull()
                     ->skippable(false)
                     ->submitAction(new HtmlString(Blade::render('

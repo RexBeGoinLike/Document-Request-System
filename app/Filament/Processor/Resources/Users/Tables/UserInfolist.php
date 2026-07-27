@@ -1,15 +1,14 @@
 <?php
 
-namespace App\Filament\Processor\Resources\Users\Schemas;
+namespace App\Filament\Processor\Resources\Users\Tables;
 
 use App\Filament\Processor\Resources\Users\Widgets\LatestActivity;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Livewire;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Livewire;
-use Tiptap\Nodes\Table;
 
-class UserInfolist
+class   UserInfolist
 {
     public static function configure(Schema $schema): Schema
     {

@@ -22,10 +22,10 @@ return new class extends Migration
                 ->constrained('users', 'user_id')
                 ->onUpdate('cascade');
 
-            $table->string('first_name', 20);
-            $table->string('last_name', 15);
-            $table->string('middle_name', 15)->nullable();
-            $table->string('suffix', 20)->nullable();
+            $table->string('first_name', 100);
+            $table->string('last_name', 100);
+            $table->string('middle_name', 100)->nullable();
+            $table->string('suffix', 10)->nullable();
             $table->text('street_address');
             $table->string('region');
             $table->string('city');

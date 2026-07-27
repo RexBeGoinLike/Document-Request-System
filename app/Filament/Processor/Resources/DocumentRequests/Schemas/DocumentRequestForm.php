@@ -70,6 +70,7 @@ class DocumentRequestForm
                                 TextInput::make('courier_name')
                                     ->label('Courier Name')
                                     ->columnSpan(4)
+                                    ->maxLength(20)
                                     ->visible(fn (Get $get, $record): bool =>
                                         $get('../status') === DocumentRequestStatus::DISPATCHED->value
 
@@ -84,6 +85,7 @@ class DocumentRequestForm
                                 TextInput::make('tracking_number')
                                     ->label('Tracking Number')
                                     ->columnSpan(4)
+                                    ->maxLength(20)
                                     ->visible(fn (Get $get, $record): bool =>
                                         $get('../status') === DocumentRequestStatus::DISPATCHED->value
                                         ||  $get('../status') === DocumentRequestStatus::DELIVERED->value
@@ -100,8 +102,9 @@ class DocumentRequestForm
                             ->relationship('representative', condition: fn (Get $get) => $get('has_representative'))
                             ->schema([
                                 FileUpload::make('authorization_letter')
-                                    ->label('Authorization Letter')
+                                    ->label('Authorization Letter (PDF)')
                                     ->disk('attachments')
+                                    ->acceptedFileTypes(['application/pdf'])
                                     ->visibility('private')
                                     ->columnSpan(4),
 
@@ -123,31 +126,37 @@ class DocumentRequestForm
                                             ->schema([
                                                 TextInput::make('first_name')
                                                     ->label('First Name')
+                                                    ->maxLength(100)
                                                     ->required()
                                                     ->columnSpan(3),
 
                                                 TextInput::make('last_name')
                                                     ->label('Last Name')
                                                     ->required()
+                                                    ->maxLength(100)
                                                     ->columnSpan(3),
 
                                                 TextInput::make('middle_name')
                                                     ->label('Middle Name')
                                                     ->required()
+                                                    ->maxLength(100)
                                                     ->columnSpan(3),
 
                                                 TextInput::make('suffix')
                                                     ->label('Suffix')
+                                                    ->maxLength(10)
                                                     ->columnSpan(3),
 
                                                 TextInput::make('serial_number')
                                                     ->label('Serial Number')
                                                     ->required()
+                                                    ->maxLength(6)
                                                     ->columnSpan(6),
 
                                                 TextInput::make('class')
                                                     ->label('Class')
                                                     ->required()
+                                                    ->length(4)
                                                     ->columnSpan(6),
 
                                                 TextInput::make('street_address')
@@ -312,6 +321,7 @@ class DocumentRequestForm
                                                 TextInput::make('first_name')
                                                     ->label('First Name')
                                                     ->columnSpan(6)
+                                                    ->maxLength(100)
                                                     ->visible(fn (Get $get): bool => $get('../has_representative'))
                                                     ->required(fn (Get $get): bool => $get('../has_representative'))
                                                     ->dehydrated(true),
@@ -319,13 +329,15 @@ class DocumentRequestForm
                                                 TextInput::make('last_name')
                                                     ->label('Last Name')
                                                     ->columnSpan(6)
+                                                    ->maxLength(100)
                                                     ->visible(fn (Get $get): bool => $get('../has_representative'))
                                                     ->required(fn (Get $get): bool => $get('../has_representative'))
                                                     ->dehydrated(),
 
                                                 TextInput::make('middle_name')
-                                                    ->label('Mdl Name')
+                                                    ->label('Middle Name')
                                                     ->columnSpan(6)
+                                                    ->maxLength(100)
                                                     ->visible(fn (Get $get): bool => $get('../has_representative'))
                                                     ->required(fn (Get $get): bool => $get('../has_representative'))
                                                     ->dehydrated(),
@@ -333,23 +345,29 @@ class DocumentRequestForm
                                                 TextInput::make('suffix')
                                                     ->label('Suffix')
                                                     ->columnSpan(6)
+                                                    ->maxLength(10)
                                                     ->visible(fn (Get $get): bool => $get('../has_representative'))
                                                     ->dehydrated(),
 
                                                 TextInput::make('relationship')
                                                     ->label('Relationship')
                                                     ->columnSpan(4)
-                                                    ->visible(fn (Get $get): bool => $get('../has_representative'))
+                                                    ->maxLength(20)
+                                                    ->visible(fn (Get $get)
+                                                    : bool => $get('../has_representative'))
                                                     ->required(fn (Get $get): bool => $get('../has_representative'))
                                                     ->dehydrated(),
 
                                                 TextInput::make('office')
                                                     ->label('Office')
+                                                    ->maxLength(20)
                                                     ->columnSpan(4)
+                                                    ->hidden(fn ($state): bool => $state ?? false)
                                                     ->visible(fn (Get $get): bool => $get('../has_representative'))
                                                     ->dehydrated(),
 
                                                 TextInput::make('contact')
+                                                    ->length(11)
                                                     ->label('Contact Number')
                                                     ->columnSpan(4)
                                                     ->visible(fn (Get $get): bool => $get('../has_representative'))
@@ -380,29 +398,34 @@ class DocumentRequestForm
                                                 TextInput::make('first_name')
                                                     ->label('First Name')
                                                     ->columnSpan(6)
+                                                    ->maxLength(100)
                                                     ->visible(fn (Get $get): bool => $get('../is_mailing'))
                                                     ->required(fn (Get $get): bool => $get('../is_mailing')),
 
                                                 TextInput::make('last_name')
                                                     ->label('Last Name')
                                                     ->columnSpan(6)
+                                                    ->maxLength(100)
                                                     ->visible(fn (Get $get): bool => $get('../is_mailing'))
                                                     ->required(fn (Get $get): bool => $get('../is_mailing')),
 
                                                 TextInput::make('middle_name')
                                                     ->label('Middle Name')
                                                     ->columnSpan(6)
+                                                    ->maxLength(100)
                                                     ->visible(fn (Get $get): bool => $get('../is_mailing'))
                                                     ->required(fn (Get $get): bool => $get('../is_mailing')),
 
                                                 TextInput::make('suffix')
                                                     ->label('Suffix')
                                                     ->columnSpan(6)
+                                                    ->maxLength(10)
                                                     ->visible(fn (Get $get): bool => $get('../is_mailing')),
 
                                                 TextInput::make('contact_number')
                                                     ->label('Contact Number')
                                                     ->columnSpanFull()
+                                                    ->length(11)
                                                     ->visible(fn (Get $get): bool => $get('../is_mailing')),
 
                                                 TextInput::make('street_address')
@@ -418,6 +441,8 @@ class DocumentRequestForm
                                                         $set('city', null);
                                                         $set('barangay', null);
                                                     })
+                                                    ->visible(fn (Get $get): bool => $get('../is_mailing'))
+                                                    ->required(fn (Get $get): bool => $get('../is_mailing'))
                                                     ->columnSpan(6)
                                                     ->required(),
 
@@ -435,6 +460,8 @@ class DocumentRequestForm
                                                     ->live(debounce: 500)
                                                     ->disabled(fn (Get $get): bool => ! $get('region'))
                                                     ->afterStateUpdated(fn (Set $set) => $set('barangay', null))
+                                                    ->visible(fn (Get $get): bool => $get('../is_mailing'))
+                                                    ->required(fn (Get $get): bool => $get('../is_mailing'))
                                                     ->columnSpan(6)
                                                     ->required(),
 
@@ -449,6 +476,8 @@ class DocumentRequestForm
 
                                                         return Barangay::where('city_id', $cityId)->pluck('name')->toArray();
                                                     })
+                                                    ->visible(fn (Get $get): bool => $get('../is_mailing'))
+                                                    ->required(fn (Get $get): bool => $get('../is_mailing'))
                                                     ->live(debounce: 500)
                                                     ->disabled(fn (Get $get): bool => ! $get('city'))
                                                     ->columnSpan(6)
@@ -461,10 +490,10 @@ class DocumentRequestForm
                                                     ->length(4)
                                                     ->minValue(0000)
                                                     ->maxValue(9999)
-                                                    ->required()
                                                     ->live(onBlur: true)
                                                     ->columnSpan([4])
-                                                    ->visible(fn (Get $get): bool => $get('../is_mailing')),
+                                                    ->visible(fn (Get $get): bool => $get('../is_mailing'))
+                                                    ->required(fn (Get $get): bool => $get('../is_mailing')),
 
                                             ])
                                             ->columns(12)

@@ -25,6 +25,7 @@ class ViewUser extends ViewRecord
         return [
             Action::make('back')
                 ->label('Back to List')
+                ->icon('heroicon-o-chevron-left')
                 ->color('gray')
                 ->url($this->getResource()::getUrl('index')),
             EditAction::make(),

@@ -4,8 +4,10 @@ namespace App\Filament\Processor\Resources\DocumentRequests\Tables;
 
 use App\DocumentRequestStatus;
 use App\Filament\Exports\DocumentRequestExporter;
+use App\Models\RequestQuantity;
 use CodeWithKyrian\FilamentDateRange\Tables\Filters\DateRangeFilter;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ExportAction;
@@ -23,6 +25,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Collection;
 
 class DocumentRequestsTable
 {
@@ -31,8 +34,15 @@ class DocumentRequestsTable
         return $table
             ->headerActions([
                 ExportAction::make()
+                    ->label('Export to Excel')
                     ->exporter(DocumentRequestExporter::class)
+                    ->accessSelectedRecords()
+                    ->icon('heroicon-o-table-cells')
                     ->formats([ExportFormat::Xlsx]),
+
+                CreateAction::make('Create')
+                    ->icon('heroicon-o-plus')
+                    ->label('New Request')
             ])
             ->columns([
                 TextColumn::make('status')
@@ -82,6 +92,10 @@ class DocumentRequestsTable
                     ->searchable()
                     ->sortable(),
 
+                TextColumn::make('created_at')
+                    ->label('Request Date')
+                    ->sortable()
+
             ])
             ->filters([
 
@@ -98,6 +112,12 @@ class DocumentRequestsTable
                     ->indicateUsing(fn (array $data): ?string => $data['status']
                         ? 'Status: ' . DocumentRequestStatus::from($data['status'])->getLabel()
                         : null)
+                    ->query(fn (Builder $query, array $data): Builder => $query->when(
+                        $data['status'],
+                        function (Builder $query, $status) {
+                            return $query->where('status', $status);
+                        }
+                    ))
                     ->columnSpanFull(),
 
                 Filter::make('processor')

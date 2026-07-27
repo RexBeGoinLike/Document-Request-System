@@ -34,7 +34,7 @@ class CreateRepresentativeInformation
                             ->label('First Name')
                             ->autocapitalize('words')
                             ->columnSpan([4])
-                            ->maxLength(20)
+                            ->maxLength(100)
                             ->required(fn (Get $get) : bool => $get($checkboxPath ))
                             ->disabled(fn (Get $get) : bool => !  $get($checkboxPath )),
 
@@ -42,7 +42,7 @@ class CreateRepresentativeInformation
                             ->label('Last Name')
                             ->autocapitalize('words')
                             ->columnSpan([3])
-                            ->maxLength(15)
+                            ->maxLength(100)
                             ->required(fn (Get $get) : bool => $get($checkboxPath ))
                             ->disabled(fn (Get $get) : bool => ! $get($checkboxPath )),
 
@@ -50,7 +50,7 @@ class CreateRepresentativeInformation
                             ->label('Middle Name')
                             ->autocapitalize('words')
                             ->columnSpan([3])
-                            ->maxLength(15)
+                            ->maxLength(100)
                             ->required(fn (Get $get) : bool => $get($checkboxPath ))
                             ->disabled(fn (Get $get) : bool => ! $get($checkboxPath )),
 
@@ -58,14 +58,14 @@ class CreateRepresentativeInformation
                             ->label('Suffix')
                             ->autocapitalize('words')
                             ->columnSpan([2])
-                            ->maxLength(20)
+                            ->maxLength(10)
                             ->disabled(fn (Get $get) : bool => ! $get($checkboxPath )),
 
                         TextInput::make('relationship')
                             ->label('Relationship')
                             ->autocapitalize('words')
                             ->columnSpan(4)
-                            ->maxLength(15)
+                            ->maxLength(20)
                             ->required(fn (Get $get) : bool => $get($checkboxPath ))
                             ->disabled(fn (Get $get) : bool => ! $get($checkboxPath )),
 

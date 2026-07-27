@@ -21,7 +21,7 @@ class ListDocumentRequests extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make('Create')->icon('heroicon-o-plus')->label('New Request')
+
         ];
     }
 }

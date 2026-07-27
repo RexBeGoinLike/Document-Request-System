@@ -7,7 +7,7 @@ use App\Filament\Processor\Resources\Users\Pages\EditUser;
 use App\Filament\Processor\Resources\Users\Pages\ListUsers;
 use App\Filament\Processor\Resources\Users\Pages\ViewUser;
 use App\Filament\Processor\Resources\Users\Schemas\UserForm;
-use App\Filament\Processor\Resources\Users\Schemas\UserInfolist;
+use App\Filament\Processor\Resources\Users\Tables\UserInfolist;
 use App\Filament\Processor\Resources\Users\Tables\UsersTable;
 use App\Models\User;
 use BackedEnum;

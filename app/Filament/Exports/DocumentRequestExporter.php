@@ -3,6 +3,7 @@
 namespace App\Filament\Exports;
 
 use App\Models\DocumentRequest;
+use App\Models\DocumentType;
 use Filament\Actions\Exports\ExportColumn;
 use Filament\Actions\Exports\Exporter;
 use Filament\Actions\Exports\Models\Export;
@@ -17,18 +18,35 @@ class DocumentRequestExporter extends Exporter
         return [
             ExportColumn::make('reference_id'),
 
-            ExportColumn::make('requestQuantity.documentType.name')
-                ->label('Document Type'),
+            ExportColumn::make('serial_number'),
 
-            ExportColumn::make('requestQuantity.quantity'),
+            ExportColumn::make('last_name')
+                ->label('Last Name'),
 
-            ExportColumn::make('requestQuantity.fee')
-                ->label('Fee (₱)'),
+            ExportColumn::make('first_name')
+                ->label('First Name'),
 
-            ExportColumn::make('requestQuantity.total_fee')
-                ->label('Total Fee (₱)'),
+            ExportColumn::make('middle_name')
+                ->label('Middle Name'),
 
-            ExportColumn::make('requestQuantity.created_at')
+            ExportColumn::make('suffix')
+                ->label('Suffix'),
+
+            ExportColumn::make('request_quantities')
+                ->label('Requested Documents')
+                ->state(function ($record) {
+                    return $record->requestQuantity
+                        ->map(function ($item) {
+                            return sprintf(
+                                '%s (₱%s)',
+                                $item->documentType?->document_type ?? $item->document_type_id,
+                                number_format($item->total_fee, 2)
+                            );
+                        })
+                        ->implode(", ");
+                }),
+
+            ExportColumn::make('created_at')
                 ->label('Request Date'),
         ];
     }

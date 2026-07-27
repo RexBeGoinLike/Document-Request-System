@@ -63,6 +63,7 @@ class ProcessorPanelProvider extends PanelProvider
             ->brandName('OFFICE OF THE REGISTRAR')
             ->brandLogo(asset('css/images/pma_logo.svg'))
             ->brandLogoHeight('3rem')
+            ->databaseNotifications()
             ->login();
     }
 
