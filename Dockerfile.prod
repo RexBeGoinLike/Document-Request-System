@@ -1,0 +1,39 @@
+# ---------- Stage 1: install PHP dependencies (creates vendor/) ----------
+FROM composer:2 AS vendor
+WORKDIR /app
+RUN apk add --no-cache icu-dev && docker-php-ext-install intl
+COPY composer.json composer.lock ./
+COPY database/ database/
+RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
+COPY . .
+RUN composer dump-autoload --optimize --no-dev
+
+# ---------- Stage 2: build frontend assets (needs vendor/ from stage 1) ----------
+FROM node:20-alpine AS assets
+WORKDIR /app
+COPY --from=vendor /app /app
+RUN npm ci
+RUN npm run build
+
+# ---------- Stage 3: the actual runtime image ----------
+FROM php:8.5-fpm-alpine AS runtime
+
+RUN apk add --no-cache postgresql-dev libzip-dev libpng-dev libjpeg-turbo-dev freetype-dev icu-dev oniguruma-dev bash
+RUN docker-php-ext-install pdo
+RUN docker-php-ext-install pdo_pgsql
+RUN docker-php-ext-install pgsql
+RUN docker-php-ext-install zip
+RUN docker-php-ext-configure gd --with-jpeg --with-freetype
+RUN docker-php-ext-install gd
+RUN docker-php-ext-install intl
+RUN docker-php-ext-install mbstring
+RUN docker-php-ext-install bcmath
+
+WORKDIR /var/www/html
+COPY --from=vendor /app /var/www/html
+COPY --from=assets /app/public/build /var/www/html/public/build
+
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+
+EXPOSE 9000
+CMD ["php-fpm"]

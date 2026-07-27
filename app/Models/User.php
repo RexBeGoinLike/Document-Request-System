@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -14,7 +16,7 @@ use Illuminate\Notifications\Notifiable;
 
 #[Fillable(['name', 'email', 'password', 'role'])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
@@ -41,4 +43,9 @@ class User extends Authenticatable
     public function last_status_edit() : HasMany {
         return $this->hasMany(DocumentRequest::class, 'last_status_modified_by', 'user_id');
     }
+
+	public function canAccessPanel(Panel $panel): bool
+	{
+    	return true; // or add real logic later, e.g. based on $this->role
+	}
 }
