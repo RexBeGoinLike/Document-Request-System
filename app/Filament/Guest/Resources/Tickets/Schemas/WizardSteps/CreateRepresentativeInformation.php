@@ -51,7 +51,6 @@ class CreateRepresentativeInformation
                             ->autocapitalize('words')
                             ->columnSpan([3])
                             ->maxLength(100)
-                            ->required(fn (Get $get) : bool => $get($checkboxPath ))
                             ->disabled(fn (Get $get) : bool => ! $get($checkboxPath )),
 
                         TextInput::make('suffix')

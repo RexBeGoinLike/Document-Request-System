@@ -30,7 +30,7 @@ return new class extends Migration
             $table->string('status')->default(DocumentRequestStatus::FOR_REVIEW->value);
             $table->string('first_name', 100);
             $table->string('last_name', 100);
-            $table->string('middle_name', 100);
+            $table->string('middle_name', 100)->nullable();
             $table->string('suffix', 10)->nullable();
             $table->string('serial_number', 6);
             $table->string('class', 4);

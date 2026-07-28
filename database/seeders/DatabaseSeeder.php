@@ -17,7 +17,6 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(DocumentTypeSeeder::class);
         $this->call(AddressSeeder::class);
-        $this->call(UserSeeder::class);
     }
 }
 

@@ -339,7 +339,6 @@ class DocumentRequestForm
                                                     ->columnSpan(6)
                                                     ->maxLength(100)
                                                     ->visible(fn (Get $get): bool => $get('../has_representative'))
-                                                    ->required(fn (Get $get): bool => $get('../has_representative'))
                                                     ->dehydrated(),
 
                                                 TextInput::make('suffix')
@@ -413,8 +412,7 @@ class DocumentRequestForm
                                                     ->label('Middle Name')
                                                     ->columnSpan(6)
                                                     ->maxLength(100)
-                                                    ->visible(fn (Get $get): bool => $get('../is_mailing'))
-                                                    ->required(fn (Get $get): bool => $get('../is_mailing')),
+                                                    ->visible(fn (Get $get): bool => $get('../is_mailing')),
 
                                                 TextInput::make('suffix')
                                                     ->label('Suffix')
@@ -425,6 +423,7 @@ class DocumentRequestForm
                                                 TextInput::make('contact_number')
                                                     ->label('Contact Number')
                                                     ->columnSpanFull()
+                                                    ->required()
                                                     ->length(11)
                                                     ->visible(fn (Get $get): bool => $get('../is_mailing')),
 

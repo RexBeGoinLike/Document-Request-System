@@ -44,7 +44,6 @@ class CreateRequesterInformation
                             ->label('Middle Name')
                             ->validationAttribute('Middle Name')
                             ->autocapitalize('words')
-                            ->required()
                             ->maxLength(100)
                             ->columnSpan([3]),
 

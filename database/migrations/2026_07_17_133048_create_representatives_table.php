@@ -18,7 +18,7 @@ return new class extends Migration
                 ->onUpdate('cascade');
             $table->string('first_name', 100);
             $table->string('last_name', 100);
-            $table->string('middle_name', 100);
+            $table->string('middle_name', 100)->nullable();
             $table->string('suffix', 10)->nullable();
             $table->string('office', 20)->nullable();
             $table->string('contact', 11);

@@ -88,7 +88,6 @@ class CreateMailingInformation
                                     ->label('Middle Name')
                                     ->validationAttribute('Middle Name')
                                     ->autocapitalize('words')
-                                    ->required(fn (Get $get) : bool => $get($checkboxPath))
                                     ->columnSpan([3])
                                     ->maxLength(100),
 
