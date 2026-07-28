@@ -9,12 +9,24 @@ services:
     env_file: .env.prod
     volumes:
       - public-assets:/shared-public
+      - storage-data:/var/www/html/storage/app
     command: sh -c "cp -r /var/www/html/public/. /shared-public/ && php-fpm"
     depends_on:
       pgsql:
         condition: service_healthy
     networks: [prodnet]
-
+  queue:
+    image: myapp-prod-app
+    restart: unless-stopped
+    user: www-data
+    env_file: .env.prod
+    command: php artisan queue:work --sleep=3 --tries=3 --max-time=3600
+    volumes:
+      - public-assets:/shared-public
+      - storage-data:/var/www/html/storage/app
+    depends_on:
+      - app
+    networks: [prodnet]
   nginx:
     image: nginx:1.27-alpine
     restart: unless-stopped
@@ -44,6 +56,7 @@ services:
 volumes:
   prod-pgsql-data:
   public-assets:
+  storage-data:
 
 networks:
   prodnet:
